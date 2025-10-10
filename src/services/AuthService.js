@@ -24,9 +24,11 @@ export const registerUser = async (userData) => {
 export const loginUser = async (credentials) => {
     try {
         const response = await axios.post(`${API_URL}/api/users/login/`, credentials);
-        if (response.data.token) {
-            localStorage.setItem('token', response.data.access);
-            // localStorage.setItem('user', JSON.stringify(response.data.user));
+        if (response.data.tokens?.access) {
+            console.log(response.data.tokens.access)
+            localStorage.setItem('accessToken', response.data.tokens.access);
+            localStorage.setItem('refreshToken', response.data.tokens.refresh);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
         }
         return {
             success: true,

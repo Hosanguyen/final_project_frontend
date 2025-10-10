@@ -6,6 +6,8 @@ import NotFound from '../pages/notFound/NotFound';
 import MainLayout from '../layouts/MainLayout';
 import AdminLayout from '../layouts/AdminLayout';
 import Register from '../pages/register/Register';
+import UserProfile from '../layouts/components/UserProfile/UserProfile';
+import PrivateRoute from './PrivateRoute';
 
 const AppRoutes = () => {
     return (
@@ -18,6 +20,7 @@ const AppRoutes = () => {
                 {/* Routes với MainLayout */}
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<Home />} />
+                    <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>}/>
                 </Route>
 
                 {/* Routes với AdminLayout */}
