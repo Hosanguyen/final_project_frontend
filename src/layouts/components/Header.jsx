@@ -127,15 +127,18 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
 
                             {showUserMenu && (
                                 <div className="user-dropdown">
-                                    <Link to="/profile" className="dropdown-item">
+                                    <Link to="/profile" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                                         <FaUser /> Hồ sơ cá nhân
                                     </Link>
                                     {isAdmin && (
-                                        <Link to="/admin/dashboard" className="dropdown-item">
+                                        <Link to="/admin/dashboard" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                                             <MdDashboard /> Quản trị
                                         </Link>
                                     )}
-                                    <button onClick={handleLogout} className="dropdown-item logout">
+                                    <button onClick={() => {
+                                            setShowUserMenu(false); 
+                                            handleLogout();         
+                                        }} className="dropdown-item logout">
                                         <FaSignOutAlt /> Đăng xuất
                                     </button>
                                 </div>
