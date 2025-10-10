@@ -97,6 +97,7 @@
     outline: none;
     font-size: 14px;
     transition: border-color 0.3s;
+    box-sizing: border-box;
 }
 
 .search-box input:focus {
@@ -288,5 +289,63 @@
 
     .user-button span {
         display: none;
+    }
+}
+
+/* Thêm vào file Header.css hiện tại */
+
+/* Auth Buttons */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-login,
+.btn-register {
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+}
+
+.btn-login {
+    background: transparent;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-login:hover {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+
+.btn-register {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: 1px solid transparent;
+}
+
+.btn-register:hover {
+    background: linear-gradient(135deg, #5568d3 0%, #633a8c 100%);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-buttons {
+        gap: 8px;
+    }
+    
+    .btn-login,
+    .btn-register {
+        padding: 6px 16px;
+        font-size: 13px;
     }
 }
