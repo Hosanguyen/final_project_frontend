@@ -70,6 +70,8 @@ const Sidebar = ({ isOpen }) => {
             subMenu: [
                 { title: 'Danh sách học viên', path: '/admin/users' },
                 { title: 'Quản lý quyền', path: '/admin/roles' },
+                { title: 'Phân quyền', path: '/admin/permissions' },
+                { title: 'Loại phân quyền', path: '/admin/permission-categories' },
             ],
         },
         {
