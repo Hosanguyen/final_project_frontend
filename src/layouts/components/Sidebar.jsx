@@ -10,6 +10,7 @@ import {
     MdBarChart,
     MdSettings,
     MdCode,
+    MdLanguage,
 } from 'react-icons/md';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import './Sidebar.css';
@@ -73,6 +74,11 @@ const Sidebar = ({ isOpen }) => {
                 { title: 'Phân quyền', path: '/admin/permissions' },
                 { title: 'Loại phân quyền', path: '/admin/permission-categories' },
             ],
+        },
+        {
+            title: 'Ngôn ngữ lập trình',
+            icon: <MdLanguage />,
+            path: '/admin/languages',
         },
         {
             title: 'Diễn đàn',

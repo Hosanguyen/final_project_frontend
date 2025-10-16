@@ -6,7 +6,7 @@ import NotFound from '../pages/notFound/NotFound';
 import MainLayout from '../layouts/MainLayout';
 import AdminLayout from '../layouts/AdminLayout';
 import Register from '../pages/register/Register';
-import UserProfile from '../layouts/components/UserProfile/UserProfile';
+import UserProfile from '../pages/UserProfile/UserProfile';
 import PrivateRoute from './PrivateRoute';
 import PermissionCategoryList from '../pages/admin/permissionCategory/PermissionCategoryList';
 import PermissionCategoryForm from '../pages/admin/permissionCategory/PermissionCategoryForm';
@@ -14,6 +14,7 @@ import PermissionForm from '../pages/admin/permission/PermissionForm';
 import PermissionList from '../pages/admin/permission/PermissionList';
 import RoleForm from '../pages/admin/role/RoleForm';
 import RoleList from '../pages/admin/role/RoleList';
+import LanguageManager from '../pages/admin/language/LanguageManagement';
 
 const AppRoutes = () => {
     return (
@@ -108,6 +109,14 @@ const AppRoutes = () => {
                         element={
                             <PrivateRoute>
                                 <RoleForm />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/languages"
+                        element={
+                            <PrivateRoute>
+                                <LanguageManager />
                             </PrivateRoute>
                         }
                     />
