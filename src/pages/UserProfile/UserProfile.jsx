@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import './UserProfile.css';
-import { updateUserProfile } from '../../../services/UserService';
+import { updateUserProfile } from '../../services/UserService';
 
 const UserProfile = () => {
   const API_URL = process.env.REACT_APP_API_URL;
