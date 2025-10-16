@@ -1,6 +1,6 @@
 .language-manager {
   padding: 24px;
-  max-width: 900px;
+  max-width: 100%;
   margin: 40px auto;
   background-color: #ffffff;
   border-radius: 16px;
@@ -71,6 +71,7 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 16px;
+  overflow-x: auto;
 }
 
 .language-table th,
@@ -149,17 +150,61 @@
   accent-color: #007bff;
 }
 
-@media (max-width: 768px) {
+/* ✅ Responsive Design */
+@media (max-width: 992px) {
+  .language-manager {
+    padding: 16px;
+  }
+
   .language-form {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .language-form input[type="text"] {
+  .language-form input[type="text"],
+  .language-form button {
     width: 100%;
   }
 
-  .language-form button {
+  .language-table th,
+  .language-table td {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+
+  .language-table button {
+    padding: 5px 8px;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .language-manager h2 {
+    font-size: 20px;
+  }
+
+  .language-table {
+    display: block;
     width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    border-radius: 10px;
+  }
+
+  .language-table th,
+  .language-table td {
+    font-size: 13px;
+    padding: 8px 6px;
+  }
+
+  .language-table button {
+    display: block;
+    width: 100%;
+    margin: 4px 0;
+  }
+
+  .language-form {
+    padding: 12px;
   }
 }
