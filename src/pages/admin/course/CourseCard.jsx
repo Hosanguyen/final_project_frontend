@@ -49,14 +49,14 @@ const CourseCard = ({
             className="action-btn edit"
             title="Chỉnh sửa"
           >
-            <Edit className="action-icon" />
+            <Edit className="course-action-icon" />
           </button>
           <button
             onClick={() => onDelete(course.id)}
             className="action-btn delete"
             title="Xóa"
           >
-            <Trash2 className="action-icon" />
+            <Trash2 className="course-action-icon" />
           </button>
         </div>
       </div>

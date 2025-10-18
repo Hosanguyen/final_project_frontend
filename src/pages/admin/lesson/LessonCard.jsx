@@ -42,14 +42,14 @@ const LessonCard = ({
             className="action-btn edit"
             title="Chỉnh sửa"
           >
-            <Edit className="action-icon" />
+            <Edit className="lesson-action-icon" />
           </button>
           <button
             onClick={() => onDelete(lesson.id)}
             className="action-btn delete"
             title="Xóa"
           >
-            <Trash2 className="action-icon" />
+            <Trash2 className="lesson-action-icon" />
           </button>
         </div>
       </div>
