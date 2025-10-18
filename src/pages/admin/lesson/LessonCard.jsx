@@ -1,6 +1,7 @@
 // src/pages/admin/lesson/LessonCard.jsx
 import React from 'react';
 import { Edit, Trash2, BookOpen, FileText, Calendar, Hash } from 'lucide-react';
+import './LessonCard.css'
 
 const LessonCard = ({ 
   lesson, 

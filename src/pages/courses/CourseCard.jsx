@@ -1,6 +1,7 @@
 // src/pages/courses/CourseCard.jsx
 import React from 'react';
 import { Star, Clock, Users, BookOpen, Play, ArrowRight } from 'lucide-react';
+import './CourseCard.css';
 
 const CourseCard = ({ 
   course, 

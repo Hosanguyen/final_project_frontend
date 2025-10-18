@@ -130,7 +130,7 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
                                     <Link to="/profile" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                                         <FaUser /> Hồ sơ cá nhân
                                     </Link>
-                                    {isAdmin && (
+                                    {!isAdmin && (
                                         <Link to="/admin/dashboard" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                                             <MdDashboard /> Quản trị
                                         </Link>

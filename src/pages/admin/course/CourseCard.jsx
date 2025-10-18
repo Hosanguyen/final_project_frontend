@@ -1,6 +1,7 @@
 // src/pages/admin/course/CourseCard.jsx
 import React from 'react';
 import { Edit, Trash2, Eye, EyeOff, BookOpen, Users, Tag, Calendar } from 'lucide-react';
+import './CourseCard.css';
 
 const CourseCard = ({ 
   course, 

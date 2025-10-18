@@ -96,20 +96,17 @@ const CourseService = {
   getCoursesByFilter: async (filters = {}) => {
     try {
       const params = new URLSearchParams();
-      
-      if (filters.search) params.append('search', filters.search);
-      if (filters.level) params.append('level', filters.level);
-      if (filters.is_published !== undefined) params.append('is_published', filters.is_published);
-      if (filters.language_id) params.append('language_id', filters.language_id);
-      if (filters.tag_id) params.append('tag_id', filters.tag_id);
-      if (filters.ordering) params.append('ordering', filters.ordering);
-      
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== '' && value !== null && value !== undefined)
+          params.append(key, value);
+      });
       const response = await api.get(`/api/courses/?${params.toString()}`);
       return response.data;
     } catch (error) {
       throw error;
     }
   }
+  
 };
 
 export default CourseService;
