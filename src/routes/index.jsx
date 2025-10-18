@@ -15,6 +15,11 @@ import PermissionList from '../pages/admin/permission/PermissionList';
 import RoleForm from '../pages/admin/role/RoleForm';
 import RoleList from '../pages/admin/role/RoleList';
 import LanguageManager from '../pages/admin/language/LanguageManagement';
+import TagManager from '../pages/admin/tag/TagManagement';
+import CourseManagement from '../pages/admin/course/CourseManagement';
+import LessonManagement from '../pages/admin/lesson/LessonManagement';
+import AdminDashboard from '../pages/admin/dashboard/AdminDashboard';
+import Courses from '../pages/courses/Courses';
 
 const AppRoutes = () => {
     return (
@@ -27,6 +32,7 @@ const AppRoutes = () => {
                 {/* Routes với MainLayout */}
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<Home />} />
+                    <Route path="/courses" element={<Courses />} />
                     <Route
                         path="/profile"
                         element={
@@ -39,7 +45,7 @@ const AppRoutes = () => {
 
                 {/* Routes với AdminLayout */}
                 <Route element={<AdminLayout />}>
-                    <Route path="/admin/dashboard" element={<div>Tổng quan</div>} />
+                    <Route path="/admin/dashboard" element={<AdminDashboard />} />
                     <Route
                         path="/admin/permission-categories"
                         element={
@@ -117,6 +123,30 @@ const AppRoutes = () => {
                         element={
                             <PrivateRoute>
                                 <LanguageManager />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/tags"
+                        element={
+                            <PrivateRoute>
+                                <TagManager />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/courses"
+                        element={
+                            <PrivateRoute>
+                                <CourseManagement />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/lessons"
+                        element={
+                            <PrivateRoute>
+                                <LessonManagement />
                             </PrivateRoute>
                         }
                     />

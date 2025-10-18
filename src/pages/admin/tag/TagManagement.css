@@ -1,0 +1,232 @@
+.tag-manager {
+  padding: 24px;
+  max-width: 100%;
+  margin: 40px auto;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', sans-serif;
+}
+
+.tag-manager h2 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Form section */
+.tag-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.tag-form input[type="text"] {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.tag-form input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.tag-form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-weight: 500;
+}
+
+.tag-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Table styling */
+.tag-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  overflow-x: auto;
+}
+
+.tag-table th,
+.tag-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 15px;
+}
+
+.tag-table th {
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+}
+
+.tag-table tr:hover {
+  background-color: #f2f8ff;
+}
+
+.tag-table input[type="text"] {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.tag-table button {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 6px;
+  transition: 0.2s;
+}
+
+.tag-table button.edit {
+  background-color: #ffc107;
+  color: white;
+}
+
+.tag-table button.edit:hover {
+  background-color: #e0a800;
+}
+
+.tag-table button.delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.tag-table button.delete:hover {
+  background-color: #b52a37;
+}
+
+.tag-table button.save {
+  background-color: #28a745;
+  color: white;
+}
+
+.tag-table button.save:hover {
+  background-color: #218838;
+}
+
+.tag-table button.cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.tag-table button.cancel:hover {
+  background-color: #5a6268;
+}
+
+/* Tag badge styling */
+.tag-name {
+  display: inline-block;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.tag-slug {
+  display: inline-block;
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-family: monospace;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.empty-state h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 992px) {
+  .tag-manager {
+    padding: 16px;
+  }
+
+  .tag-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tag-form input[type="text"],
+  .tag-form button {
+    width: 100%;
+  }
+
+  .tag-table th,
+  .tag-table td {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+
+  .tag-table button {
+    padding: 5px 8px;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .tag-manager h2 {
+    font-size: 20px;
+  }
+
+  .tag-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    border-radius: 10px;
+  }
+
+  .tag-table th,
+  .tag-table td {
+    font-size: 13px;
+    padding: 8px 6px;
+  }
+
+  .tag-table button {
+    display: block;
+    width: 100%;
+    margin: 4px 0;
+  }
+
+  .tag-form {
+    padding: 12px;
+  }
+}
