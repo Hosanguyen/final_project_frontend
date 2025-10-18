@@ -11,6 +11,7 @@ import {
     MdSettings,
     MdCode,
     MdLanguage,
+    MdLocalOffer,
 } from 'react-icons/md';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import './Sidebar.css';
@@ -31,8 +32,7 @@ const Sidebar = ({ isOpen }) => {
             path: '/admin/courses',
             subMenu: [
                 { title: 'Danh sách khóa học', path: '/admin/courses' },
-                { title: 'Thêm khóa học mới', path: '/admin/courses/create' },
-                { title: 'Danh mục', path: '/admin/categories' },
+                { title: 'Quản lý bài học', path: '/admin/lessons' },
             ],
         },
         {
@@ -79,6 +79,11 @@ const Sidebar = ({ isOpen }) => {
             title: 'Ngôn ngữ lập trình',
             icon: <MdLanguage />,
             path: '/admin/languages',
+        },
+        {
+            title: 'Quản lý thẻ',
+            icon: <MdLocalOffer />,
+            path: '/admin/tags',
         },
         {
             title: 'Diễn đàn',
