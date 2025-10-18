@@ -1,0 +1,210 @@
+.language-manager {
+  padding: 24px;
+  max-width: 100%;
+  margin: 40px auto;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', sans-serif;
+}
+
+.language-manager h2 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Form section */
+.language-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.language-form input[type="text"] {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.language-form input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.language-form label {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  color: #555;
+  cursor: pointer;
+}
+
+.language-form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.language-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Table styling */
+.language-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  overflow-x: auto;
+}
+
+.language-table th,
+.language-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 15px;
+}
+
+.language-table th {
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+}
+
+.language-table tr:hover {
+  background-color: #f2f8ff;
+}
+
+.language-table input[type="text"] {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.language-table button {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 6px;
+  transition: 0.2s;
+}
+
+.language-table button.edit {
+  background-color: #ffc107;
+  color: white;
+}
+
+.language-table button.edit:hover {
+  background-color: #e0a800;
+}
+
+.language-table button.delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.language-table button.delete:hover {
+  background-color: #b52a37;
+}
+
+.language-table button.save {
+  background-color: #28a745;
+  color: white;
+}
+
+.language-table button.save:hover {
+  background-color: #218838;
+}
+
+.language-table button.cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.language-table button.cancel:hover {
+  background-color: #5a6268;
+}
+
+.language-table input[type="checkbox"] {
+  transform: scale(1.2);
+  accent-color: #007bff;
+}
+
+/* ✅ Responsive Design */
+@media (max-width: 992px) {
+  .language-manager {
+    padding: 16px;
+  }
+
+  .language-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .language-form input[type="text"],
+  .language-form button {
+    width: 100%;
+  }
+
+  .language-table th,
+  .language-table td {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+
+  .language-table button {
+    padding: 5px 8px;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .language-manager h2 {
+    font-size: 20px;
+  }
+
+  .language-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    border-radius: 10px;
+  }
+
+  .language-table th,
+  .language-table td {
+    font-size: 13px;
+    padding: 8px 6px;
+  }
+
+  .language-table button {
+    display: block;
+    width: 100%;
+    margin: 4px 0;
+  }
+
+  .language-form {
+    padding: 12px;
+  }
+}
