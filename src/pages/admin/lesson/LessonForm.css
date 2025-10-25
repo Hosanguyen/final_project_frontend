@@ -340,3 +340,19 @@
     justify-content: center;
   }
 }
+
+.current-file {
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+.file-link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.file-link:hover {
+  text-decoration: underline;
+}

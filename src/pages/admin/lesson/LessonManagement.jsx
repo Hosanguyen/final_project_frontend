@@ -64,6 +64,7 @@ const LessonManagement = () => {
       setLessons([newLesson, ...lessons]);
       setShowForm(false);
       setError(null);
+      return newLesson;
     } catch (err) {
       setError('Không thể tạo bài học');
       console.error('Error creating lesson:', err);
@@ -79,6 +80,7 @@ const LessonManagement = () => {
       setShowForm(false);
       setEditingLesson(null);
       setError(null);
+      return updatedLesson;
     } catch (err) {
       setError('Không thể cập nhật bài học');
       console.error('Error updating lesson:', err);
