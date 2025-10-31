@@ -7,6 +7,9 @@
 }
 
 .problem-submission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-bottom: 2px solid #e5e7eb;
     padding-bottom: 16px;
     margin-bottom: 24px;
@@ -20,6 +23,25 @@
     align-items: center;
     gap: 10px;
     margin: 0;
+}
+
+.problem-submission-theme-toggle {
+    padding: 8px 12px;
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.problem-submission-theme-toggle:hover {
+    background: #e5e7eb;
+    color: #1f2937;
 }
 
 .problem-submission-body {
@@ -66,11 +88,25 @@
 }
 
 /* Code Editor */
-.problem-submission-editor label {
-    display: block;
+.problem-submission-editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.problem-submission-editor-header label {
     font-weight: 600;
     color: #374151;
-    margin-bottom: 12px;
+    margin: 0;
+}
+
+.problem-submission-editor-info {
+    font-size: 13px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 /* Error Message */
