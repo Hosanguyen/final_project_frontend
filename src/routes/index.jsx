@@ -23,6 +23,9 @@ import Courses from '../pages/courses/Courses';
 import ProblemForm from '../pages/admin/problem/ProblemForm';
 import ProblemDetail from '../pages/admin/problem/ProblemDetail';
 import ProblemList from '../pages/admin/problem/ProblemList';
+import ContestManagement from '../pages/admin/contest/ContestManagement';
+import ContestForm from '../pages/admin/contest/ContestForm';
+import ContestDetail from '../pages/admin/contest/ContestDetail';
 
 const AppRoutes = () => {
     return (
@@ -183,6 +186,39 @@ const AppRoutes = () => {
                         element={
                             <PrivateRoute>
                                 <ProblemDetail />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/admin/contests"
+                        element={
+                            <PrivateRoute>
+                                <ContestManagement />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/contests/create"
+                        element={
+                            <PrivateRoute>
+                                <ContestForm />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/contests/edit/:id"
+                        element={
+                            <PrivateRoute>
+                                <ContestForm />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/contests/:id"
+                        element={
+                            <PrivateRoute>
+                                <ContestDetail />
                             </PrivateRoute>
                         }
                     />
