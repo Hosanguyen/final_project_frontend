@@ -1,0 +1,60 @@
+/* Code Editor Styles */
+.code-editor-container {
+  display: flex;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+}
+
+.code-editor-line-numbers {
+  background: #252526;
+  color: #858585;
+  padding: 16px 12px;
+  text-align: right;
+  user-select: none;
+  min-width: 50px;
+  border-right: 1px solid #3e3e42;
+}
+
+.line-number {
+  line-height: 24px;
+  font-size: 13px;
+}
+
+.code-editor-textarea {
+  flex: 1;
+  padding: 16px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 24px;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+  tab-size: 4;
+}
+
+.code-editor-textarea:focus {
+  outline: none;
+}
+
+/* Syntax highlighting hints (basic) */
+.language-python {
+  /* Python specific styles if needed */
+}
+
+.language-cpp, .language-c {
+  /* C/C++ specific styles if needed */
+}
+
+.language-java {
+  /* Java specific styles if needed */
+}

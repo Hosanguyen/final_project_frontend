@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaEdit, FaTrash, FaArrowLeft, FaClock, FaMemory, FaCheck, FaTimes } from 'react-icons/fa';
 import ProblemService from '../../../services/ProblemService';
+import ProblemSubmission from './ProblemSubmission';
 import './ProblemDetail.css';
 
 const ProblemDetail = () => {
@@ -272,6 +273,11 @@ const ProblemDetail = () => {
                             dangerouslySetInnerHTML={{ __html: problem.editorial_text }}
                         />
                     </div>
+                )}
+
+                {/* Submission Section */}
+                {problem.is_synced_to_domjudge && problem.allowed_languages.length > 0 && (
+                    <ProblemSubmission problem={problem} />
                 )}
             </div>
 
