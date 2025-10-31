@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaList, FaCheckCircle, FaTimesCircle, FaClock, FaSync, FaChevronDown, FaChevronUp, FaCode } from 'react-icons/fa';
 import SubmissionService from '../../../services/SubmissionService';
 import SubmissionCodeViewer from './SubmissionCodeViewer';
+import SubmissionDetailResults from './SubmissionDetailResults';
 import './SubmissionHistory.css';
 
 const SubmissionHistory = ({ problemId }) => {
@@ -50,18 +51,40 @@ const SubmissionHistory = ({ problemId }) => {
         setExpandedId(expandedId === id ? null : id);
     };
 
+    const loadFullSubmission = async (submissionId) => {
+        try {
+            const fullSubmission = await SubmissionService.getById(submissionId);
+            // Update submission in list with full data
+            setSubmissions(prev => prev.map(s => 
+                s.id === submissionId ? { ...s, ...fullSubmission } : s
+            ));
+            return fullSubmission;
+        } catch (error) {
+            console.error('Failed to load full submission:', error);
+            alert('Không thể tải chi tiết submission này');
+            return null;
+        }
+    };
+
     const handleViewCode = async (submission) => {
         // If code_text is not loaded, fetch it
         if (!submission.code_text) {
-            try {
-                const fullSubmission = await SubmissionService.getById(submission.id);
+            const fullSubmission = await loadFullSubmission(submission.id);
+            if (fullSubmission) {
                 setViewingSubmission(fullSubmission);
-            } catch (error) {
-                console.error('Failed to load submission:', error);
-                alert('Không thể tải code của submission này');
             }
         } else {
             setViewingSubmission(submission);
+        }
+    };
+
+    const handleToggleExpand = async (submission) => {
+        const newExpandedId = expandedId === submission.id ? null : submission.id;
+        setExpandedId(newExpandedId);
+
+        // Load full details if expanding and not already loaded
+        if (newExpandedId && !submission.detailed_results) {
+            await loadFullSubmission(submission.id);
         }
     };
 
@@ -140,7 +163,7 @@ const SubmissionHistory = ({ problemId }) => {
                             <div key={submission.id} className="submission-history-item">
                                 <div
                                     className="submission-history-item-header"
-                                    onClick={() => toggleExpand(submission.id)}
+                                    onClick={() => handleToggleExpand(submission)}
                                 >
                                     <div className="submission-history-item-info">
                                         <span className="submission-id">#{submission.id}</span>
@@ -182,7 +205,13 @@ const SubmissionHistory = ({ problemId }) => {
                                             <strong>Thời gian:</strong>
                                             <span>{formatDate(submission.submitted_at)}</span>
                                         </div>
-                                        {submission.feedback && (
+                                        
+                                        {/* Detailed Results */}
+                                        {submission.detailed_results && (
+                                            <SubmissionDetailResults detailedResults={submission.detailed_results} />
+                                        )}
+                                        
+                                        {submission.feedback && !submission.detailed_results && (
                                             <div className="submission-detail-row">
                                                 <strong>Feedback:</strong>
                                                 <pre className="submission-feedback">{submission.feedback}</pre>
