@@ -275,6 +275,30 @@
     border-radius: 4px;
 }
 
+.problem-title-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.problem-title-link:hover {
+    color: #5568d3;
+    text-decoration: underline;
+}
+
+.problem-title-link svg {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.problem-title-link:hover svg {
+    opacity: 1;
+}
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */

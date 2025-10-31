@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlus, FaTrash, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaPlus, FaTrash, FaCheckCircle, FaExclamationCircle, FaExternalLinkAlt } from 'react-icons/fa';
 import './ContestProblemManager.css';
 import ContestService from '../../../services/ContestService';
 import ProblemService from '../../../services/ProblemService';
@@ -281,7 +282,15 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
                                     <td>
                                         <span className="problem-label">{cp.label || cp.alias}</span>
                                     </td>
-                                    <td>{cp.problem_title}</td>
+                                    <td>
+                                        <Link 
+                                            to={`/admin/problems/${cp.problem_id}`}
+                                            className="problem-title-link"
+                                            title="View problem details"
+                                        >
+                                            {cp.problem_title} <FaExternalLinkAlt size={12} />
+                                        </Link>
+                                    </td>
                                     <td>
                                         <span className="problem-slug">{cp.problem_slug}</span>
                                     </td>
