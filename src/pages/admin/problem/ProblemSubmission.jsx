@@ -105,8 +105,8 @@ const ProblemSubmission = ({ problem, onSubmitSuccess }) => {
 
     const handleLanguageChange = (langId) => {
         setSelectedLanguage(langId);
-        // Only load template if in editor mode and no code yet
-        if (inputMode === 'editor' && !code && !selectedFile) {
+        // Load template if in editor mode (always load new template for new language)
+        if (inputMode === 'editor') {
             const lang = getLanguageById(langId);
             if (lang) {
                 const template = getTemplate(lang.code);
