@@ -1,0 +1,363 @@
+.submission-history {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 24px;
+}
+
+.submission-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.submission-history-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.submission-history-sync-btn {
+    padding: 10px 20px;
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.submission-history-sync-btn:hover:not(:disabled) {
+    background: #2563eb;
+}
+
+.submission-history-sync-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+.submission-history-sync-btn .spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Loading State */
+.submission-history-loading {
+    text-align: center;
+    padding: 40px;
+}
+
+.submission-history-loading .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px;
+}
+
+/* Empty State */
+.submission-history-empty {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+}
+
+/* Submission List */
+.submission-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.submission-history-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.submission-history-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.submission-history-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    cursor: pointer;
+    background: #f9fafb;
+}
+
+.submission-history-item-header:hover {
+    background: #f3f4f6;
+}
+
+.submission-history-item-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.submission-id {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.submission-language {
+    padding: 4px 12px;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.submission-date {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.submission-history-item-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Status Badges */
+.submission-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-judging {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.status-accepted {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-wrong {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-tle {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-mle {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-error {
+    background: #fecaca;
+    color: #7f1d1d;
+}
+
+.status-unknown {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.submission-score {
+    padding: 4px 12px;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.submission-expand-btn {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.submission-expand-btn:hover {
+    color: #1f2937;
+}
+
+.submission-view-code-btn-inline {
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.submission-view-code-btn-inline:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+/* Submission Details */
+.submission-history-item-details {
+    padding: 16px;
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+}
+
+.submission-detail-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.submission-detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.submission-detail-row strong {
+    min-width: 140px;
+    color: #374151;
+}
+
+.submission-detail-row span {
+    color: #6b7280;
+}
+
+.submission-feedback {
+    margin: 0;
+    padding: 12px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px;
+    color: #374151;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Pagination */
+.submission-history-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.pagination-btn {
+    padding: 8px 16px;
+    background: #fff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #f9fafb;
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .submission-history {
+        padding: 16px;
+    }
+
+    .submission-history-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .submission-history-sync-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .submission-history-item-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .submission-history-item-info {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .submission-history-item-status {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .submission-detail-row {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .submission-detail-row strong {
+        min-width: auto;
+    }
+}

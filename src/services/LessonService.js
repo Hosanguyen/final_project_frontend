@@ -95,12 +95,22 @@ const LessonService = {
   // Tạo lesson resource mới
   createLessonResource: async (resourceData) => {
     try {
-      const response = await api.post('/api/lesson-resources/', resourceData);
+      const formData = new FormData();
+      for (const key in resourceData) {
+        if (resourceData[key] !== null && resourceData[key] !== undefined) {
+          formData.append(key, resourceData[key]);
+        }
+      }
+
+      const response = await api.post('/api/lesson-resources/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       return response.data;
     } catch (error) {
       throw error;
     }
   },
+
 
   // Cập nhật lesson resource
   updateLessonResource: async (id, resourceData) => {

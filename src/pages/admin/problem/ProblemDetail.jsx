@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaEdit, FaTrash, FaArrowLeft, FaClock, FaMemory, FaCheck, FaTimes } from 'react-icons/fa';
 import ProblemService from '../../../services/ProblemService';
+import ProblemSubmission from './ProblemSubmission';
+import SubmissionHistory from './SubmissionHistory';
 import './ProblemDetail.css';
 
 const ProblemDetail = () => {
@@ -10,10 +12,16 @@ const ProblemDetail = () => {
     const [problem, setProblem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [submissionRefreshKey, setSubmissionRefreshKey] = useState(0);
 
     useEffect(() => {
         loadProblemDetail();
     }, [id]);
+
+    const handleSubmitSuccess = () => {
+        // Trigger refresh của SubmissionHistory
+        setSubmissionRefreshKey((prev) => prev + 1);
+    };
 
     const loadProblemDetail = async () => {
         setLoading(true);
@@ -272,6 +280,14 @@ const ProblemDetail = () => {
                             dangerouslySetInnerHTML={{ __html: problem.editorial_text }}
                         />
                     </div>
+                )}
+
+                {/* Submission Section */}
+                {problem.is_synced_to_domjudge && problem.allowed_languages.length > 0 && (
+                    <>
+                        <ProblemSubmission problem={problem} onSubmitSuccess={handleSubmitSuccess} />
+                        <SubmissionHistory problemId={problem.id} key={submissionRefreshKey} />
+                    </>
                 )}
             </div>
 

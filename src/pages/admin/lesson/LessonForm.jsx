@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, AlertCircle, Plus, Trash2 } from 'lucide-react';
 import './LessonForm.css';
+import LessonService from '../../../services/LessonService';
 
 const LessonForm = ({ lesson, courses, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
@@ -97,29 +98,44 @@ const LessonForm = ({ lesson, courses, onSubmit, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-
+  
+    if (!validateForm()) return;
     setLoading(true);
+  
     try {
-      const lessonData = {
-        ...formData,
-        resources: resources
-      };
-
+      let createdLesson;
+  
+      // Nếu là edit thì update lesson
       if (lesson) {
-        await onSubmit(lesson.id, lessonData);
+        createdLesson = await onSubmit(lesson.id, formData);
       } else {
-        await onSubmit(lessonData);
+        createdLesson = await onSubmit(formData);
       }
+  
+      // Sau khi tạo lesson, nếu có resources thì gửi từng cái
+      if (!lesson && createdLesson && createdLesson.id && resources.length > 0) {
+        for (const res of resources) {
+          const resourceData = new FormData();
+          resourceData.append('lesson', createdLesson.id);
+          resourceData.append('type', res.type);
+          if (res.title) resourceData.append('title', res.title);
+          if (res.content) resourceData.append('content', res.content);
+          if (res.url) resourceData.append('url', res.url);
+          resourceData.append('sequence', res.sequence || 0);
+          if (res.file) resourceData.append('file', res.file);
+  
+          await LessonService.createLessonResource(resourceData);
+        }
+      }
+  
+      onClose();
     } catch (error) {
       console.error('Error submitting form:', error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="lesson-form-overlay">
@@ -288,6 +304,40 @@ const LessonForm = ({ lesson, courses, onSubmit, onClose }) => {
                         placeholder={resource.type === 'link' ? 'URL liên kết' : 'Nội dung'}
                       />
                     </div>
+                    {['pdf', 'file', 'slide'].includes(resource.type) && (
+                      <div className="form-group">
+                        <label className="form-label">Tệp tải lên</label>
+
+                        {/* Nếu đã có file_url -> hiển thị link tải */}
+                        {resource.file_url && (
+                          <div className="current-file">
+                            <p>
+                              📄 <strong>File hiện tại:</strong>{' '}
+                              {resource.filename || resource.file_url.split('/').pop()}
+                            </p>
+                            <a
+                              href={`http://localhost:8000${resource.file_url}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="file-link"
+                            >
+                              🔗 Xem
+                            </a>
+                          </div>
+                        )}
+
+                        {/* Input để chọn file mới (vẫn cho phép thay thế file cũ) */}
+                        <input
+                          type="file"
+                          onChange={(e) =>
+                            handleResourceChange(index, 'file', e.target.files[0])
+                          }
+                          className="form-input"
+                          accept=".pdf,.ppt,.pptx,.doc,.docx,.zip,.rar,.mp4"
+                        />
+                      </div>
+                    )}
+
 
                     <div className="form-group">
                       <label className="form-label">Thứ tự</label>
