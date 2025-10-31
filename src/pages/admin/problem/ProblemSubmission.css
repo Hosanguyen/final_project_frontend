@@ -87,6 +87,41 @@
     color: #fff;
 }
 
+/* Input Mode Tabs */
+.problem-submission-input-mode {
+    display: flex;
+    gap: 12px;
+    padding: 4px;
+    background: #f3f4f6;
+    border-radius: 10px;
+}
+
+.problem-submission-mode-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #6b7280;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.problem-submission-mode-btn:hover {
+    color: #374151;
+}
+
+.problem-submission-mode-btn.active {
+    background: #fff;
+    color: #3b82f6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* Code Editor */
 .problem-submission-editor-header {
     display: flex;
@@ -107,6 +142,117 @@
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+/* File Upload */
+.problem-submission-file-upload {
+    min-height: 400px;
+}
+
+.problem-submission-file-input-area {
+    border: 3px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 60px 40px;
+    text-align: center;
+    transition: all 0.3s;
+    background: #f9fafb;
+}
+
+.problem-submission-file-input-area:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.problem-submission-file-label {
+    cursor: pointer;
+    display: block;
+}
+
+.problem-submission-file-label svg {
+    color: #9ca3af;
+    margin-bottom: 16px;
+    transition: all 0.3s;
+}
+
+.problem-submission-file-input-area:hover .problem-submission-file-label svg {
+    color: #3b82f6;
+    transform: translateY(-4px);
+}
+
+.problem-submission-file-label h4 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #374151;
+    margin: 12px 0 8px;
+}
+
+.problem-submission-file-label p {
+    color: #6b7280;
+    margin: 8px 0;
+}
+
+.problem-submission-file-label small {
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+.problem-submission-file-selected {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.problem-submission-file-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: #f3f4f6;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+}
+
+.problem-submission-file-info svg {
+    color: #3b82f6;
+    flex-shrink: 0;
+}
+
+.problem-submission-file-details {
+    flex: 1;
+}
+
+.problem-submission-file-details h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 4px;
+}
+
+.problem-submission-file-details p {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.problem-submission-file-remove {
+    padding: 8px;
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 6px;
+}
+
+.problem-submission-file-remove:hover {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.problem-submission-file-preview {
+    border-top: 2px solid #e5e7eb;
+    padding-top: 20px;
 }
 
 /* Error Message */
