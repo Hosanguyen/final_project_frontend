@@ -1,0 +1,27 @@
+.ckeditor-wrapper {
+    width: 100%;
+}
+
+.ckeditor-wrapper .ck-editor__editable {
+    min-height: 400px;
+    max-height: 600px;
+}
+
+.ckeditor-wrapper .ck-editor__editable_inline {
+    min-height: 400px;
+}
+
+.ckeditor-wrapper .ck.ck-editor {
+    width: 100%;
+}
+
+.ckeditor-wrapper .ck.ck-editor__main > .ck-editor__editable {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+}
+
+.ckeditor-wrapper .ck.ck-editor__main > .ck-editor__editable:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}

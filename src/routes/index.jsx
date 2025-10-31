@@ -20,6 +20,9 @@ import CourseManagement from '../pages/admin/course/CourseManagement';
 import LessonManagement from '../pages/admin/lesson/LessonManagement';
 import AdminDashboard from '../pages/admin/dashboard/AdminDashboard';
 import Courses from '../pages/courses/Courses';
+import ProblemForm from '../pages/admin/problem/ProblemForm';
+import ProblemDetail from '../pages/admin/problem/ProblemDetail';
+import ProblemList from '../pages/admin/problem/ProblemList';
 
 const AppRoutes = () => {
     return (
@@ -147,6 +150,39 @@ const AppRoutes = () => {
                         element={
                             <PrivateRoute>
                                 <LessonManagement />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/admin/problems"
+                        element={
+                            <PrivateRoute>
+                                <ProblemList />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/problems/create"
+                        element={
+                            <PrivateRoute>
+                                <ProblemForm />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/problems/edit/:id"
+                        element={
+                            <PrivateRoute>
+                                <ProblemForm />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/problems/:id"
+                        element={
+                            <PrivateRoute>
+                                <ProblemDetail />
                             </PrivateRoute>
                         }
                     />
