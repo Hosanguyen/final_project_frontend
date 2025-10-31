@@ -139,6 +139,7 @@ export const getTemplate = (languageCode) => {
     // Map common variations
     const map = {
         'py': 'python',
+        'py3': 'python',
         'python3': 'python',
         'c++': 'cpp',
         'js': 'javascript',

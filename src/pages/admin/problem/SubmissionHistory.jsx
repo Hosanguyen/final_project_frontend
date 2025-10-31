@@ -175,8 +175,8 @@ const SubmissionHistory = ({ problemId }) => {
                                 {expandedId === submission.id && (
                                     <div className="submission-history-item-details">
                                         <div className="submission-detail-row">
-                                            <strong>DOMjudge ID:</strong>
-                                            <span>{submission.domjudge_submission_id || 'N/A'}</span>
+                                            <strong>User:</strong>
+                                            <span>{submission.user?.full_name || 'N/A'}</span>
                                         </div>
                                         <div className="submission-detail-row">
                                             <strong>Thời gian:</strong>
