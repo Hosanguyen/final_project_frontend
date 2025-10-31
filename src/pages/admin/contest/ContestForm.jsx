@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fa';
 import './ContestForm.css';
 import ContestService from '../../../services/ContestService';
+import ContestProblemManager from './ContestProblemManager';
 
 const ContestForm = () => {
     const navigate = useNavigate();
@@ -28,6 +29,7 @@ const ContestForm = () => {
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [contestData, setContestData] = useState(null);
 
     useEffect(() => {
         if (isEditMode) {
@@ -39,6 +41,7 @@ const ContestForm = () => {
         setLoading(true);
         try {
             const data = await ContestService.getById(id);
+            setContestData(data);
             setFormData({
                 slug: data.slug || '',
                 title: data.title || '',
@@ -373,6 +376,15 @@ const ContestForm = () => {
                     </button>
                 </div>
                 </form>
+
+                {/* Problem Manager - Only show in edit mode */}
+                {isEditMode && contestData && (
+                    <ContestProblemManager
+                        contestId={id}
+                        contestProblems={contestData.problems || []}
+                        onUpdate={loadContest}
+                    />
+                )}
             </div>
         </div>
     );

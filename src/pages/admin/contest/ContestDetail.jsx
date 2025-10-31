@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fa';
 import './ContestDetail.css';
 import ContestService from '../../../services/ContestService';
+import ContestProblemManager from './ContestProblemManager';
 
 const ContestDetail = () => {
     const navigate = useNavigate();
@@ -185,31 +186,15 @@ const ContestDetail = () => {
                     </div>
                 </div>
 
-                {contest.problems && contest.problems.length > 0 && (
-                    <div className="contest-detail-problems">
-                        <h3>Danh sách bài tập</h3>
-                        <table className="problems-table">
-                            <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Alias</th>
-                                    <th>Tên bài tập</th>
-                                    <th>Slug</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {contest.problems.map((problem, index) => (
-                                    <tr key={problem.id}>
-                                        <td>{index + 1}</td>
-                                        <td><strong>{problem.alias}</strong></td>
-                                        <td>{problem.problem_title}</td>
-                                        <td><code>{problem.problem_slug}</code></td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                {/* Contest Problems Manager */}
+                <div className="contest-detail-problems">
+                    <h3>Quản lý bài tập</h3>
+                    <ContestProblemManager
+                        contestId={contest.id}
+                        contestProblems={contest.problems || []}
+                        onUpdate={loadContest}
+                    />
+                </div>
 
                 <div className="contest-detail-meta">
                     <div className="meta-item">

@@ -12,6 +12,8 @@ const LanguageManager = () => {
   const [newLang, setNewLang] = useState({
     code: '',
     name: '',
+    externalid: '',
+    extension: '',
     active: true,
   });
 
@@ -41,7 +43,7 @@ const LanguageManager = () => {
     try {
       await api.post('/api/languages/', newLang);
       Swal.fire('Success', 'Language added successfully!', 'success');
-      setNewLang({ code: '', name: '', active: true });
+      setNewLang({ code: '', name: '', externalid: '', extension: '', active: true });
       fetchLanguages();
     } catch (err) {
       console.error('Error adding language:', err);
@@ -124,6 +126,20 @@ const LanguageManager = () => {
           placeholder="Name (e.g. 'Python')"
           required
         />
+        <input
+          type="text"
+          name="externalid"
+          value={newLang.externalid}
+          onChange={handleNewChange}
+          placeholder="External ID (e.g. 'python3')"
+        />
+        <input
+          type="text"
+          name="extension"
+          value={newLang.extension}
+          onChange={handleNewChange}
+          placeholder="Extension (e.g. '.py')"
+        />
         <label>
           <input
             type="checkbox"
@@ -131,7 +147,7 @@ const LanguageManager = () => {
             checked={newLang.active}
             onChange={handleNewChange}
           />
-          &nbsp;Active
+          <span>Active</span>
         </label>
         <button type="submit">Add</button>
       </form>
@@ -143,6 +159,8 @@ const LanguageManager = () => {
             <th>ID</th>
             <th>Code</th>
             <th>Name</th>
+            <th>External ID</th>
+            <th>Extension</th>
             <th>Active</th>
             <th>Actions</th>
           </tr>
@@ -167,6 +185,22 @@ const LanguageManager = () => {
                       type="text"
                       name="name"
                       value={editData.name}
+                      onChange={handleEditChange}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      name="externalid"
+                      value={editData.externalid || ''}
+                      onChange={handleEditChange}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      name="extension"
+                      value={editData.extension || ''}
                       onChange={handleEditChange}
                     />
                   </td>
@@ -199,8 +233,12 @@ const LanguageManager = () => {
                 <>
                   <td>{lang.code}</td>
                   <td>{lang.name}</td>
-                  <td>
-                    <input type="checkbox" checked={lang.active} readOnly />
+                  <td>{lang.externalid || '-'}</td>
+                  <td>{lang.extension || '-'}</td>
+                  <td className="active-cell">
+                    <span className={`active-badge active-${lang.active}`}>
+                      {lang.active ? '✓ Active' : '✗ Inactive'}
+                    </span>
                   </td>
                   <td>
                     <button

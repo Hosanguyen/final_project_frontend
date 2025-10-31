@@ -19,6 +19,7 @@ const CodeEditor = ({
             'py': 'python',
             'python': 'python',
             'python3': 'python',
+            'py3': 'python',
             'cpp': 'cpp',
             'c++': 'cpp',
             'c': 'c',

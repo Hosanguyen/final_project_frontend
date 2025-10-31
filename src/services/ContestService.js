@@ -70,6 +70,36 @@ const ContestService = {
         } catch (error) {
             throw error.response?.data || error.message;
         }
+    },
+
+    /**
+     * Add problem to contest
+     * @param {number} contestId - Contest ID
+     * @param {Object} problemData - Problem data (problem_id, label, color, rgb, points, lazy_eval_results)
+     * @returns {Promise} Result
+     */
+    addProblem: async (contestId, problemData) => {
+        try {
+            const response = await api.post(`/api/contests/${contestId}/problems/`, problemData);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Remove problem from contest
+     * @param {number} contestId - Contest ID
+     * @param {number} problemId - Problem ID
+     * @returns {Promise} Result
+     */
+    removeProblem: async (contestId, problemId) => {
+        try {
+            const response = await api.delete(`/api/contests/${contestId}/problems/${problemId}/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
     }
 };
 
