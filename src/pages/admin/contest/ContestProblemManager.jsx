@@ -7,7 +7,7 @@ import ProblemService from '../../../services/ProblemService';
 
 const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) => {
     const [problems, setProblems] = useState([]);
-    const [selectedProblem, setSelectedProblem] = useState('');
+    const [selectedProblem, setSelectedProblem] = useState(null);
     const [label, setLabel] = useState('');
     const [color, setColor] = useState('');
     const [rgb, setRgb] = useState('');
@@ -15,6 +15,8 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
     const [showAddForm, setShowAddForm] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showDropdown, setShowDropdown] = useState(false);
 
     useEffect(() => {
         loadProblems();
@@ -50,7 +52,32 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
             return [];
         }
         const contestProblemIds = contestProblems.map(cp => cp.problem_id);
-        return problems.filter(p => !contestProblemIds.includes(p.id));
+        let availableProblems = problems.filter(p => !contestProblemIds.includes(p.id));
+        
+        // Apply search filter
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase().trim();
+            availableProblems = availableProblems.filter(p => 
+                p.slug.toLowerCase().includes(query) ||
+                p.title.toLowerCase().includes(query)
+            );
+        }
+        
+        return availableProblems;
+    };
+
+    const handleSelectProblem = (problem) => {
+        setSelectedProblem(problem);
+        setSearchQuery(`${problem.title} (${problem.slug})`);
+        setShowDropdown(false);
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        setShowDropdown(true);
+        if (!e.target.value.trim()) {
+            setSelectedProblem(null);
+        }
     };
 
     const handleAddProblem = async (e) => {
@@ -66,7 +93,7 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
 
         try {
             const problemData = {
-                problem_id: parseInt(selectedProblem),
+                problem_id: selectedProblem.id,
                 label: label.trim(),
                 points: parseInt(points) || 1,
                 lazy_eval_results: false
@@ -81,7 +108,8 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
             setMessage({ type: 'success', text: 'Problem added successfully!' });
             
             // Reset form
-            setSelectedProblem('');
+            setSelectedProblem(null);
+            setSearchQuery('');
             setLabel('');
             setColor('');
             setRgb('');
@@ -171,19 +199,47 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
                                 <label>
                                     Problem <span className="required">*</span>
                                 </label>
-                                <select
-                                    value={selectedProblem}
-                                    onChange={(e) => setSelectedProblem(e.target.value)}
-                                    required
-                                    disabled={loading}
-                                >
-                                    <option value="">Select a problem</option>
-                                    {availableProblems.map(problem => (
-                                        <option key={problem.id} value={problem.id}>
-                                            {problem.title} ({problem.slug})
-                                        </option>
-                                    ))}
-                                </select>
+                                <div className="autocomplete-wrapper">
+                                    <input
+                                        type="text"
+                                        placeholder="Search by slug or title..."
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
+                                        onFocus={() => setShowDropdown(true)}
+                                        onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                                        disabled={loading}
+                                        className="autocomplete-input"
+                                        autoComplete="off"
+                                    />
+                                    {showDropdown && availableProblems.length > 0 && (
+                                        <div className="autocomplete-dropdown">
+                                            {availableProblems.slice(0, 10).map(problem => (
+                                                <div
+                                                    key={problem.id}
+                                                    className={`autocomplete-item ${selectedProblem?.id === problem.id ? 'selected' : ''}`}
+                                                    onClick={() => handleSelectProblem(problem)}
+                                                >
+                                                    <div className="problem-info">
+                                                        <span className="problem-title">{problem.title}</span>
+                                                        <span className="problem-slug-badge">{problem.slug}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {availableProblems.length > 10 && (
+                                                <div className="autocomplete-footer">
+                                                    +{availableProblems.length - 10} more results...
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                    {showDropdown && availableProblems.length === 0 && (
+                                        <div className="autocomplete-dropdown">
+                                            <div className="autocomplete-empty">
+                                                No problems found
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="form-group">
@@ -280,7 +336,18 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
                             {contestProblems.map((cp) => (
                                 <tr key={cp.id}>
                                     <td>
-                                        <span className="problem-label">{cp.label || cp.alias}</span>
+                                        <span 
+                                            className="problem-label"
+                                            style={{
+                                                backgroundColor: cp.rgb || cp.color || '#6366f1',
+                                                color: 'white',
+                                                padding: '4px 12px',
+                                                borderRadius: '4px',
+                                                fontWeight: 'bold'
+                                            }}
+                                        >
+                                            {cp.label || cp.alias}
+                                        </span>
                                     </td>
                                     <td>
                                         <Link 
