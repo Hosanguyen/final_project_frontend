@@ -13,7 +13,7 @@ const ProblemSubmission = ({ problem, onSubmitSuccess }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submissionResult, setSubmissionResult] = useState(null);
     const [error, setError] = useState(null);
-    const [theme, setTheme] = useState('vs-dark'); // 'vs-dark' or 'vs'
+    const [theme, setTheme] = useState('vs'); // 'vs-dark' or 'vs'
     const [inputMode, setInputMode] = useState('editor'); // 'editor' or 'file'
     const [selectedFile, setSelectedFile] = useState(null);
 
