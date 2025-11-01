@@ -26,6 +26,7 @@ import ProblemList from '../pages/admin/problem/ProblemList';
 import ContestManagement from '../pages/admin/contest/ContestManagement';
 import ContestForm from '../pages/admin/contest/ContestForm';
 import ContestDetail from '../pages/admin/contest/ContestDetail';
+import Practice from '../pages/practice/Practice';
 
 const AppRoutes = () => {
     return (
@@ -39,6 +40,7 @@ const AppRoutes = () => {
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<Home />} />
                     <Route path="/courses" element={<Courses />} />
+                    <Route path="/practice" element={<Practice />} />
                     <Route
                         path="/profile"
                         element={
