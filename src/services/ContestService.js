@@ -30,6 +30,20 @@ const ContestService = {
     },
 
     /**
+     * Get practice contest with pagination
+     * @param {Object} params - Query parameters (page, page_size)
+     * @returns {Promise} Contest details with paginated problems
+     */
+    getPracticeContest: async (params = {}) => {
+        try {
+            const response = await api.get(`/api/contests/practice/contest/`, { params });
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
      * Create new contest
      * @param {Object} contestData - Contest data
      * @returns {Promise} Created contest
