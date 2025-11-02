@@ -1,279 +1,244 @@
 // src/pages/admin/lesson/LessonManagement.jsx
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Edit, Trash2, BookOpen, FileText, Play, Link } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { FaPlus, FaSearch, FaEdit, FaTrash, FaEye, FaBook } from 'react-icons/fa';
 import LessonService from '../../../services/LessonService';
 import CourseService from '../../../services/CourseService';
-import LessonForm from './LessonForm';
-import LessonCard from './LessonCard';
-import LessonFilters from './LessonFilters';
 import './LessonManagement.css';
 
 const LessonManagement = () => {
-  const [lessons, setLessons] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [showForm, setShowForm] = useState(false);
-  const [editingLesson, setEditingLesson] = useState(null);
-  const [filters, setFilters] = useState({
-    search: '',
-    course_id: '',
-    ordering: 'sequence'
-  });
-  const [showFilters, setShowFilters] = useState(false);
+    const navigate = useNavigate();
+    const [lessons, setLessons] = useState([]);
+    const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [courseFilter, setCourseFilter] = useState('');
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [lessonToDelete, setLessonToDelete] = useState(null);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+    useEffect(() => {
+        loadData();
+    }, []);
 
-  useEffect(() => {
-    loadLessons();
-  }, [filters]);
+    const loadData = async () => {
+        setLoading(true);
+        try {
+            const [lessonsData, coursesData] = await Promise.all([
+                LessonService.getLessons(),
+                CourseService.getCourses()
+            ]);
+            setLessons(lessonsData);
+            setCourses(coursesData);
+        } catch (error) {
+            console.error('Error loading data:', error);
+            alert('Không thể tải dữ liệu');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const [lessonsData, coursesData] = await Promise.all([
-        LessonService.getLessonsByFilter(filters),
-        CourseService.getCourses()
-      ]);
-      
-      setLessons(lessonsData);
-      setCourses(coursesData);
-    } catch (err) {
-      setError('Không thể tải dữ liệu');
-      console.error('Error loading data:', err);
-    } finally {
-      setLoading(false);
+    const handleDelete = async () => {
+        if (!lessonToDelete) return;
+
+        try {
+            await LessonService.deleteLesson(lessonToDelete.id);
+            setLessons(lessons.filter(l => l.id !== lessonToDelete.id));
+            setShowDeleteModal(false);
+            setLessonToDelete(null);
+            alert('Xóa bài học thành công');
+        } catch (error) {
+            console.error('Error deleting lesson:', error);
+            alert('Xóa bài học thất bại');
+        }
+    };
+
+    const openDeleteModal = (lesson) => {
+        setLessonToDelete(lesson);
+        setShowDeleteModal(true);
+    };
+
+    const filteredLessons = lessons.filter(lesson => {
+        const matchSearch = lesson.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (lesson.description && lesson.description.toLowerCase().includes(searchTerm.toLowerCase()));
+        const matchCourse = !courseFilter || lesson.course === parseInt(courseFilter);
+        return matchSearch && matchCourse;
+    });
+
+    if (loading) {
+        return (
+            <div className="lesson-list-loading-container">
+                <div className="lesson-list-spinner"></div>
+                <p>Đang tải dữ liệu...</p>
+            </div>
+        );
     }
-  };
 
-  const loadLessons = async () => {
-    try {
-      const lessonsData = await LessonService.getLessonsByFilter(filters);
-      setLessons(lessonsData);
-    } catch (err) {
-      setError('Không thể tải danh sách bài học');
-      console.error('Error loading lessons:', err);
-    }
-  };
-
-  const handleCreateLesson = async (lessonData) => {
-    try {
-      const newLesson = await LessonService.createLesson(lessonData);
-      setLessons([newLesson, ...lessons]);
-      setShowForm(false);
-      setError(null);
-      return newLesson;
-    } catch (err) {
-      setError('Không thể tạo bài học');
-      console.error('Error creating lesson:', err);
-    }
-  };
-
-  const handleUpdateLesson = async (id, lessonData) => {
-    try {
-      const updatedLesson = await LessonService.updateLesson(id, lessonData);
-      setLessons(lessons.map(lesson => 
-        lesson.id === id ? updatedLesson : lesson
-      ));
-      setShowForm(false);
-      setEditingLesson(null);
-      setError(null);
-      return updatedLesson;
-    } catch (err) {
-      setError('Không thể cập nhật bài học');
-      console.error('Error updating lesson:', err);
-    }
-  };
-
-  const handleDeleteLesson = async (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa bài học này?')) {
-      try {
-        await LessonService.deleteLesson(id);
-        setLessons(lessons.filter(lesson => lesson.id !== id));
-        setError(null);
-      } catch (err) {
-        setError('Không thể xóa bài học');
-        console.error('Error deleting lesson:', err);
-      }
-    }
-  };
-
-  const handleEditLesson = (lesson) => {
-    setEditingLesson(lesson);
-    setShowForm(true);
-  };
-
-  const handleCloseForm = () => {
-    setShowForm(false);
-    setEditingLesson(null);
-  };
-
-  const handleFilterChange = (newFilters) => {
-    setFilters({ ...filters, ...newFilters });
-  };
-
-  const handleSearch = (searchTerm) => {
-    setFilters({ ...filters, search: searchTerm });
-  };
-
-  const getResourceTypeIcon = (type) => {
-    switch (type) {
-      case 'video': return <Play className="resource-icon" />;
-      case 'pdf': return <FileText className="resource-icon" />;
-      case 'link': return <Link className="resource-icon" />;
-      default: return <FileText className="resource-icon" />;
-    }
-  };
-
-  const getResourceTypeColor = (type) => {
-    switch (type) {
-      case 'video': return 'text-red-600 bg-red-100';
-      case 'pdf': return 'text-red-600 bg-red-100';
-      case 'slide': return 'text-blue-600 bg-blue-100';
-      case 'text': return 'text-gray-600 bg-gray-100';
-      case 'link': return 'text-green-600 bg-green-100';
-      case 'file': return 'text-purple-600 bg-purple-100';
-      default: return 'text-gray-600 bg-gray-100';
-    }
-  };
-
-  if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-      </div>
+        <div className="lesson-list">
+            {/* Header */}
+            <div className="lesson-list-page-header">
+                <div className="lesson-list-header-left">
+                    <h1>Quản lý Bài học</h1>
+                </div>
+                <button 
+                    className="lesson-list-btn-create"
+                    onClick={() => navigate('/admin/lessons/create')}
+                >
+                    <FaPlus /> Tạo bài học mới
+                </button>
+            </div>
+
+            {/* Content Card */}
+            <div className="lesson-list-content-card">
+                {/* Search and Filters */}
+                <div className="lesson-list-card-header">
+                    <div className="lesson-list-search-box">
+                        <FaSearch className="lesson-list-search-icon" />
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm bài học..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="lesson-list-filters">
+                        <select
+                            value={courseFilter}
+                            onChange={(e) => setCourseFilter(e.target.value)}
+                            className="lesson-list-filter-select"
+                        >
+                            <option value="">Tất cả khóa học</option>
+                            {courses.map(course => (
+                                <option key={course.id} value={course.id}>
+                                    {course.title}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="lesson-list-stats">
+                        <div className="lesson-list-stat-item">
+                            <strong>{filteredLessons.length}</strong> bài học
+                        </div>
+                    </div>
+                </div>
+
+                {/* Table */}
+                <div className="lesson-list-table-container">
+                    <table className="lesson-list-data-table">
+                        <thead>
+                            <tr>
+                                <th style={{width: '60px'}}>ID</th>
+                                <th>Tiêu đề</th>
+                                <th style={{width: '200px'}}>Khóa học</th>
+                                <th style={{width: '100px'}}>Thứ tự</th>
+                                <th style={{width: '120px'}}>Resources</th>
+                                <th style={{width: '150px'}}>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredLessons.length === 0 ? (
+                                <tr>
+                                    <td colSpan="6" className="lesson-list-no-data">
+                                        Không tìm thấy bài học nào
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredLessons.map(lesson => (
+                                    <tr key={lesson.id}>
+                                        <td className="lesson-list-text-center">
+                                            <span className="lesson-list-id-badge">#{lesson.id}</span>
+                                        </td>
+                                        <td>
+                                            <div className="lesson-list-title-cell">
+                                                <div className="lesson-list-title">{lesson.title}</div>
+                                                {lesson.description && (
+                                                    <div className="lesson-list-short-desc">
+                                                        {lesson.description.substring(0, 80)}
+                                                        {lesson.description.length > 80 ? '...' : ''}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span className="lesson-list-code-badge">
+                                                {lesson.course_title || '-'}
+                                            </span>
+                                        </td>
+                                        <td className="lesson-list-text-center">
+                                            <span className="lesson-list-id-badge">{lesson.sequence}</span>
+                                        </td>
+                                        <td className="lesson-list-text-center">
+                                            {lesson.resources_count || 0}
+                                        </td>
+                                        <td className="lesson-list-text-center">
+                                            <div className="lesson-list-action-buttons">
+                                                <button
+                                                    className="lesson-list-btn-action lesson-list-btn-view"
+                                                    onClick={() => navigate(`/admin/lessons/${lesson.id}`)}
+                                                    title="Xem chi tiết"
+                                                >
+                                                    <FaEye />
+                                                </button>
+                                                <button
+                                                    className="lesson-list-btn-action lesson-list-btn-edit"
+                                                    onClick={() => navigate(`/admin/lessons/edit/${lesson.id}`)}
+                                                    title="Chỉnh sửa"
+                                                >
+                                                    <FaEdit />
+                                                </button>
+                                                <button
+                                                    className="lesson-list-btn-action lesson-list-btn-delete"
+                                                    onClick={() => openDeleteModal(lesson)}
+                                                    title="Xóa"
+                                                >
+                                                    <FaTrash />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Delete Modal */}
+            {showDeleteModal && (
+                <div className="lesson-list-modal-overlay" onClick={() => setShowDeleteModal(false)}>
+                    <div className="lesson-list-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="lesson-list-modal-header">
+                            <h3>Xác nhận xóa</h3>
+                        </div>
+                        <div className="lesson-list-modal-body">
+                            <p>
+                                Bạn có chắc chắn muốn xóa bài học <strong>"{lessonToDelete?.title}"</strong>?
+                            </p>
+                            <p className="lesson-list-warning-text">
+                                Lưu ý: Tất cả tài nguyên của bài học cũng sẽ bị xóa.
+                            </p>
+                        </div>
+                        <div className="lesson-list-modal-footer">
+                            <button 
+                                className="lesson-list-btn-cancel"
+                                onClick={() => setShowDeleteModal(false)}
+                            >
+                                Hủy
+                            </button>
+                            <button 
+                                className="lesson-list-btn-confirm-delete"
+                                onClick={handleDelete}
+                            >
+                                Xóa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
     );
-  }
-
-  return (
-    <div className="lesson-management">
-      <div className="lesson-header">
-        <div className="header-content">
-          <div className="header-title">
-            <BookOpen className="header-icon" />
-            <h1>Quản lý Bài học</h1>
-          </div>
-          <button
-            onClick={() => setShowForm(true)}
-            className="btn-primary"
-          >
-            <Plus className="btn-icon" />
-            Tạo bài học mới
-          </button>
-        </div>
-
-        <div className="search-filters">
-          <div className="search-bar">
-            <Search className="search-icon" />
-            <input
-              type="text"
-              placeholder="Tìm kiếm bài học..."
-              value={filters.search}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="search-input"
-            />
-          </div>
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={`btn-secondary ${showFilters ? 'active' : ''}`}
-          >
-            <Filter className="btn-icon" />
-            Bộ lọc
-          </button>
-        </div>
-
-        {showFilters && (
-          <LessonFilters
-            filters={filters}
-            courses={courses}
-            onFilterChange={handleFilterChange}
-            onClose={() => setShowFilters(false)}
-          />
-        )}
-      </div>
-
-      {error && (
-        <div className="error-message">
-          {error}
-        </div>
-      )}
-
-      <div className="lesson-stats">
-        <div className="stat-card">
-          <div className="stat-icon">
-            <BookOpen />
-          </div>
-          <div className="stat-content">
-            <div className="stat-number">{lessons.length}</div>
-            <div className="stat-label">Tổng bài học</div>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon">
-            <FileText />
-          </div>
-          <div className="stat-content">
-            <div className="stat-number">
-              {lessons.reduce((sum, lesson) => sum + lesson.resources_count, 0)}
-            </div>
-            <div className="stat-label">Tổng tài nguyên</div>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-icon">
-            <Play />
-          </div>
-          <div className="stat-content">
-            <div className="stat-number">
-              {lessons.filter(lesson => 
-                lesson.resources.some(resource => resource.type === 'video')
-              ).length}
-            </div>
-            <div className="stat-label">Bài có video</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="lesson-grid">
-        {lessons.length === 0 ? (
-          <div className="empty-state">
-            <BookOpen className="empty-icon" />
-            <h3>Chưa có bài học nào</h3>
-            <p>Hãy tạo bài học đầu tiên của bạn</p>
-            <button
-              onClick={() => setShowForm(true)}
-              className="btn-primary"
-            >
-              <Plus className="btn-icon" />
-              Tạo bài học
-            </button>
-          </div>
-        ) : (
-          lessons.map(lesson => (
-            <LessonCard
-              key={lesson.id}
-              lesson={lesson}
-              onEdit={handleEditLesson}
-              onDelete={handleDeleteLesson}
-              getResourceTypeIcon={getResourceTypeIcon}
-              getResourceTypeColor={getResourceTypeColor}
-            />
-          ))
-        )}
-      </div>
-
-      {showForm && (
-        <LessonForm
-          lesson={editingLesson}
-          courses={courses}
-          onSubmit={editingLesson ? handleUpdateLesson : handleCreateLesson}
-          onClose={handleCloseForm}
-        />
-      )}
-    </div>
-  );
 };
 
 export default LessonManagement;

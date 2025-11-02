@@ -95,10 +95,17 @@ const LessonService = {
   // Tạo lesson resource mới
   createLessonResource: async (resourceData) => {
     try {
-      const formData = new FormData();
-      for (const key in resourceData) {
-        if (resourceData[key] !== null && resourceData[key] !== undefined) {
-          formData.append(key, resourceData[key]);
+      // Kiểm tra xem resourceData đã là FormData chưa
+      let formData;
+      if (resourceData instanceof FormData) {
+        formData = resourceData;
+      } else {
+        // Nếu là object thì tạo FormData mới
+        formData = new FormData();
+        for (const key in resourceData) {
+          if (resourceData[key] !== null && resourceData[key] !== undefined) {
+            formData.append(key, resourceData[key]);
+          }
         }
       }
 
@@ -115,7 +122,23 @@ const LessonService = {
   // Cập nhật lesson resource
   updateLessonResource: async (id, resourceData) => {
     try {
-      const response = await api.put(`/api/lesson-resources/${id}/`, resourceData);
+      // Kiểm tra xem resourceData đã là FormData chưa
+      let formData;
+      if (resourceData instanceof FormData) {
+        formData = resourceData;
+      } else {
+        // Nếu là object thì tạo FormData mới
+        formData = new FormData();
+        for (const key in resourceData) {
+          if (resourceData[key] !== null && resourceData[key] !== undefined) {
+            formData.append(key, resourceData[key]);
+          }
+        }
+      }
+
+      const response = await api.put(`/api/lesson-resources/${id}/`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       return response.data;
     } catch (error) {
       throw error;
