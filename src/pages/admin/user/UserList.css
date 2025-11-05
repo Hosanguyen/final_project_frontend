@@ -1,0 +1,464 @@
+.user-list {
+    padding: 0;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+.user-list-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.user-list-header-left h1 {
+    margin: 0 0 4px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.user-list-subtitle {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.user-list-btn-create {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.user-list-btn-create:hover {
+    background: #5568d3;
+}
+
+/* ============================================================
+   CONTENT CARD
+   ============================================================ */
+.user-list-content-card {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.user-list-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* ============================================================
+   SEARCH BOX
+   ============================================================ */
+.user-list-search-box {
+    position: relative;
+    width: 400px;
+}
+
+.user-list-search-box input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.user-list-search-box input:focus {
+    border-color: #667eea;
+}
+
+.user-list-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+/* ============================================================
+   STATS
+   ============================================================ */
+.user-list-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.user-list-stat-item {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.user-list-stat-item strong {
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+.user-list-table-container {
+    overflow-x: auto;
+}
+
+.user-list-data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-list-data-table thead {
+    background: #f9fafb;
+}
+
+.user-list-data-table th {
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.user-list-data-table tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.15s;
+}
+
+.user-list-data-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.user-list-data-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.user-list-data-table td {
+    padding: 14px 20px;
+    font-size: 14px;
+    color: #1f2937;
+    vertical-align: middle;
+}
+
+.user-list-text-muted {
+    color: #9ca3af !important;
+    font-style: italic;
+}
+
+.user-list-no-data {
+    text-align: center !important;
+    padding: 48px 20px !important;
+    color: #9ca3af;
+    font-style: italic;
+    font-size: 14px;
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+.user-list-id-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 24px;
+    padding: 0 8px;
+    background: #f3f4f6;
+    color: #6b7280;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.user-list-username-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    background: #f0f9ff;
+    color: #0369a1;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.user-list-roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.user-list-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: #f0fdf4;
+    color: #15803d;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.user-list-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.user-list-status-active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.user-list-status-inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+.user-list-action-buttons {
+    display: inline-flex;
+    gap: 6px;
+    justify-content: center;
+}
+
+.user-list-btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    background: white;
+}
+
+.user-list-btn-edit {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.user-list-btn-edit:hover {
+    background: #3b82f6;
+    color: white;
+}
+
+.user-list-btn-delete {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.user-list-btn-delete:hover {
+    background: #ef4444;
+    color: white;
+}
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+.user-list-loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 16px;
+}
+
+.user-list-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f4f6;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: user-list-spin 0.8s linear infinite;
+}
+
+@keyframes user-list-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.user-list-loading-container p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.user-list-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: user-list-fadeIn 0.15s ease;
+}
+
+@keyframes user-list-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.user-list-modal-content {
+    background: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.user-list-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.user-list-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.user-list-modal-body {
+    padding: 24px;
+}
+
+.user-list-modal-body p {
+    margin: 0 0 16px 0;
+    color: #374151;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.user-list-warning-text {
+    color: #d97706;
+    font-size: 13px;
+    padding: 12px;
+    background: #fef3c7;
+    border-left: 3px solid #f59e0b;
+    border-radius: 4px;
+    margin: 0;
+}
+
+.user-list-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.user-list-btn-cancel,
+.user-list-btn-confirm-delete {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.user-list-btn-cancel {
+    background: white;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+.user-list-btn-cancel:hover {
+    background: #f9fafb;
+}
+
+.user-list-btn-confirm-delete {
+    background: #ef4444;
+    color: white;
+}
+
+.user-list-btn-confirm-delete:hover {
+    background: #dc2626;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+    .user-list-card-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .user-list-search-box {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .user-list-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .user-list-btn-create {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .user-list-data-table {
+        font-size: 13px;
+    }
+
+    .user-list-data-table th,
+    .user-list-data-table td {
+        padding: 10px 12px;
+    }
+}

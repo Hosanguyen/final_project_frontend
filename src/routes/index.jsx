@@ -26,6 +26,8 @@ import ProblemList from '../pages/admin/problem/ProblemList';
 import ContestManagement from '../pages/admin/contest/ContestManagement';
 import ContestForm from '../pages/admin/contest/ContestForm';
 import ContestDetail from '../pages/admin/contest/ContestDetail';
+import UserForm from '../pages/admin/user/UserForm';
+import UserList from '../pages/admin/user/UserList';
 
 const AppRoutes = () => {
     return (
@@ -124,6 +126,33 @@ const AppRoutes = () => {
                             </PrivateRoute>
                         }
                     />
+
+                    {/* Users */}
+                    <Route
+                        path="/admin/users"
+                        element={
+                            <PrivateRoute>
+                                <UserList />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/users/create"
+                        element={
+                            <PrivateRoute>
+                                <UserForm />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/users/edit/:id"
+                        element={
+                            <PrivateRoute>
+                                <UserForm />
+                            </PrivateRoute>
+                        }
+                    />
+
                     <Route
                         path="/admin/languages"
                         element={
