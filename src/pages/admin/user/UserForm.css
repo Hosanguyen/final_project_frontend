@@ -1,0 +1,308 @@
+.user-form {
+    padding: 0;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+.user-form-page-header {
+    margin-bottom: 24px;
+}
+
+.user-form-header-left h1 {
+    margin: 0 0 4px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.user-form-subtitle {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/* ============================================================
+   FORM CONTAINER
+   ============================================================ */
+.user-form-container {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 32px;
+}
+
+/* ============================================================
+   FORM SECTIONS
+   ============================================================ */
+.user-form-section {
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.user-form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.user-form-section-title {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+/* ============================================================
+   FORM GROUP & ROW
+   ============================================================ */
+.user-form-group {
+    margin-bottom: 20px;
+}
+
+.user-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.user-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+}
+
+.user-form-group input[type='text'],
+.user-form-group input[type='email'],
+.user-form-group input[type='password'],
+.user-form-group input[type='tel'],
+.user-form-group input[type='date'],
+.user-form-group select,
+.user-form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.user-form-group input[type='text']:focus,
+.user-form-group input[type='email']:focus,
+.user-form-group input[type='password']:focus,
+.user-form-group input[type='tel']:focus,
+.user-form-group input[type='date']:focus,
+.user-form-group select:focus,
+.user-form-group textarea:focus {
+    border-color: #667eea;
+}
+
+.user-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.user-form-group input:disabled {
+    background: #f9fafb;
+    cursor: not-allowed;
+}
+
+.user-form-required {
+    color: #ef4444;
+    margin-left: 4px;
+}
+
+.user-form-input-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.user-form-error {
+    border-color: #ef4444 !important;
+}
+
+.user-form-error-message {
+    display: block;
+    margin-top: 6px;
+    color: #ef4444;
+    font-size: 13px;
+}
+
+.user-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* ============================================================
+   CHECKBOX GROUP
+   ============================================================ */
+.user-form-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.user-form-checkbox-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.user-form-checkbox-item:hover {
+    background: #f3f4f6;
+    border-color: #667eea;
+}
+
+.user-form-checkbox-item input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.user-form-checkbox-item input[type='checkbox']:checked + span {
+    color: #667eea;
+    font-weight: 500;
+}
+
+.user-form-role-desc {
+    display: block;
+    margin-left: 30px;
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+/* ============================================================
+   FORM ACTIONS
+   ============================================================ */
+.user-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.user-form-btn-cancel,
+.user-form-btn-submit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.user-form-btn-cancel {
+    background: white;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+.user-form-btn-cancel:hover {
+    background: #f9fafb;
+}
+
+.user-form-btn-submit {
+    background: #667eea;
+    color: white;
+}
+
+.user-form-btn-submit:hover:not(:disabled) {
+    background: #5568d3;
+}
+
+.user-form-btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.user-form-btn-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff40;
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: user-form-spin 0.6s linear infinite;
+}
+
+@keyframes user-form-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+.user-form-loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 16px;
+}
+
+.user-form-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f4f6;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: user-form-spin 0.8s linear infinite;
+}
+
+.user-form-loading-container p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .user-form-container {
+        padding: 20px;
+    }
+
+    .user-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .user-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .user-form-btn-cancel,
+    .user-form-btn-submit {
+        width: 100%;
+        justify-content: center;
+    }
+}
