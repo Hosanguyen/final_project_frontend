@@ -1,0 +1,358 @@
+.lesson-form-page {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.lesson-form-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.lesson-form-page-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lesson-form-page-header-icon {
+    font-size: 28px;
+    color: #2563eb;
+}
+
+.lesson-form-page-header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.lesson-form-page-btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+    transition: all 0.2s;
+}
+
+.lesson-form-page-btn-back:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.lesson-form-page-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.lesson-form-page-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.lesson-form-page-card h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 20px 0;
+}
+
+.lesson-form-page-form-group {
+    margin-bottom: 20px;
+}
+
+.lesson-form-page-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.lesson-form-page-form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+.lesson-form-page-required {
+    color: #ef4444;
+}
+
+.lesson-form-page-form-group input[type="text"],
+.lesson-form-page-form-group input[type="url"],
+.lesson-form-page-form-group input[type="number"],
+.lesson-form-page-form-group select,
+.lesson-form-page-form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1e293b;
+    transition: all 0.2s;
+}
+
+.lesson-form-page-form-group input:focus,
+.lesson-form-page-form-group select:focus,
+.lesson-form-page-form-group textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.lesson-form-page-form-group input.error,
+.lesson-form-page-form-group select.error,
+.lesson-form-page-form-group textarea.error {
+    border-color: #ef4444;
+}
+
+.lesson-form-page-error-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #ef4444;
+    margin-top: 6px;
+}
+
+/* Resources Section */
+.lesson-form-page-resources-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.lesson-form-page-btn-add-resource {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.lesson-form-page-btn-add-resource:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.lesson-form-page-empty-resources {
+    text-align: center;
+    padding: 48px 20px;
+    color: #64748b;
+}
+
+.lesson-form-page-empty-resources .empty-icon {
+    font-size: 48px;
+    color: #cbd5e1;
+    margin-bottom: 16px;
+}
+
+.lesson-form-page-empty-resources p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* Resource Items */
+.lesson-form-page-resources-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.lesson-form-page-resource-item {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    background: #f8fafc;
+}
+
+.lesson-form-page-resource-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.resource-type-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 18px;
+    color: #2563eb;
+}
+
+.resource-type-select {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    background: white;
+}
+
+.lesson-form-page-btn-remove-resource {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    color: #ef4444;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.lesson-form-page-btn-remove-resource:hover {
+    background: #fef2f2;
+    border-color: #ef4444;
+}
+
+.lesson-form-page-resource-body {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+/* File Upload */
+.lesson-form-page-file-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lesson-form-page-file-upload input[type="file"] {
+    padding: 8px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.lesson-form-page-file-upload .file-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #475569;
+}
+
+/* Form Actions */
+.lesson-form-page-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 24px;
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    position: sticky;
+    bottom: 0;
+    border-radius: 0 0 12px 12px;
+}
+
+.lesson-form-page-btn-cancel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+    transition: all 0.2s;
+}
+
+.lesson-form-page-btn-cancel:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.lesson-form-page-btn-submit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.lesson-form-page-btn-submit:hover:not(:disabled) {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.lesson-form-page-btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .lesson-form-page {
+        padding: 16px;
+    }
+
+    .lesson-form-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .lesson-form-page-card {
+        padding: 16px;
+    }
+
+    .lesson-form-page-resource-header {
+        flex-wrap: wrap;
+    }
+
+    .lesson-form-page-actions {
+        flex-direction: column;
+    }
+
+    .lesson-form-page-btn-cancel,
+    .lesson-form-page-btn-submit {
+        width: 100%;
+        justify-content: center;
+    }
+}

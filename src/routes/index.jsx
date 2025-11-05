@@ -17,7 +17,12 @@ import RoleList from '../pages/admin/role/RoleList';
 import LanguageManager from '../pages/admin/language/LanguageManagement';
 import TagManager from '../pages/admin/tag/TagManagement';
 import CourseManagement from '../pages/admin/course/CourseManagement';
+import CourseFormPage from '../pages/admin/course/CourseFormPage';
+import CourseDetailPage from '../pages/admin/course/CourseDetailPage';
+import CourseLessonLinker from '../pages/admin/course/CourseLessonLinker';
 import LessonManagement from '../pages/admin/lesson/LessonManagement';
+import LessonFormPage from '../pages/admin/lesson/LessonFormPage';
+import LessonDetailPage from '../pages/admin/lesson/LessonDetailPage';
 import AdminDashboard from '../pages/admin/dashboard/AdminDashboard';
 import Courses from '../pages/courses/Courses';
 import ProblemForm from '../pages/admin/problem/ProblemForm';
@@ -26,6 +31,7 @@ import ProblemList from '../pages/admin/problem/ProblemList';
 import ContestManagement from '../pages/admin/contest/ContestManagement';
 import ContestForm from '../pages/admin/contest/ContestForm';
 import ContestDetail from '../pages/admin/contest/ContestDetail';
+import Practice from '../pages/practice/Practice';
 import UserForm from '../pages/admin/user/UserForm';
 import UserList from '../pages/admin/user/UserList';
 
@@ -41,6 +47,7 @@ const AppRoutes = () => {
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<Home />} />
                     <Route path="/courses" element={<Courses />} />
+                    <Route path="/practice" element={<Practice />} />
                     <Route
                         path="/profile"
                         element={
@@ -178,10 +185,82 @@ const AppRoutes = () => {
                         }
                     />
                     <Route
+                        path="/admin/courses/create"
+                        element={
+                            <PrivateRoute>
+                                <CourseFormPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/courses/edit/:id"
+                        element={
+                            <PrivateRoute>
+                                <CourseFormPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/courses/:id"
+                        element={
+                            <PrivateRoute>
+                                <CourseDetailPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/courses/:courseId/add-lessons"
+                        element={
+                            <PrivateRoute>
+                                <CourseLessonLinker />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
                         path="/admin/lessons"
                         element={
                             <PrivateRoute>
                                 <LessonManagement />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/courses/:courseId/lessons/create"
+                        element={
+                            <PrivateRoute>
+                                <LessonFormPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/courses/:courseId/lessons/edit/:id"
+                        element={
+                            <PrivateRoute>
+                                <LessonFormPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/lessons/:id"
+                        element={
+                            <PrivateRoute>
+                                <LessonDetailPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/lessons/create"
+                        element={
+                            <PrivateRoute>
+                                <LessonFormPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/lessons/edit/:id"
+                        element={
+                            <PrivateRoute>
+                                <LessonFormPage />
                             </PrivateRoute>
                         }
                     />
