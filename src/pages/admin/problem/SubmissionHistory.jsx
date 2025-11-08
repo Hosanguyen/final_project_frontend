@@ -13,11 +13,27 @@ const SubmissionHistory = ({ problemId }) => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [viewingSubmission, setViewingSubmission] = useState(null);
+    const [allCompleted, setAllCompleted] = useState(false);
 
     useEffect(() => {
         loadSubmissions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [problemId, page]);
+
+    // Auto-sync every 10 seconds if there are pending/judging submissions
+    useEffect(() => {
+        if (allCompleted) {
+            console.log('All submissions completed, stopping auto-sync');
+            return;
+        }
+
+        const interval = setInterval(() => {
+            console.log('Auto-syncing submissions...');
+            loadSubmissions(true);
+        }, 5000); // 5 seconds
+
+        return () => clearInterval(interval);
+    }, [allCompleted, problemId, page]);
 
     const loadSubmissions = async (sync = false) => {
         if (sync) {
@@ -35,6 +51,11 @@ const SubmissionHistory = ({ problemId }) => {
 
             setSubmissions(data.results);
             setTotalPages(data.total_pages);
+            
+            // Cập nhật trạng thái all_completed để dừng auto-sync
+            if (data.all_completed !== undefined) {
+                setAllCompleted(data.all_completed);
+            }
         } catch (error) {
             console.error('Failed to load submissions:', error);
         } finally {
@@ -90,8 +111,8 @@ const SubmissionHistory = ({ problemId }) => {
 
     const getStatusBadge = (status) => {
         const statusMap = {
-            pending: { class: 'status-pending', icon: <FaClock />, label: 'Pending' },
-            judging: { class: 'status-judging', icon: <FaClock />, label: 'Judging' },
+            pending: { class: 'status-pending', icon: <FaSync className="spinning" />, label: 'Đang chờ...' },
+            judging: { class: 'status-judging', icon: <FaSync className="spinning" />, label: 'Đang chấm...' },
             ac: { class: 'status-accepted', icon: <FaCheckCircle />, label: 'Accepted' },
             wa: { class: 'status-wrong', icon: <FaTimesCircle />, label: 'Wrong Answer' },
             tle: { class: 'status-tle', icon: <FaTimesCircle />, label: 'Time Limit' },
@@ -142,14 +163,12 @@ const SubmissionHistory = ({ problemId }) => {
                 <h3>
                     <FaList /> Lịch sử nộp bài
                 </h3>
-                <button
-                    className="submission-history-sync-btn"
-                    onClick={handleSync}
-                    disabled={syncing}
-                >
-                    <FaSync className={syncing ? 'spinning' : ''} />
-                    {syncing ? 'Đang đồng bộ...' : 'Đồng bộ kết quả'}
-                </button>
+                {!allCompleted && (
+                    <span className="auto-sync-indicator">
+                        <FaSync className="spinning" />
+                        Đang cập nhật tự động...
+                    </span>
+                )}
             </div>
 
             {submissions.length === 0 ? (

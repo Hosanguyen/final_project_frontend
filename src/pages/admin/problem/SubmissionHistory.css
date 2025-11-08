@@ -25,6 +25,36 @@
     margin: 0;
 }
 
+.submission-history-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.auto-sync-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #eff6ff;
+    color: #1e40af;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.all-completed-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: #d1fae5;
+    color: #065f46;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
 .submission-history-sync-btn {
     padding: 10px 20px;
     background: #3b82f6;
@@ -49,6 +79,10 @@
 }
 
 .submission-history-sync-btn .spinning {
+    animation: spin 1s linear infinite;
+}
+
+.auto-sync-indicator .spinning {
     animation: spin 1s linear infinite;
 }
 
@@ -163,8 +197,13 @@
 }
 
 .status-judging {
-    background: #fef3c7;
-    color: #d97706;
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-pending .spinning,
+.status-judging .spinning {
+    animation: spin 1s linear infinite;
 }
 
 .status-accepted {
