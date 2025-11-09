@@ -191,41 +191,52 @@
     margin-bottom: 20px;
 }
 
-/* Resource Cards */
+/* Resource List */
 .lesson-detail-resources-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.lesson-detail-resource-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 16px;
-    background: #f8fafc;
-    transition: all 0.2s;
-}
-
-.lesson-detail-resource-card:hover {
-    border-color: #cbd5e1;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.resource-card-header {
+.lesson-detail-resource-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    gap: 16px;
+    padding: 16px 20px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    transition: all 0.2s;
 }
 
-.resource-type {
+.lesson-detail-resource-item:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    background: #fafbfc;
+}
+
+.resource-item-left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+}
+
+.resource-type-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: #f8fafc;
+    border-radius: 8px;
+    flex-shrink: 0;
 }
 
 .resource-icon {
-    font-size: 20px;
+    font-size: 24px;
 }
 
 .resource-icon.video { color: #dc2626; }
@@ -234,18 +245,134 @@
 .resource-icon.link { color: #059669; }
 .resource-icon.text { color: #7c3aed; }
 
-.resource-type-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #475569;
+.resource-item-info {
+    flex: 1;
+    min-width: 0;
 }
 
-.lesson-detail-btn-delete-resource {
+.resource-item-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.resource-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.resource-type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.resource-item-details {
+    margin-bottom: 6px;
+}
+
+.resource-preview {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.5;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.resource-link-url {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #2563eb;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.resource-link-url:hover {
+    text-decoration: underline;
+}
+
+.resource-file-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.resource-file-info svg {
+    color: #94a3b8;
+}
+
+.resource-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.resource-sequence-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.resource-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.lessons-detail.btn-view {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: #2563eb;
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.lessons-detail.btn-view:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.btn-delete-resource {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
@@ -254,95 +381,11 @@
     transition: all 0.2s;
 }
 
-.lesson-detail-btn-delete-resource:hover {
+.btn-delete-resource:hover {
     background: #fef2f2;
     border-color: #ef4444;
 }
 
-.resource-card-body {
-    background: white;
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 12px;
-}
-
-.resource-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 0 0 12px 0;
-}
-
-.resource-content p {
-    font-size: 14px;
-    color: #475569;
-    line-height: 1.6;
-    margin: 0;
-}
-
-.resource-link a {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    color: #2563eb;
-    text-decoration: none;
-    word-break: break-all;
-}
-
-.resource-link a:hover {
-    text-decoration: underline;
-}
-
-.resource-file {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-}
-
-.file-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: #475569;
-    overflow: hidden;
-}
-
-.file-info span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.btn-download {
-    padding: 6px 12px;
-    background: #2563eb;
-    color: white;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: all 0.2s;
-}
-
-.btn-download:hover {
-    background: #1d4ed8;
-}
-
-.resource-card-footer {
-    display: flex;
-    justify-content: flex-end;
-    padding-top: 8px;
-    border-top: 1px solid #e2e8f0;
-}
-
-.resource-sequence {
-    font-size: 13px;
-    color: #64748b;
-}
 
 /* Modal */
 .lesson-detail-modal-overlay {
@@ -463,8 +506,19 @@
         grid-template-columns: 1fr;
     }
 
-    .lesson-detail-resources-list {
-        grid-template-columns: 1fr;
+    .lesson-detail-resource-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .resource-item-left {
+        width: 100%;
+    }
+
+    .resource-item-actions {
+        width: 100%;
+        justify-content: flex-end;
     }
 
     .lesson-detail-modal-content {

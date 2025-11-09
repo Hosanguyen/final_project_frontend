@@ -43,25 +43,25 @@
   margin-bottom: 1rem;
 }
 
-.search-bar {
+.course-search-bar {
   position: relative;
   flex: 1;
   max-width: 500px;
 }
 
-.search-icon {
+.course-search-icon {
   position: absolute;
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1rem;
+  height: 1rem;
   color: #6b7280;
 }
 
-.search-input {
+.course-search-input {
   width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
+  padding: 0.8rem 0.8rem 0.8rem 3rem;
   border: 2px solid #e5e7eb;
   border-radius: 0.75rem;
   font-size: 1rem;
@@ -104,9 +104,9 @@
   border-color: #3b82f6;
 }
 
-.btn-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+.course-btn-icon {
+  width: 0.8rem;
+  height: 0.8rem;
 }
 
 .error-message {
@@ -126,9 +126,9 @@
   margin-bottom: 3rem;
 }
 
-.stat-item {
+.course-stat-item {
   background: white;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -137,32 +137,32 @@
   transition: transform 0.2s;
 }
 
-.stat-item:hover {
+.course-stat-item:hover {
   transform: translateY(-2px);
 }
 
-.stat-icon {
-  width: 3rem;
-  height: 3rem;
+.course-stat-icon {
+  width: 1rem;
+  height: 1rem;
   color: #3b82f6;
   background: #eff6ff;
   border-radius: 0.75rem;
   padding: 0.75rem;
 }
 
-.stat-content {
+.course-stat-content {
   flex: 1;
 }
 
-.stat-number {
-  font-size: 2.5rem;
-  font-weight: 700;
+.course-stat-number {
+  font-size: 1.5rem;
+  font-weight: 600;
   color: #1f2937;
   line-height: 1;
 }
 
-.stat-label {
-  font-size: 1rem;
+.course-stat-label {
+  font-size: 0.8rem;
   color: #6b7280;
   margin-top: 0.25rem;
   font-weight: 500;
@@ -225,7 +225,7 @@
     gap: 1rem;
   }
   
-  .search-bar {
+  .course-search-bar {
     max-width: none;
   }
   

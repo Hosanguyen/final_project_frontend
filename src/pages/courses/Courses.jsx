@@ -105,21 +105,21 @@ const Courses = () => {
       <div className="courses-container">
         <div className="courses-header">
           <div className="search-filters">
-            <div className="search-bar">
-              <Search className="search-icon" />
+            <div className="course-search-bar">
+              <Search className="course-search-icon" />
               <input
                 type="text"
                 placeholder="Tìm kiếm khóa học..."
                 value={filters.search}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="search-input"
+                className="course-search-input"
               />
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`btn-secondary ${showFilters ? 'active' : ''}`}
             >
-              <Filter className="btn-icon" />
+              <Filter className="course-btn-icon" />
               Bộ lọc
             </button>
           </div>
@@ -140,34 +140,6 @@ const Courses = () => {
             {error}
           </div>
         )}
-
-        <div className="courses-stats">
-          <div className="stat-item">
-            <BookOpen className="stat-icon" />
-            <div className="stat-content">
-              <div className="stat-number">{courses.length}</div>
-              <div className="stat-label">Khóa học</div>
-            </div>
-          </div>
-          <div className="stat-item">
-            <Users className="stat-icon" />
-            <div className="stat-content">
-              <div className="stat-number">
-                {courses.reduce((sum, c) => sum + c.enrollments_count, 0)}
-              </div>
-              <div className="stat-label">Học viên</div>
-            </div>
-          </div>
-          <div className="stat-item">
-            <Play className="stat-icon" />
-            <div className="stat-content">
-              <div className="stat-number">
-                {courses.reduce((sum, c) => sum + c.lessons_count, 0)}
-              </div>
-              <div className="stat-label">Bài học</div>
-            </div>
-          </div>
-        </div>
 
         <div className="courses-grid">
           {courses.length === 0 ? (

@@ -105,6 +105,28 @@ const CourseService = {
     } catch (error) {
       throw error;
     }
+  },
+
+  // Lấy course theo slug
+  getCourseBySlug: async (slug) => {
+    try {
+      const response = await api.get(`/api/courses/slug/${slug}/`);
+      return { data: response.data };
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Lấy lessons của một course
+  getLessonsByCourse: async (courseId) => {
+    try {
+      const response = await api.get('/api/lessons/', { params: { course: courseId } });
+      // Backend trả về array trực tiếp, không có pagination
+      return { data: response.data || [] };
+    } catch (error) {
+      console.error('Error fetching lessons:', error);
+      throw error;
+    }
   }
   
 };

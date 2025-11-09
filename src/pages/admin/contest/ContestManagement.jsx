@@ -179,10 +179,6 @@ const ContestManagement = () => {
                 <div className="contest-empty">
                     <FaTrophy size={64} />
                     <h3>Không tìm thấy contest</h3>
-                    <p>Tạo contest đầu tiên để bắt đầu!</p>
-                    <button className="contest-btn-create" onClick={handleCreate}>
-                        <FaPlus /> Tạo Contest
-                    </button>
                 </div>
             ) : (
                 <div className="contest-table-container">

@@ -16,6 +16,7 @@ const LessonDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedResource, setSelectedResource] = useState(null);
+    const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
     useEffect(() => {
         loadLessonData();
@@ -176,78 +177,76 @@ const LessonDetailPage = () => {
                     <div className="lesson-detail-empty">
                         <FaFileAlt className="empty-icon" />
                         <p>Chưa có tài nguyên nào</p>
-                        <button 
-                            className="lesson-detail-btn-add-resource"
-                            onClick={() => {
-                                if (lesson.course) {
-                                    navigate(`/admin/courses/${lesson.course}/lessons/edit/${id}`);
-                                } else {
-                                    navigate(`/admin/lessons/edit/${id}`);
-                                }
-                            }}
-                        >
-                            <FaPlus /> Thêm tài nguyên đầu tiên
-                        </button>
                     </div>
                 ) : (
                     <div className="lesson-detail-resources-list">
                         {resources.map((resource) => (
-                            <div key={resource.id} className="lesson-detail-resource-card">
-                                <div className="resource-card-header">
-                                    <div className="resource-type">
+                            <div key={resource.id} className="lesson-detail-resource-item">
+                                <div className="resource-item-left">
+                                    <div className="resource-type-icon">
                                         {getResourceIcon(resource.type)}
-                                        <span className="resource-type-label">
-                                            {getResourceTypeLabel(resource.type)}
-                                        </span>
                                     </div>
+                                    <div className="resource-item-info">
+                                        <div className="resource-item-header">
+                                            <h3 className="resource-title">{resource.title || 'Không có tiêu đề'}</h3>
+                                            <span className="resource-type-badge">
+                                                {getResourceTypeLabel(resource.type)}
+                                            </span>
+                                        </div>
+                                        
+                                        <div className="resource-item-details">
+                                            {resource.type === 'text' && resource.content && (
+                                                <p className="resource-preview">
+                                                    {resource.content.substring(0, 100)}
+                                                    {resource.content.length > 100 && '...'}
+                                                </p>
+                                            )}
+                                            
+                                            {resource.type === 'link' && resource.url && (
+                                                <a 
+                                                    href={resource.url} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className="resource-link-url"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <FaLink /> {resource.url}
+                                                </a>
+                                            )}
+                                            
+                                            {(resource.type === 'file' || resource.type === 'pdf' || resource.type === 'video') && resource.file_url && (
+                                                <div className="resource-file-info">
+                                                    <FaFileAlt />
+                                                    <span>{resource.filename || 'File đã tải lên'}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        
+                                        <div className="resource-item-meta">
+                                            <span className="resource-sequence-badge">Thứ tự: {resource.sequence}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="resource-item-actions">
+                                    {(resource.type === 'file' || resource.type === 'pdf' || resource.type === 'video') && resource.file_url && (
+                                        <a 
+                                            href={`${API_BASE_URL}/api/media-proxy/?path=${resource.file_url}`} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="lessons-detail btn-view"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            Xem
+                                        </a>
+                                    )}
                                     <button
-                                        className="lesson-detail-btn-delete-resource"
+                                        className="btn-delete-resource"
                                         onClick={() => openDeleteModal(resource)}
                                         title="Xóa tài nguyên"
                                     >
                                         <FaTrash />
                                     </button>
-                                </div>
-
-                                <div className="resource-card-body">
-                                    {resource.title && (
-                                        <h3 className="resource-title">{resource.title}</h3>
-                                    )}
-
-                                    {resource.type === 'text' && resource.content && (
-                                        <div className="resource-content">
-                                            <p>{resource.content}</p>
-                                        </div>
-                                    )}
-
-                                    {resource.type === 'link' && resource.url && (
-                                        <div className="resource-link">
-                                            <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                                                {resource.url}
-                                            </a>
-                                        </div>
-                                    )}
-
-                                    {(resource.type === 'file' || resource.type === 'pdf' || resource.type === 'video') && resource.file_url && (
-                                        <div className="resource-file">
-                                            <div className="file-info">
-                                                <FaFileAlt />
-                                                <span>{resource.filename || 'File đã tải lên'}</span>
-                                            </div>
-                                            <a 
-                                                href={resource.file_url} 
-                                                target="_blank" 
-                                                rel="noopener noreferrer"
-                                                className="btn-download"
-                                            >
-                                                Tải xuống
-                                            </a>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="resource-card-footer">
-                                    <span className="resource-sequence">Thứ tự: {resource.sequence}</span>
                                 </div>
                             </div>
                         ))}
