@@ -188,7 +188,7 @@
     flex: 1;
     background: white;
     overflow-y: auto;
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - 100px);
 }
 
 .no-resource-selected {
