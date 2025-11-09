@@ -354,13 +354,6 @@ const LessonFormPage = () => {
                         <div className="lesson-form-page-empty-resources">
                             <FaFileUpload className="empty-icon" />
                             <p>Chưa có tài nguyên nào</p>
-                            <button 
-                                type="button"
-                                className="lesson-form-page-btn-add-resource"
-                                onClick={addResource}
-                            >
-                                <FaPlus /> Thêm tài nguyên đầu tiên
-                            </button>
                         </div>
                     ) : (
                         <div className="lesson-form-page-resources-list">
