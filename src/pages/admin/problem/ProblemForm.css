@@ -392,3 +392,155 @@
         justify-content: center;
     }
 }
+
+/* ============================================================
+   TEST CASE MODE SELECTOR
+   ============================================================ */
+.problem-form-testcase-mode-selector {
+    display: flex;
+    gap: 8px;
+}
+
+.problem-form-mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: white;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.problem-form-mode-btn:hover {
+    background: #f9fafb;
+    border-color: #667eea;
+}
+
+.problem-form-mode-btn.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+/* ============================================================
+   ZIP UPLOAD SECTION
+   ============================================================ */
+.problem-form-zip-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.problem-form-zip-upload-info {
+    background: #f0f9ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 16px 20px;
+}
+
+.problem-form-zip-upload-info h4 {
+    margin: 0 0 12px 0;
+    color: #1e40af;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.problem-form-zip-upload-info ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #1e3a8a;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.problem-form-zip-upload-info li {
+    margin-bottom: 8px;
+}
+
+.problem-form-zip-upload-info code {
+    background: #dbeafe;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #0c4a6e;
+}
+
+/* ZIP Upload Box */
+.problem-form-zip-upload-box {
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 48px 32px;
+    text-align: center;
+    background: #fafafa;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.problem-form-zip-upload-box:hover {
+    border-color: #667eea;
+    background: #f9fafb;
+}
+
+.problem-form-zip-upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.problem-form-zip-upload-label p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.problem-form-zip-file-size {
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+/* ZIP Options */
+.problem-form-zip-options {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.problem-form-zip-options h4 {
+    margin: 0 0 16px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.problem-form-zip-options .problem-form-checkbox-item {
+    margin-bottom: 12px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .problem-form-testcase-mode-selector {
+        flex-direction: column;
+    }
+
+    .problem-form-mode-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .problem-form-zip-upload-box {
+        padding: 32px 20px;
+    }
+}

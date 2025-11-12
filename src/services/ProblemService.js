@@ -45,7 +45,16 @@ const ProblemService = {
      */
     create: async (data) => {
         try {
-            const response = await api.post('/api/problems/', data);
+            const config = {};
+
+            // Nếu data là FormData (có file ZIP), set Content-Type
+            if (data instanceof FormData) {
+                config.headers = {
+                    'Content-Type': 'multipart/form-data',
+                };
+            }
+
+            const response = await api.post('/api/problems/', data, config);
             return response.data;
         } catch (error) {
             console.error('Error creating problem:', error);
@@ -59,7 +68,16 @@ const ProblemService = {
      */
     update: async (id, data) => {
         try {
-            const response = await api.put(`/api/problems/${id}/`, data);
+            const config = {};
+
+            // Nếu data là FormData (có file ZIP), set Content-Type
+            if (data instanceof FormData) {
+                config.headers = {
+                    'Content-Type': 'multipart/form-data',
+                };
+            }
+
+            const response = await api.put(`/api/problems/${id}/`, data, config);
             return response.data;
         } catch (error) {
             console.error(`Error updating problem ${id}:`, error);
