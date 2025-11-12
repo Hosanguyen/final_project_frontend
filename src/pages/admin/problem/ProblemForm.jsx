@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaSave, FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
+import { FaSave, FaTimes, FaPlus, FaTrash, FaFileArchive } from 'react-icons/fa';
 import ProblemService from '../../../services/ProblemService';
 import CourseService from '../../../services/CourseService';
 import CKEditorComponent from '../../../components/CKEditor';
@@ -37,6 +37,15 @@ const ProblemForm = () => {
             points: 10.0,
         },
     ]);
+
+    // ============ ZIP MODE STATE ============
+    const [testCaseMode, setTestCaseMode] = useState('manual'); // 'manual' | 'zip'
+    const [zipFile, setZipFile] = useState(null);
+    const [zipUploadOptions, setZipUploadOptions] = useState({
+        auto_detect_type: true,
+        default_type: 'secret',
+        default_points: 10.0,
+    });
 
     const [tags, setTags] = useState([]);
     const [languages, setLanguages] = useState([]);
@@ -128,12 +137,40 @@ const ProblemForm = () => {
             newErrors.statement_text = 'Đề bài là bắt buộc';
         }
 
-        if (testCases.length === 0) {
-            newErrors.test_cases = 'Phải có ít nhất 1 test case';
+        // Validate test cases dựa trên mode
+        if (testCaseMode === 'manual') {
+            if (testCases.length === 0) {
+                newErrors.test_cases = 'Phải có ít nhất 1 test case';
+            }
+        } else if (testCaseMode === 'zip') {
+            if (!zipFile) {
+                newErrors.test_cases_zip = 'Phải chọn file ZIP chứa test cases';
+            }
         }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
+    };
+
+    const handleZipFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (!file.name.endsWith('.zip')) {
+                alert('Chỉ chấp nhận file .zip');
+                e.target.value = '';
+                return;
+            }
+            if (file.size > 50 * 1024 * 1024) {
+                alert('File ZIP quá lớn (tối đa 50MB)');
+                e.target.value = '';
+                return;
+            }
+            setZipFile(file);
+            // Clear error nếu có
+            if (errors.test_cases_zip) {
+                setErrors((prev) => ({ ...prev, test_cases_zip: '' }));
+            }
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -145,26 +182,69 @@ const ProblemForm = () => {
 
         setLoading(true);
 
-        const submitData = {
-            ...formData,
-            test_cases: testCases.map((tc) => ({
-                type: tc.type,
-                sequence: tc.sequence,
-                input_data: tc.input_data,
-                output_data: tc.output_data,
-                points: parseFloat(tc.points),
-            })),
-        };
+        // ============ TẠO FormData (hỗ trợ cả JSON và multipart) ============
+        const submitFormData = new FormData();
+
+        // Basic fields
+        submitFormData.append('slug', formData.slug);
+        submitFormData.append('title', formData.title);
+        submitFormData.append('statement_text', formData.statement_text);
+        submitFormData.append('difficulty', formData.difficulty);
+        submitFormData.append('time_limit_ms', formData.time_limit_ms);
+        submitFormData.append('memory_limit_kb', formData.memory_limit_kb);
+        submitFormData.append('is_public', formData.is_public);
+
+        // Optional fields
+        if (formData.short_statement) submitFormData.append('short_statement', formData.short_statement);
+        if (formData.input_format) submitFormData.append('input_format', formData.input_format);
+        if (formData.output_format) submitFormData.append('output_format', formData.output_format);
+        if (formData.source) submitFormData.append('source', formData.source);
+        if (formData.editorial_text) submitFormData.append('editorial_text', formData.editorial_text);
+
+        // Tags & Languages (gửi dưới dạng JSON array)
+        if (formData.tag_ids && formData.tag_ids.length > 0) {
+            formData.tag_ids.forEach((tagId) => {
+                submitFormData.append('tag_ids', tagId);
+            });
+        }
+        if (formData.language_ids && formData.language_ids.length > 0) {
+            formData.language_ids.forEach((langId) => {
+                submitFormData.append('language_ids', langId);
+            });
+        }
+
+        // ============ TEST CASES - 2 MODES ============
+        if (testCaseMode === 'manual') {
+            // Manual mode: gửi test_cases array dưới dạng JSON string
+            submitFormData.append(
+                'test_cases',
+                JSON.stringify(
+                    testCases.map((tc) => ({
+                        type: tc.type,
+                        sequence: tc.sequence,
+                        input_data: tc.input_data,
+                        output_data: tc.output_data,
+                        points: parseFloat(tc.points),
+                    })),
+                ),
+            );
+        } else if (testCaseMode === 'zip' && zipFile) {
+            // ZIP mode: gửi file ZIP + options
+            submitFormData.append('test_cases_zip', zipFile);
+            submitFormData.append('zip_auto_detect_type', zipUploadOptions.auto_detect_type);
+            submitFormData.append('zip_default_type', zipUploadOptions.default_type);
+            submitFormData.append('zip_default_points', zipUploadOptions.default_points);
+        }
 
         try {
             let response;
             if (isEditMode) {
-                response = await ProblemService.update(id, submitData);
+                response = await ProblemService.update(id, submitFormData);
             } else {
-                response = await ProblemService.create(submitData);
+                response = await ProblemService.create(submitFormData);
             }
 
-            alert(response.detail);
+            alert(response.detail || 'Lưu bài toán thành công');
             if (response.sync_message) {
                 console.log('Sync status:', response.sync_status, response.sync_message);
             }
@@ -438,81 +518,225 @@ const ProblemForm = () => {
                         </div>
                     </div>
 
-                    {/* Test Cases */}
+                    {/* ============================================================
+                        TEST CASES - 2 MODES (MANUAL | ZIP)
+                        ============================================================ */}
                     <div className="problem-form-section">
                         <div className="problem-form-section-header">
                             <h3 className="problem-form-section-title">Test Cases</h3>
-                            <button type="button" className="problem-form-btn-add-testcase" onClick={addTestCase}>
-                                <FaPlus /> Thêm test case
-                            </button>
+                            <div className="problem-form-testcase-mode-selector">
+                                <button
+                                    type="button"
+                                    className={`problem-form-mode-btn ${testCaseMode === 'manual' ? 'active' : ''}`}
+                                    onClick={() => setTestCaseMode('manual')}
+                                >
+                                    <FaPlus /> Nhập thủ công
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`problem-form-mode-btn ${testCaseMode === 'zip' ? 'active' : ''}`}
+                                    onClick={() => setTestCaseMode('zip')}
+                                >
+                                    <FaFileArchive /> Upload ZIP
+                                </button>
+                            </div>
                         </div>
 
-                        {errors.test_cases && <span className="problem-form-error-message">{errors.test_cases}</span>}
+                        {/* MANUAL MODE */}
+                        {testCaseMode === 'manual' ? (
+                            <>
+                                <button type="button" className="problem-form-btn-add-testcase" onClick={addTestCase}>
+                                    <FaPlus /> Thêm test case
+                                </button>
 
-                        <div className="problem-form-testcases-list">
-                            {testCases.map((tc, index) => (
-                                <div key={index} className="problem-form-testcase-item">
-                                    <div className="problem-form-testcase-header">
-                                        <span className="problem-form-testcase-number">Test Case #{index + 1}</span>
-                                        <button
-                                            type="button"
-                                            className="problem-form-btn-remove-testcase"
-                                            onClick={() => removeTestCase(index)}
-                                        >
-                                            <FaTrash />
-                                        </button>
-                                    </div>
+                                {errors.test_cases && (
+                                    <span className="problem-form-error-message">{errors.test_cases}</span>
+                                )}
 
-                                    <div className="problem-form-testcase-body">
-                                        <div className="problem-form-row">
-                                            <div className="problem-form-group">
-                                                <label>Loại</label>
-                                                <select
-                                                    value={tc.type}
-                                                    onChange={(e) => updateTestCase(index, 'type', e.target.value)}
+                                <div className="problem-form-testcases-list">
+                                    {testCases.map((tc, index) => (
+                                        <div key={index} className="problem-form-testcase-item">
+                                            <div className="problem-form-testcase-header">
+                                                <span className="problem-form-testcase-number">
+                                                    Test Case #{index + 1}
+                                                </span>
+                                                <button
+                                                    type="button"
+                                                    className="problem-form-btn-remove-testcase"
+                                                    onClick={() => removeTestCase(index)}
                                                 >
-                                                    <option value="sample">Sample (Công khai)</option>
-                                                    <option value="secret">Secret (Ẩn)</option>
-                                                </select>
+                                                    <FaTrash />
+                                                </button>
                                             </div>
 
-                                            <div className="problem-form-group">
-                                                <label>Điểm</label>
-                                                <input
-                                                    type="number"
-                                                    value={tc.points}
-                                                    onChange={(e) => updateTestCase(index, 'points', e.target.value)}
-                                                    min="0"
-                                                    step="0.1"
-                                                />
+                                            <div className="problem-form-testcase-body">
+                                                <div className="problem-form-row">
+                                                    <div className="problem-form-group">
+                                                        <label>Loại</label>
+                                                        <select
+                                                            value={tc.type}
+                                                            onChange={(e) =>
+                                                                updateTestCase(index, 'type', e.target.value)
+                                                            }
+                                                        >
+                                                            <option value="sample">Sample (Công khai)</option>
+                                                            <option value="secret">Secret (Ẩn)</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div className="problem-form-group">
+                                                        <label>Điểm</label>
+                                                        <input
+                                                            type="number"
+                                                            value={tc.points}
+                                                            onChange={(e) =>
+                                                                updateTestCase(index, 'points', e.target.value)
+                                                            }
+                                                            min="0"
+                                                            step="0.1"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="problem-form-group">
+                                                    <label>Input</label>
+                                                    <textarea
+                                                        value={tc.input_data}
+                                                        onChange={(e) =>
+                                                            updateTestCase(index, 'input_data', e.target.value)
+                                                        }
+                                                        rows="4"
+                                                        placeholder="Nhập dữ liệu đầu vào..."
+                                                        className="problem-form-code-textarea"
+                                                    />
+                                                </div>
+
+                                                <div className="problem-form-group">
+                                                    <label>Output</label>
+                                                    <textarea
+                                                        value={tc.output_data}
+                                                        onChange={(e) =>
+                                                            updateTestCase(index, 'output_data', e.target.value)
+                                                        }
+                                                        rows="4"
+                                                        placeholder="Nhập kết quả mong đợi..."
+                                                        className="problem-form-code-textarea"
+                                                    />
+                                                </div>
                                             </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            /* ZIP MODE */
+                            <div className="problem-form-zip-upload-section">
+                                <div className="problem-form-zip-upload-info">
+                                    <h4>📋 Hướng dẫn upload ZIP:</h4>
+                                    <ul>
+                                        <li>
+                                            File ZIP chứa các file test case với định dạng <code>.in</code> và{' '}
+                                            <code>.out</code> (hoặc <code>.ans</code>)
+                                        </li>
+                                        <li>
+                                            Các file có cùng tên sẽ được ghép thành 1 test case. Ví dụ:{' '}
+                                            <code>test01.in</code> và <code>test01.out</code>
+                                        </li>
+                                        <li>
+                                            Hỗ trợ 2 cấu trúc:
+                                            <ul>
+                                                <li>
+                                                    <strong>Flat:</strong>{' '}
+                                                    <code>test01.in, test01.out, test02.in, test02.out</code>
+                                                </li>
+                                                <li>
+                                                    <strong>Folder:</strong>{' '}
+                                                    <code>
+                                                        sample/01.in, sample/01.ans, secret/01.in, secret/01.ans
+                                                    </code>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            Chỉ tạo test case khi có đủ cả file <code>.in</code> và <code>.out</code>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div className="problem-form-zip-upload-box">
+                                    <input
+                                        type="file"
+                                        id="zip-upload"
+                                        accept=".zip"
+                                        onChange={handleZipFileChange}
+                                        style={{ display: 'none' }}
+                                    />
+                                    <label htmlFor="zip-upload" className="problem-form-zip-upload-label">
+                                        <FaFileArchive size={40} color="#667eea" />
+                                        <p>{zipFile ? zipFile.name : 'Chọn file ZIP chứa test cases'}</p>
+                                        <span className="problem-form-zip-file-size">
+                                            {zipFile ? `${(zipFile.size / 1024).toFixed(2)} KB` : 'Tối đa 50MB'}
+                                        </span>
+                                    </label>
+                                </div>
+
+                                {errors.test_cases_zip && (
+                                    <span className="problem-form-error-message">{errors.test_cases_zip}</span>
+                                )}
+
+                                <div className="problem-form-zip-options">
+                                    <h4>⚙️ Tùy chọn xử lý:</h4>
+
+                                    <label className="problem-form-checkbox-item">
+                                        <input
+                                            type="checkbox"
+                                            checked={zipUploadOptions.auto_detect_type}
+                                            onChange={(e) =>
+                                                setZipUploadOptions({
+                                                    ...zipUploadOptions,
+                                                    auto_detect_type: e.target.checked,
+                                                })
+                                            }
+                                        />
+                                        <span>Tự động nhận diện type từ tên folder (sample/secret)</span>
+                                    </label>
+
+                                    <div className="problem-form-row">
+                                        <div className="problem-form-group">
+                                            <label>Type mặc định (nếu không detect được):</label>
+                                            <select
+                                                value={zipUploadOptions.default_type}
+                                                onChange={(e) =>
+                                                    setZipUploadOptions({
+                                                        ...zipUploadOptions,
+                                                        default_type: e.target.value,
+                                                    })
+                                                }
+                                            >
+                                                <option value="sample">Sample (Công khai)</option>
+                                                <option value="secret">Secret (Ẩn)</option>
+                                            </select>
                                         </div>
 
                                         <div className="problem-form-group">
-                                            <label>Input</label>
-                                            <textarea
-                                                value={tc.input_data}
-                                                onChange={(e) => updateTestCase(index, 'input_data', e.target.value)}
-                                                rows="4"
-                                                placeholder="Nhập dữ liệu đầu vào..."
-                                                className="problem-form-code-textarea"
-                                            />
-                                        </div>
-
-                                        <div className="problem-form-group">
-                                            <label>Output</label>
-                                            <textarea
-                                                value={tc.output_data}
-                                                onChange={(e) => updateTestCase(index, 'output_data', e.target.value)}
-                                                rows="4"
-                                                placeholder="Nhập kết quả mong đợi..."
-                                                className="problem-form-code-textarea"
+                                            <label>Điểm mặc định cho mỗi test case:</label>
+                                            <input
+                                                type="number"
+                                                value={zipUploadOptions.default_points}
+                                                onChange={(e) =>
+                                                    setZipUploadOptions({
+                                                        ...zipUploadOptions,
+                                                        default_points: parseFloat(e.target.value) || 0,
+                                                    })
+                                                }
+                                                min="0"
+                                                step="0.1"
                                             />
                                         </div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Tags */}
