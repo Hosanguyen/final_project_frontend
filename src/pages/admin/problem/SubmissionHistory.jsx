@@ -14,6 +14,7 @@ const SubmissionHistory = ({ problemId }) => {
     const [totalPages, setTotalPages] = useState(1);
     const [viewingSubmission, setViewingSubmission] = useState(null);
     const [allCompleted, setAllCompleted] = useState(false);
+    const SYNC_INTERVAL = parseInt(process.env.REACT_APP_SYNC_INTERVAL_SUBMISSIONS) || 5000;
 
     useEffect(() => {
         loadSubmissions();
@@ -30,7 +31,7 @@ const SubmissionHistory = ({ problemId }) => {
         const interval = setInterval(() => {
             console.log('Auto-syncing submissions...');
             loadSubmissions(true);
-        }, 5000); // 5 seconds
+        }, SYNC_INTERVAL); // 5 seconds
 
         return () => clearInterval(interval);
     }, [allCompleted, problemId, page]);
