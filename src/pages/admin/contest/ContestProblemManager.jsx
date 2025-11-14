@@ -333,7 +333,20 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
                             </tr>
                         </thead>
                         <tbody>
-                            {contestProblems.map((cp) => (
+                            {contestProblems.map((cp) => {
+                                // Debug log
+                                console.log('Contest Problem:', cp);
+                                
+                                // Safely extract values
+                                const problemTitle = typeof cp.problem_title === 'object' 
+                                    ? (cp.problem_title?.title || cp.problem_title?.name || 'Untitled')
+                                    : cp.problem_title;
+                                
+                                const problemSlug = typeof cp.problem_slug === 'object'
+                                    ? (cp.problem_slug?.slug || 'unknown')
+                                    : cp.problem_slug;
+                                
+                                return (
                                 <tr key={cp.id}>
                                     <td>
                                         <span 
@@ -355,11 +368,13 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
                                             className="problem-title-link"
                                             title="View problem details"
                                         >
-                                            {cp.problem_title} <FaExternalLinkAlt size={12} />
+                                            {problemTitle} <FaExternalLinkAlt size={12} />
                                         </Link>
                                     </td>
                                     <td>
-                                        <span className="problem-slug">{cp.problem_slug}</span>
+                                        <span className="problem-slug">
+                                            {problemSlug}
+                                        </span>
                                     </td>
                                     <td>{cp.point}</td>
                                     <td>{cp.sequence}</td>
@@ -374,7 +389,8 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
                                         </button>
                                     </td>
                                 </tr>
-                            ))}
+                                );
+                            })}
                         </tbody>
                     </table>
                 )}
