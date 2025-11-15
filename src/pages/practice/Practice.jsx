@@ -17,7 +17,7 @@ const Practice = () => {
         total_items: 0,
         total_pages: 0,
         has_next: false,
-        has_previous: false
+        has_previous: false,
     });
 
     useEffect(() => {
@@ -27,27 +27,27 @@ const Practice = () => {
     const loadPracticeProblems = async () => {
         setLoading(true);
         setError(null);
-        
+
         try {
             // Get contest details with problems (with pagination)
             const contestDetail = await ContestService.getPracticeContest({
                 page: currentPage,
-                page_size: pageSize
+                page_size: pageSize,
             });
-            
+
             // API trả về field "problems" chứ không phải "contest_problems"
             const problemList = contestDetail?.problems || contestDetail?.contest_problems || [];
-            
+
             // Update pagination info
             if (contestDetail?.pagination) {
                 setPagination(contestDetail.pagination);
             }
-            
+
             if (problemList.length > 0) {
                 // Backend đã tính toán user_status cho mỗi problem
                 // Build userSubmissions từ data backend trả về
                 const submissions = {};
-                problemList.forEach(cp => {
+                problemList.forEach((cp) => {
                     if (cp.user_status) {
                         submissions[cp.problem_id] = cp.user_status;
                     }
@@ -67,11 +67,11 @@ const Practice = () => {
 
     const getProblemStatusIcon = (problemId) => {
         const submission = userSubmissions[problemId];
-        
+
         if (!submission || !submission.status) {
             return null;
         }
-        
+
         switch (submission.status) {
             case 'AC':
                 return <FaCheckCircle className="status-icon solved" title="Đã giải" />;
@@ -86,11 +86,11 @@ const Practice = () => {
 
     const getProblemStatusClass = (problemId) => {
         const submission = userSubmissions[problemId];
-        
+
         if (!submission || !submission.status) {
             return 'unsolved';
         }
-        
+
         switch (submission.status) {
             case 'AC':
                 return 'solved';
@@ -109,14 +109,14 @@ const Practice = () => {
 
     const getDifficultyLabel = (difficulty) => {
         const labels = {
-            'easy': 'Dễ',
-            'medium': 'Trung bình',
-            'hard': 'Khó'
+            easy: 'Dễ',
+            medium: 'Trung bình',
+            hard: 'Khó',
         };
         return labels[difficulty?.toLowerCase()] || 'Trung bình';
     };
 
-    const filteredProblems = problems.filter(cp => {
+    const filteredProblems = problems.filter((cp) => {
         // Filter by status
         if (filter === 'solved') {
             const submission = userSubmissions[cp.problem_id];
@@ -125,12 +125,12 @@ const Practice = () => {
             const submission = userSubmissions[cp.problem_id];
             if (submission && submission.status === 'AC') return false;
         }
-        
+
         // Filter by difficulty (assuming problem has difficulty field)
         if (difficultyFilter !== 'all' && cp.problem_difficulty) {
             if (cp.problem_difficulty.toLowerCase() !== difficultyFilter) return false;
         }
-        
+
         return true;
     });
 
@@ -141,8 +141,8 @@ const Practice = () => {
 
     const stats = {
         total: pagination.total_items || problems.length,
-        solved: Object.values(userSubmissions).filter(s => s.status === 'AC').length,
-        attempted: Object.values(userSubmissions).filter(s => s.status && s.status !== 'AC').length
+        solved: Object.values(userSubmissions).filter((s) => s.status === 'AC').length,
+        attempted: Object.values(userSubmissions).filter((s) => s.status && s.status !== 'AC').length,
     };
 
     if (loading) {
@@ -205,22 +205,13 @@ const Practice = () => {
                 <div className="filter-group">
                     <label>Trạng thái:</label>
                     <div className="filter-buttons">
-                        <button 
-                            className={filter === 'all' ? 'active' : ''}
-                            onClick={() => setFilter('all')}
-                        >
+                        <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>
                             Tất cả
                         </button>
-                        <button 
-                            className={filter === 'solved' ? 'active' : ''}
-                            onClick={() => setFilter('solved')}
-                        >
+                        <button className={filter === 'solved' ? 'active' : ''} onClick={() => setFilter('solved')}>
                             Đã giải
                         </button>
-                        <button 
-                            className={filter === 'unsolved' ? 'active' : ''}
-                            onClick={() => setFilter('unsolved')}
-                        >
+                        <button className={filter === 'unsolved' ? 'active' : ''} onClick={() => setFilter('unsolved')}>
                             Chưa giải
                         </button>
                     </div>
@@ -229,25 +220,25 @@ const Practice = () => {
                 <div className="filter-group">
                     <label>Độ khó:</label>
                     <div className="filter-buttons">
-                        <button 
+                        <button
                             className={difficultyFilter === 'all' ? 'active' : ''}
                             onClick={() => setDifficultyFilter('all')}
                         >
                             Tất cả
                         </button>
-                        <button 
+                        <button
                             className={difficultyFilter === 'easy' ? 'active' : ''}
                             onClick={() => setDifficultyFilter('easy')}
                         >
                             Dễ
                         </button>
-                        <button 
+                        <button
                             className={difficultyFilter === 'medium' ? 'active' : ''}
                             onClick={() => setDifficultyFilter('medium')}
                         >
                             Trung bình
                         </button>
-                        <button 
+                        <button
                             className={difficultyFilter === 'hard' ? 'active' : ''}
                             onClick={() => setDifficultyFilter('hard')}
                         >
@@ -277,20 +268,19 @@ const Practice = () => {
                             <tbody>
                                 {filteredProblems.map((cp) => (
                                     <tr key={cp.id} className={`problem-row ${getProblemStatusClass(cp.problem_id)}`}>
-                                        <td className="col-status">
-                                            {getProblemStatusIcon(cp.problem_id)}
-                                        </td>
+                                        <td className="col-status">{getProblemStatusIcon(cp.problem_id)}</td>
                                         <td className="col-title">
-                                            <Link 
-                                                to={`/admin/problems/${cp.problem_id}`}
-                                                className="problem-link"
-                                            >
+                                            <Link to={`/problems/${cp.problem_id}`} className="problem-link">
                                                 {cp.problem_title}
                                             </Link>
                                             <span className="problem-slug">{cp.problem_slug}</span>
                                         </td>
                                         <td className="col-difficulty">
-                                            <span className={`difficulty-badge ${getDifficultyClass(cp.problem_difficulty)}`}>
+                                            <span
+                                                className={`difficulty-badge ${getDifficultyClass(
+                                                    cp.problem_difficulty,
+                                                )}`}
+                                            >
                                                 {getDifficultyLabel(cp.problem_difficulty)}
                                             </span>
                                         </td>
@@ -305,14 +295,14 @@ const Practice = () => {
                         {/* Pagination Controls */}
                         {pagination.total_pages > 1 && (
                             <div className="pagination-controls">
-                                <button 
+                                <button
                                     className="pagination-btn"
                                     onClick={() => handlePageChange(currentPage - 1)}
                                     disabled={!pagination.has_previous}
                                 >
                                     ← Trang trước
                                 </button>
-                                
+
                                 <div className="pagination-info">
                                     <span className="page-numbers">
                                         {(() => {
@@ -320,26 +310,30 @@ const Practice = () => {
                                             const maxVisible = 5;
                                             let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
                                             let endPage = Math.min(pagination.total_pages, startPage + maxVisible - 1);
-                                            
+
                                             if (endPage - startPage < maxVisible - 1) {
                                                 startPage = Math.max(1, endPage - maxVisible + 1);
                                             }
-                                            
+
                                             if (startPage > 1) {
                                                 pages.push(
-                                                    <button 
-                                                        key={1} 
+                                                    <button
+                                                        key={1}
                                                         className="page-number"
                                                         onClick={() => handlePageChange(1)}
                                                     >
                                                         1
-                                                    </button>
+                                                    </button>,
                                                 );
                                                 if (startPage > 2) {
-                                                    pages.push(<span key="ellipsis1" className="ellipsis">...</span>);
+                                                    pages.push(
+                                                        <span key="ellipsis1" className="ellipsis">
+                                                            ...
+                                                        </span>,
+                                                    );
                                                 }
                                             }
-                                            
+
                                             for (let i = startPage; i <= endPage; i++) {
                                                 pages.push(
                                                     <button
@@ -348,25 +342,29 @@ const Practice = () => {
                                                         onClick={() => handlePageChange(i)}
                                                     >
                                                         {i}
-                                                    </button>
+                                                    </button>,
                                                 );
                                             }
-                                            
+
                                             if (endPage < pagination.total_pages) {
                                                 if (endPage < pagination.total_pages - 1) {
-                                                    pages.push(<span key="ellipsis2" className="ellipsis">...</span>);
+                                                    pages.push(
+                                                        <span key="ellipsis2" className="ellipsis">
+                                                            ...
+                                                        </span>,
+                                                    );
                                                 }
                                                 pages.push(
-                                                    <button 
-                                                        key={pagination.total_pages} 
+                                                    <button
+                                                        key={pagination.total_pages}
                                                         className="page-number"
                                                         onClick={() => handlePageChange(pagination.total_pages)}
                                                     >
                                                         {pagination.total_pages}
-                                                    </button>
+                                                    </button>,
                                                 );
                                             }
-                                            
+
                                             return pages;
                                         })()}
                                     </span>
@@ -374,8 +372,8 @@ const Practice = () => {
                                         Trang {currentPage} / {pagination.total_pages}
                                     </span>
                                 </div>
-                                
-                                <button 
+
+                                <button
                                     className="pagination-btn"
                                     onClick={() => handlePageChange(currentPage + 1)}
                                     disabled={!pagination.has_next}
