@@ -36,6 +36,7 @@ import Practice from '../pages/practice/Practice';
 import UserForm from '../pages/admin/user/UserForm';
 import UserList from '../pages/admin/user/UserList';
 import ProblemDetailUser from '../pages/problem/ProblemDetailUser';
+import Contests from '../pages/contests/Contests';
 
 const AppRoutes = () => {
     return (
@@ -51,6 +52,7 @@ const AppRoutes = () => {
                     <Route path="/courses" element={<Courses />} />
                     <Route path="/courses/:slug" element={<CourseDetail />} />
                     <Route path="/practice" element={<Practice />} />
+                    <Route path="/contests" element={<Contests />} />
                     <Route path="/problems/:id" element={<ProblemDetailUser />} />
                     <Route
                         path="/profile"

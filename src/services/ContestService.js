@@ -114,6 +114,19 @@ const ContestService = {
         } catch (error) {
             throw error.response?.data || error.message;
         }
+    },
+
+    /**
+     * Get contests for user header (excluding practice)
+     * @returns {Promise} Contests categorized by status (upcoming, running, finished)
+     */
+    getUserContests: async () => {
+        try {
+            const response = await api.get('/api/contests/user/contests/');
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
     }
 };
 
