@@ -240,7 +240,7 @@ const ContestDetailUser = () => {
                                     <tr 
                                         key={problem.id}
                                         className={`problem-row ${problem.user_status?.status?.toLowerCase() || ''}`}
-                                        onClick={() => navigate(`/problems/${problem.problem_id}`)}
+                                        onClick={() => navigate(`/contest-problems/${problem.id}`)}
                                     >
                                         <td className="col-status">
                                             <div className="status-cell" title={getProblemStatusText(problem.user_status)}>
