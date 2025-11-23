@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaClock, FaMemory, FaCode, FaListUl } from 'react-icons/fa';
 import ProblemService from '../../services/ProblemService';
+import ContestService from '../../services/ContestService';
 import ProblemSubmission from '../admin/problem/ProblemSubmission';
 import SubmissionHistory from '../admin/problem/SubmissionHistory';
 import './ProblemDetailUser.css';
 
 const ProblemDetailUser = () => {
-    const { id } = useParams();
+    const { contestProblemId } = useParams();
     const navigate = useNavigate();
     const [problem, setProblem] = useState(null);
+    const [contestProblem, setContestProblem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('description'); // 'description' or 'submissions'
     const [submissionRefreshKey, setSubmissionRefreshKey] = useState(0);
@@ -17,8 +19,9 @@ const ProblemDetailUser = () => {
     const loadProblemDetail = async () => {
         setLoading(true);
         try {
-            const data = await ProblemService.getById(id);
-            setProblem(data);
+            const data = await ContestService.getByContestProblemId(contestProblemId);
+            setContestProblem(data);
+            setProblem(data.problem);
         } catch (error) {
             console.error('Failed to load problem:', error);
             alert('Không thể tải thông tin bài toán');
@@ -31,7 +34,7 @@ const ProblemDetailUser = () => {
     useEffect(() => {
         loadProblemDetail();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id]);
+    }, [contestProblemId]);
 
     const handleSubmitSuccess = () => {
         setSubmissionRefreshKey((prev) => prev + 1);
@@ -227,7 +230,7 @@ const ProblemDetailUser = () => {
                             </div>
                         ) : (
                             <div className="user-problem-submissions-tab">
-                                <SubmissionHistory problemId={problem.id} key={submissionRefreshKey} />
+                                <SubmissionHistory problemId={problem.id} contestId={contestProblem.contest.id} key={submissionRefreshKey} />
                             </div>
                         )}
                     </div>
@@ -236,7 +239,7 @@ const ProblemDetailUser = () => {
                 {/* Right Panel - Code Editor & Submission */}
                 <div className="user-problem-right-panel">
                     {problem.is_synced_to_domjudge && problem.allowed_languages.length > 0 ? (
-                        <ProblemSubmission problem={problem} onSubmitSuccess={handleSubmitSuccess} />
+                        <ProblemSubmission contestProblem={contestProblem} problem={problem} onSubmitSuccess={handleSubmitSuccess} />
                     ) : (
                         <div className="user-problem-no-submission">
                             <p>Bài toán này chưa thể nộp bài.</p>

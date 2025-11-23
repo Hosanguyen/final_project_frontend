@@ -5,7 +5,8 @@ import SubmissionService from '../../../services/SubmissionService';
 import { getTemplate } from '../../../utils/codeTemplates';
 import './ProblemSubmission.css';
 
-const ProblemSubmission = ({ problem, onSubmitSuccess }) => {
+const ProblemSubmission = ({ contestProblem, problem, onSubmitSuccess }) => {
+    problem = contestProblem ? contestProblem.problem : problem;
     const [selectedLanguage, setSelectedLanguage] = useState(
         problem.allowed_languages.length > 0 ? problem.allowed_languages[0].id : null
     );
@@ -79,9 +80,11 @@ const ProblemSubmission = ({ problem, onSubmitSuccess }) => {
         setSubmissionResult(null);
 
         try {
+            debugger;
             const result = await SubmissionService.submit(problem.id, {
                 language_id: selectedLanguage,
                 code: code,
+                contest_id: contestProblem ? contestProblem.contest.id : null,
             });
 
             setSubmissionResult(result);

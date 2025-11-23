@@ -29,6 +29,15 @@ const ContestService = {
         }
     },
 
+    getByContestProblemId: async (contestProblemId) => {
+        try {
+            const response = await api.get(`/api/contests/contest-problem/${contestProblemId}/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
     /**
      * Get practice contest with pagination
      * @param {Object} params - Query parameters (page, page_size)

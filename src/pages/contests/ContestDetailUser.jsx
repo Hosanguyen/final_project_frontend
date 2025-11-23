@@ -260,7 +260,7 @@ const ContestDetailUser = () => {
                                         </td>
                                         <td className="col-title">
                                             <Link 
-                                                to={`/problems/${problem.problem_id}`}
+                                                to={`/contest-problems/${problem.id}`}
                                                 className="problem-link"
                                                 onClick={(e) => e.stopPropagation()}
                                             >

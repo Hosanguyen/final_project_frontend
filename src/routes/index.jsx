@@ -56,6 +56,7 @@ const AppRoutes = () => {
                     <Route path="/contests" element={<Contests />} />
                     <Route path="/contests/:id" element={<ContestDetailUser />} />
                     <Route path="/problems/:id" element={<ProblemDetailUser />} />
+                    <Route path="/contest-problems/:contestProblemId" element={<ProblemDetailUser />} />
                     <Route
                         path="/profile"
                         element={
@@ -305,7 +306,14 @@ const AppRoutes = () => {
                             </PrivateRoute>
                         }
                     />
-
+                    <Route
+                        path="/admin/contest-problems/:contestProblemId"
+                        element={
+                            <PrivateRoute>
+                                <ProblemDetail />
+                            </PrivateRoute>
+                        }
+                    />
                     <Route
                         path="/admin/contests"
                         element={

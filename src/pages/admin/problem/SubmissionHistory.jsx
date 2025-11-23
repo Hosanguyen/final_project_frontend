@@ -5,7 +5,7 @@ import SubmissionCodeViewer from './SubmissionCodeViewer';
 import SubmissionDetailResults from './SubmissionDetailResults';
 import './SubmissionHistory.css';
 
-const SubmissionHistory = ({ problemId }) => {
+const SubmissionHistory = ({ problemId, contestId }) => {
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [syncing, setSyncing] = useState(false);
@@ -19,7 +19,7 @@ const SubmissionHistory = ({ problemId }) => {
     useEffect(() => {
         loadSubmissions();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [problemId, page]);
+    }, [problemId, contestId, page]);
 
     // Auto-sync every 10 seconds if there are pending/judging submissions
     useEffect(() => {
@@ -45,6 +45,7 @@ const SubmissionHistory = ({ problemId }) => {
 
         try {
             const data = await SubmissionService.getByProblem(problemId, {
+                contest_id: contestId,
                 page,
                 page_size: 10,
                 sync: sync ? 'true' : 'false',

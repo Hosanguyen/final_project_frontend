@@ -364,7 +364,7 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
                                     </td>
                                     <td>
                                         <Link 
-                                            to={`/admin/problems/${cp.problem_id}`}
+                                            to={`/admin/contest-problems/${cp.id}`}
                                             className="problem-title-link"
                                             title="View problem details"
                                         >
