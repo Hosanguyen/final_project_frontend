@@ -29,6 +29,15 @@ const ContestService = {
         }
     },
 
+    getByContestProblemId: async (contestProblemId) => {
+        try {
+            const response = await api.get(`/api/contests/contest-problem/${contestProblemId}/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
     /**
      * Get practice contest with pagination
      * @param {Object} params - Query parameters (page, page_size)
@@ -110,6 +119,33 @@ const ContestService = {
     removeProblem: async (contestId, problemId) => {
         try {
             const response = await api.delete(`/api/contests/${contestId}/problems/${problemId}/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Get contests for user header (excluding practice)
+     * @returns {Promise} Contests categorized by status (upcoming, running, finished)
+     */
+    getUserContests: async () => {
+        try {
+            const response = await api.get('/api/contests/user/contests/');
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Get contest details for user
+     * @param {number} contestId - Contest ID
+     * @returns {Promise} Contest details with problems
+     */
+    getContestDetailForUser: async (contestId) => {
+        try {
+            const response = await api.get(`/api/contests/user/${contestId}/`);
             return response.data;
         } catch (error) {
             throw error.response?.data || error.message;

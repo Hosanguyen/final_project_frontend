@@ -270,7 +270,7 @@ const Practice = () => {
                                     <tr key={cp.id} className={`problem-row ${getProblemStatusClass(cp.problem_id)}`}>
                                         <td className="col-status">{getProblemStatusIcon(cp.problem_id)}</td>
                                         <td className="col-title">
-                                            <Link to={`/problems/${cp.problem_id}`} className="problem-link">
+                                            <Link to={`/contest-problems/${cp.id}`} className="problem-link">
                                                 {cp.problem_title}
                                             </Link>
                                             <span className="problem-slug">{cp.problem_slug}</span>

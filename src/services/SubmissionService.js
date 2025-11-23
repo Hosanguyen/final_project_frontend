@@ -25,6 +25,7 @@ const SubmissionService = {
             if (params.page) queryParams.append('page', params.page);
             if (params.page_size) queryParams.append('page_size', params.page_size);
             if (params.ordering) queryParams.append('ordering', params.ordering);
+            if (params.contest_id) queryParams.append('contest_id', params.contest_id);
 
             const response = await api.get(
                 `/api/problems/${problemId}/submissions/list/?${queryParams.toString()}`

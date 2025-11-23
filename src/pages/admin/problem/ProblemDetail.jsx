@@ -2,21 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaEdit, FaTrash, FaArrowLeft, FaClock, FaMemory, FaCheck, FaTimes } from 'react-icons/fa';
 import ProblemService from '../../../services/ProblemService';
+import ContestService from '../../../services/ContestService';
 import ProblemSubmission from './ProblemSubmission';
 import SubmissionHistory from './SubmissionHistory';
 import './ProblemDetail.css';
 
 const ProblemDetail = () => {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { id, contestProblemId } = useParams();
     const [problem, setProblem] = useState(null);
+    const [contestProblem, setContestProblem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [submissionRefreshKey, setSubmissionRefreshKey] = useState(0);
 
     useEffect(() => {
         loadProblemDetail();
-    }, [id]);
+    }, [id, contestProblemId]);
 
     const handleSubmitSuccess = () => {
         // Trigger refresh của SubmissionHistory
@@ -26,8 +28,11 @@ const ProblemDetail = () => {
     const loadProblemDetail = async () => {
         setLoading(true);
         try {
-            const data = await ProblemService.getById(id);
-            setProblem(data);
+            const data = contestProblemId
+                ? await ContestService.getByContestProblemId(contestProblemId)
+                : await ProblemService.getById(id);
+            setProblem(contestProblemId ? data.problem : data);
+            setContestProblem(contestProblemId ? data : null);
         } catch (error) {
             console.error('Failed to load problem:', error);
             alert('Không thể tải thông tin bài toán');
@@ -283,10 +288,10 @@ const ProblemDetail = () => {
                 )}
 
                 {/* Submission Section */}
-                {problem.is_synced_to_domjudge && problem.allowed_languages.length > 0 && (
+                {contestProblem && problem.is_synced_to_domjudge && problem.allowed_languages.length > 0 && (
                     <>
-                        <ProblemSubmission problem={problem} onSubmitSuccess={handleSubmitSuccess} />
-                        <SubmissionHistory problemId={problem.id} key={submissionRefreshKey} />
+                        <ProblemSubmission contestProblem={contestProblem} problem={problem} onSubmitSuccess={handleSubmitSuccess} />
+                        <SubmissionHistory problemId={problem.id} contestId={contestProblem ? contestProblem.contest.id : null} key={submissionRefreshKey} />
                     </>
                 )}
             </div>
