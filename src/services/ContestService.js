@@ -127,6 +127,20 @@ const ContestService = {
         } catch (error) {
             throw error.response?.data || error.message;
         }
+    },
+
+    /**
+     * Get contest details for user
+     * @param {number} contestId - Contest ID
+     * @returns {Promise} Contest details with problems
+     */
+    getContestDetailForUser: async (contestId) => {
+        try {
+            const response = await api.get(`/api/contests/user/${contestId}/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
     }
 };
 
