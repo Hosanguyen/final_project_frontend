@@ -150,6 +150,77 @@ const ContestService = {
         } catch (error) {
             throw error.response?.data || error.message;
         }
+    },
+
+    /**
+     * Register for a contest
+     * @param {number} contestId - Contest ID
+     * @returns {Promise} Registration result
+     */
+    registerForContest: async (contestId) => {
+        try {
+            const response = await api.post(`/api/contests/user/${contestId}/register/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Unregister from a contest
+     * @param {number} contestId - Contest ID
+     * @returns {Promise} Unregistration result
+     */
+    unregisterFromContest: async (contestId) => {
+        try {
+            const response = await api.delete(`/api/contests/user/${contestId}/register/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Check registration status for a contest
+     * @param {number} contestId - Contest ID
+     * @returns {Promise} Registration status
+     */
+    getRegistrationStatus: async (contestId) => {
+        try {
+            const response = await api.get(`/api/contests/user/${contestId}/registration-status/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Get participants list for a contest
+     * @param {number} contestId - Contest ID
+     * @returns {Promise} List of participants with statistics
+     */
+    getParticipants: async (contestId) => {
+        try {
+            const response = await api.get(`/api/contests/${contestId}/participants/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Toggle participant active status
+     * @param {number} contestId - Contest ID
+     * @param {number} participantId - Participant ID
+     * @returns {Promise} Updated participant
+     */
+    toggleParticipantStatus: async (contestId, participantId) => {
+        try {
+            const response = await api.patch(`/api/contests/${contestId}/participants/${participantId}/toggle/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
     }
 };
 

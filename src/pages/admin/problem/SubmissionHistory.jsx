@@ -5,7 +5,7 @@ import SubmissionCodeViewer from './SubmissionCodeViewer';
 import SubmissionDetailResults from './SubmissionDetailResults';
 import './SubmissionHistory.css';
 
-const SubmissionHistory = ({ problemId, contestId }) => {
+const SubmissionHistory = ({ problemId, contestId, contestMode, isShowResult }) => {
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [syncing, setSyncing] = useState(false);
@@ -111,7 +111,19 @@ const SubmissionHistory = ({ problemId, contestId }) => {
         }
     };
 
-    const getStatusBadge = (status) => {
+    const getStatusBadge = (status, submission) => {
+        // For OI mode, show test cases passed if available
+        if (contestMode === 'OI' && submission.test_passed !== null && submission.test_total !== null) {
+            const isFullyPassed = submission.test_passed === submission.test_total;
+            return (
+                <span className={`submission-status-badge ${isFullyPassed ? 'status-accepted' : 'status-partial'}`}>
+                    {isFullyPassed ? <FaCheckCircle /> : <FaTimesCircle />}
+                    {submission.test_passed}/{submission.test_total} tests
+                </span>
+            );
+        }
+
+        // For ICPC mode or when test info not available, show standard status
         const statusMap = {
             pending: { class: 'status-pending', icon: <FaSync className="spinning" />, label: 'Đang chờ...' },
             judging: { class: 'status-judging', icon: <FaSync className="spinning" />, label: 'Đang chấm...' },
@@ -196,7 +208,7 @@ const SubmissionHistory = ({ problemId, contestId }) => {
                                         </span>
                                     </div>
                                     <div className="submission-history-item-status">
-                                        {getStatusBadge(submission.status)}
+                                        {getStatusBadge(submission.status, submission)}
                                         {/* {submission.score !== null && (
                                             <span className="submission-score">{submission.score} điểm</span>
                                         )} */}
@@ -227,9 +239,16 @@ const SubmissionHistory = ({ problemId, contestId }) => {
                                             <span>{formatDate(submission.submitted_at)}</span>
                                         </div>
                                         
-                                        {/* Detailed Results */}
-                                        {submission.detailed_results && (
+                                        {/* Detailed Results - Only show if isShowResult is true or not in contest */}
+                                        {(isShowResult === undefined || isShowResult === true) && submission.detailed_results && (
                                             <SubmissionDetailResults detailedResults={submission.detailed_results} />
+                                        )}
+                                        
+                                        {/* Show message if results are hidden */}
+                                        {isShowResult === false && (
+                                            <div className="submission-detail-row">
+                                                <em>Chi tiết kết quả chấm sẽ được công bố sau khi contest kết thúc</em>
+                                            </div>
                                         )}
                                         
                                         {submission.feedback && !submission.detailed_results && (

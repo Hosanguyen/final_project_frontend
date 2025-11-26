@@ -7,6 +7,7 @@ import {
 import './ContestDetail.css';
 import ContestService from '../../../services/ContestService';
 import ContestProblemManager from './ContestProblemManager';
+import ContestParticipants from './ContestParticipants';
 
 const ContestDetail = () => {
     const navigate = useNavigate();
@@ -195,6 +196,9 @@ const ContestDetail = () => {
                         onUpdate={loadContest}
                     />
                 </div>
+
+                {/* Contest Participants */}
+                <ContestParticipants contestId={contest.id} />
 
                 <div className="contest-detail-meta">
                     <div className="meta-item">

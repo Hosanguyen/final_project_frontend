@@ -19,6 +19,8 @@ const ContestForm = () => {
         start_at: '',
         end_at: '',
         visibility: 'private',
+        contest_mode: 'ICPC',
+        is_show_result: true,
         penalty_time: 20,
         penalty_mode: 'standard',
         freeze_rankings_at: ''
@@ -49,6 +51,8 @@ const ContestForm = () => {
                 start_at: data.start_at ? formatDateTimeLocal(data.start_at) : '',
                 end_at: data.end_at ? formatDateTimeLocal(data.end_at) : '',
                 visibility: data.visibility || 'private',
+                contest_mode: data.contest_mode || 'ICPC',
+                is_show_result: data.is_show_result !== undefined ? data.is_show_result : true,
                 penalty_time: data.penalty_time || 20,
                 penalty_mode: data.penalty_mode || 'standard',
                 freeze_rankings_at: data.freeze_rankings_at ? formatDateTimeLocal(data.freeze_rankings_at) : ''
@@ -72,10 +76,10 @@ const ContestForm = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: type === 'checkbox' ? checked : value
         }));
         // Clear error for this field
         if (errors[name]) {
@@ -306,6 +310,40 @@ const ContestForm = () => {
                         </select>
                     </div>
 
+                    <div className="contest-form-group">
+                        <label htmlFor="contest_mode">
+                            <FaTrophy /> Contest Mode
+                        </label>
+                        <select
+                            id="contest_mode"
+                            name="contest_mode"
+                            value={formData.contest_mode}
+                            onChange={handleChange}
+                        >
+                            <option value="ICPC">ICPC Mode (AC/WA only)</option>
+                            <option value="OI">OI Mode (Show test cases passed)</option>
+                        </select>
+                        <small>ICPC: Only shows AC/WA, OI: Shows test results (e.g., 17/18)</small>
+                    </div>
+
+                    <div className="contest-form-group">
+                        <label htmlFor="is_show_result">
+                            <input
+                                type="checkbox"
+                                id="is_show_result"
+                                name="is_show_result"
+                                checked={formData.is_show_result}
+                                onChange={handleChange}
+                                style={{ width: 'auto', marginRight: '8px' }}
+                            />
+                            Show Detailed Results
+                        </label>
+                        <small>Allow participants to see detailed test case results and error messages</small>
+                    </div>
+                </div>
+
+                {/* Penalty Settings Row */}
+                <div className="contest-form-row">
                     <div className="contest-form-group">
                         <label htmlFor="penalty_time">Penalty Time (minutes)</label>
                         <input

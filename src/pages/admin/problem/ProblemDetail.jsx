@@ -291,7 +291,13 @@ const ProblemDetail = () => {
                 {contestProblem && problem.is_synced_to_domjudge && problem.allowed_languages.length > 0 && (
                     <>
                         <ProblemSubmission contestProblem={contestProblem} problem={problem} onSubmitSuccess={handleSubmitSuccess} />
-                        <SubmissionHistory problemId={problem.id} contestId={contestProblem ? contestProblem.contest.id : null} key={submissionRefreshKey} />
+                        <SubmissionHistory 
+                            problemId={problem.id} 
+                            contestId={contestProblem ? contestProblem.contest.id : null} 
+                            contestMode={contestProblem?.contest?.contest_mode}
+                            isShowResult={contestProblem?.contest?.is_show_result}
+                            key={submissionRefreshKey} 
+                        />
                     </>
                 )}
             </div>
