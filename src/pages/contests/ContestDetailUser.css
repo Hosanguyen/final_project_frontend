@@ -146,6 +146,96 @@
     font-size: 15px;
 }
 
+/* Registration Section */
+.registration-section {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.registration-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.registered-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: #d4edda;
+    border: 2px solid #28a745;
+    border-radius: 8px;
+    color: #155724;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.registered-badge .check-icon {
+    font-size: 20px;
+    color: #28a745;
+}
+
+.register-btn {
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+}
+
+.register-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #0052cc 0%, #003d99 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 102, 255, 0.4);
+}
+
+.register-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.unregister-btn {
+    padding: 10px 20px;
+    background: white;
+    color: #dc3545;
+    border: 2px solid #dc3545;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.unregister-btn:hover:not(:disabled) {
+    background: #dc3545;
+    color: white;
+}
+
+.unregister-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.contest-ended-message {
+    padding: 12px 24px;
+    background: #f8d7da;
+    border: 2px solid #dc3545;
+    border-radius: 8px;
+    color: #721c24;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+}
+
 /* Info Grid */
 .contest-info-grid {
     display: grid;

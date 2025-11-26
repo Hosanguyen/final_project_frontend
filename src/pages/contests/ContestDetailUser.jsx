@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { FaTrophy, FaClock, FaCalendar, FaListAlt, FaCheckCircle, FaTimesCircle, FaCircle, FaChevronLeft } from 'react-icons/fa';
+import { FaTrophy, FaClock, FaCalendar, FaListAlt, FaCheckCircle, FaTimesCircle, FaCircle, FaChevronLeft, FaUserCheck, FaUserTimes } from 'react-icons/fa';
 import ContestService from '../../services/ContestService';
 import './ContestDetailUser.css';
 
@@ -10,6 +10,7 @@ const ContestDetailUser = () => {
     const [contest, setContest] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [registering, setRegistering] = useState(false);
 
     useEffect(() => {
         fetchContestDetail();
@@ -26,6 +27,38 @@ const ContestDetailUser = () => {
             setError('Không thể tải thông tin cuộc thi. Vui lòng thử lại sau.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleRegister = async () => {
+        try {
+            setRegistering(true);
+            await ContestService.registerForContest(id);
+            await fetchContestDetail(); // Refresh contest data
+            alert('Đăng ký tham gia cuộc thi thành công!');
+        } catch (err) {
+            console.error('Error registering for contest:', err);
+            alert(err.error || 'Không thể đăng ký tham gia cuộc thi. Vui lòng thử lại sau.');
+        } finally {
+            setRegistering(false);
+        }
+    };
+
+    const handleUnregister = async () => {
+        if (!window.confirm('Bạn có chắc chắn muốn hủy đăng ký tham gia cuộc thi này?')) {
+            return;
+        }
+
+        try {
+            setRegistering(true);
+            await ContestService.unregisterFromContest(id);
+            await fetchContestDetail(); // Refresh contest data
+            alert('Hủy đăng ký tham gia cuộc thi thành công!');
+        } catch (err) {
+            console.error('Error unregistering from contest:', err);
+            alert(err.error || 'Không thể hủy đăng ký. Vui lòng thử lại sau.');
+        } finally {
+            setRegistering(false);
         }
     };
 
@@ -161,6 +194,48 @@ const ContestDetailUser = () => {
                     </div>
                 )}
 
+                {/* Registration Button */}
+                <div className="registration-section">
+                    {contest.status === 'finished' ? (
+                        contest.is_registered ? (
+                            <div className="registration-info">
+                                <div className="registered-badge">
+                                    <FaUserCheck className="check-icon" />
+                                    <span>Đã tham gia cuộc thi</span>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="contest-ended-message">
+                                <span>Cuộc thi đã kết thúc. Không thể đăng ký.</span>
+                            </div>
+                        )
+                    ) : contest.is_registered ? (
+                        <div className="registration-info">
+                            <div className="registered-badge">
+                                <FaUserCheck className="check-icon" />
+                                <span>Đã đăng ký tham gia</span>
+                            </div>
+                            {contest.status === 'upcoming' && (
+                                <button 
+                                    onClick={handleUnregister}
+                                    disabled={registering}
+                                    className="unregister-btn"
+                                >
+                                    {registering ? 'Đang xử lý...' : 'Hủy đăng ký'}
+                                </button>
+                            )}
+                        </div>
+                    ) : (
+                        <button 
+                            onClick={handleRegister}
+                            disabled={registering}
+                            className="register-btn"
+                        >
+                            {registering ? 'Đang đăng ký...' : 'Đăng ký tham gia'}
+                        </button>
+                    )}
+                </div>
+
                 <div className="contest-info-grid">
                     <div className="info-card">
                         <FaCalendar className="info-icon" />
@@ -213,7 +288,85 @@ const ContestDetailUser = () => {
                     <span className="problem-count">{contest.problems?.length || 0} bài</span>
                 </div>
 
-                {contest.status === 'upcoming' ? (
+                {contest.status === 'finished' ? (
+                    // Contest đã kết thúc - mọi người đều xem được bài
+                    !contest.problems || contest.problems.length === 0 ? (
+                        <div className="no-problems">
+                            <FaListAlt className="empty-icon" />
+                            <p>Chưa có bài tập nào trong cuộc thi này</p>
+                        </div>
+                    ) : (
+                        <div className="problems-table-container">
+                            <table className="problems-table">
+                                <thead>
+                                    <tr>
+                                        <th className="col-status">Trạng thái</th>
+                                        <th className="col-label">Label</th>
+                                        <th className="col-title">Tên bài</th>
+                                        <th className="col-difficulty">Độ khó</th>
+                                        <th className="col-points">Điểm</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {contest.problems.map((problem, index) => (
+                                        <tr 
+                                            key={problem.id}
+                                            className={`problem-row ${problem.user_status?.status?.toLowerCase() || ''}`}
+                                            onClick={() => navigate(`/contest-problems/${problem.id}`)}
+                                        >
+                                            <td className="col-status">
+                                                <div className="status-cell" title={getProblemStatusText(problem.user_status)}>
+                                                    {getProblemStatusIcon(problem.user_status)}
+                                                </div>
+                                            </td>
+                                            <td className="col-label">
+                                                <span 
+                                                    className="problem-label"
+                                                    style={{ 
+                                                        backgroundColor: problem.rgb || '#6c757d',
+                                                        color: '#fff'
+                                                    }}
+                                                >
+                                                    {problem.label || problem.alias}
+                                                </span>
+                                            </td>
+                                            <td className="col-title">
+                                                <Link 
+                                                    to={`/contest-problems/${problem.id}`}
+                                                    className="problem-link"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    {problem.problem_title}
+                                                </Link>
+                                            </td>
+                                            <td className="col-difficulty">
+                                                <span 
+                                                    className="difficulty-badge"
+                                                    style={{ color: getDifficultyColor(problem.problem_difficulty) }}
+                                                >
+                                                    {problem.problem_difficulty || 'N/A'}
+                                                </span>
+                                            </td>
+                                            <td className="col-points">
+                                                <span className="points-value">{problem.point}</span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )
+                ) : !contest.is_registered ? (
+                    <div className="contest-locked">
+                        <div className="locked-icon">🔒</div>
+                        <h3>Cần đăng ký để xem bài tập</h3>
+                        {contest.status === 'finished' ? (
+                            <p>Cuộc thi đã kết thúc. Không thể đăng ký tham gia.</p>
+                        ) : (
+                            <p>Vui lòng đăng ký tham gia cuộc thi để xem danh sách bài tập và nộp bài</p>
+                        )}
+                    </div>
+                ) : contest.status === 'upcoming' ? (
                     <div className="contest-locked">
                         <div className="locked-icon">🔒</div>
                         <h3>Cuộc thi chưa bắt đầu</h3>
