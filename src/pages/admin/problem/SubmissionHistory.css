@@ -211,6 +211,11 @@
     color: #065f46;
 }
 
+.status-partial {
+    background: #fef3c7;
+    color: #92400e;
+}
+
 .status-wrong {
     background: #fee2e2;
     color: #991b1b;

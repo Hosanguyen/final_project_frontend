@@ -230,7 +230,13 @@ const ProblemDetailUser = () => {
                             </div>
                         ) : (
                             <div className="user-problem-submissions-tab">
-                                <SubmissionHistory problemId={problem.id} contestId={contestProblem.contest.id} key={submissionRefreshKey} />
+                                <SubmissionHistory 
+                                    problemId={problem.id} 
+                                    contestId={contestProblem.contest.id} 
+                                    contestMode={contestProblem.contest.contest_mode}
+                                    isShowResult={contestProblem.contest.is_show_result}
+                                    key={submissionRefreshKey} 
+                                />
                             </div>
                         )}
                     </div>

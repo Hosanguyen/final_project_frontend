@@ -187,6 +187,14 @@ const ContestDetailUser = () => {
                     </div>
 
                     <div className="info-card">
+                        <FaTrophy className="info-icon" />
+                        <div className="info-content">
+                            <span className="info-label">Chế độ</span>
+                            <span className="info-value">{contest.contest_mode || 'ICPC'}</span>
+                        </div>
+                    </div>
+
+                    <div className="info-card">
                         <FaClock className="info-icon" />
                         <div className="info-content">
                             <span className="info-label">Penalty</span>
@@ -290,9 +298,26 @@ const ContestDetailUser = () => {
             <div className="contest-rules">
                 <h3>Quy định cuộc thi</h3>
                 <ul>
-                    <li>Mỗi bài submit sai sẽ bị phạt {contest.penalty_time} phút (nếu có penalty)</li>
-                    <li>Thời gian tính từ khi bắt đầu cuộc thi đến khi AC bài đầu tiên</li>
+                    {contest.contest_mode === 'ICPC' ? (
+                        <>
+                            <li><strong>Chế độ ICPC:</strong> Mỗi bài chỉ hiển thị Accepted (AC) hoặc Wrong Answer (WA)</li>
+                            <li>Mỗi bài submit sai sẽ bị phạt {contest.penalty_time} phút (nếu có penalty)</li>
+                            <li>Thời gian tính từ khi bắt đầu cuộc thi đến khi AC bài đầu tiên</li>
+                        </>
+                    ) : (
+                        <>
+                            <li><strong>Chế độ OI:</strong> Hiển thị số test cases đã pass (ví dụ: 17/18)</li>
+                            <li>Điểm được tính dựa trên số lượng test cases đúng</li>
+                            <li>Có thể nộp nhiều lần để cải thiện điểm số</li>
+                        </>
+                    )}
                     <li>Bảng xếp hạng được cập nhật real-time</li>
+                    {!contest.is_show_result && contest.status !== 'finished' && (
+                        <li><strong>⚠️ Lưu ý:</strong> Chi tiết kết quả chấm (test cases, error messages) sẽ được công bố sau khi contest kết thúc</li>
+                    )}
+                    {contest.is_show_result && contest.status === 'finished' && (
+                        <li><strong>✅ Contest đã kết thúc:</strong> Chi tiết kết quả chấm đã được công bố</li>
+                    )}
                     <li>Không được sử dụng tài khoản khác hoặc hợp tác với người khác</li>
                 </ul>
             </div>
