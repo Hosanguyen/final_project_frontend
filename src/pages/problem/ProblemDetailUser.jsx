@@ -25,7 +25,7 @@ const ProblemDetailUser = () => {
         } catch (error) {
             console.error('Failed to load problem:', error);
             alert('Không thể tải thông tin bài toán');
-            navigate('/practice');
+            navigate('/contests');
         } finally {
             setLoading(false);
         }
@@ -58,6 +58,16 @@ const ProblemDetailUser = () => {
         return labelMap[difficulty] || difficulty;
     };
 
+    const handleBackNavigation = () => {
+        if (contestProblem?.contest?.slug === 'practice') {
+            navigate('/practice');
+        } else if (contestProblem?.contest?.id) {
+            navigate(`/contests/${contestProblem.contest.id}`);
+        } else {
+            navigate('/practice');
+        }
+    };
+
     if (loading) {
         return (
             <div className="user-problem-loading-container">
@@ -71,7 +81,7 @@ const ProblemDetailUser = () => {
         return (
             <div className="user-problem-not-found">
                 <h2>Không tìm thấy bài toán</h2>
-                <button onClick={() => navigate('/practice')}>Quay lại danh sách</button>
+                <button onClick={handleBackNavigation}>Quay lại danh sách</button>
             </div>
         );
     }
@@ -82,8 +92,8 @@ const ProblemDetailUser = () => {
             <div className="user-problem-header">
                 <div className="user-problem-header-content">
                     <div className="user-problem-breadcrumb">
-                        <span onClick={() => navigate('/practice')} className="user-problem-breadcrumb-link">
-                            Danh sách bài tập
+                        <span onClick={handleBackNavigation} className="user-problem-breadcrumb-link">
+                            {contestProblem?.contest?.slug === 'practice' ? 'Danh sách bài tập' : contestProblem?.contest?.title}
                         </span>
                         <span className="user-problem-breadcrumb-separator">/</span>
                         <span className="user-problem-breadcrumb-current">{problem.slug}</span>
