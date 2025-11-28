@@ -81,11 +81,6 @@
   background: #e0e0e0;
 }
 
-.tab-button.active {
-  background: #4a90e2;
-  color: #fff;
-}
-
 .profile-tab-content {
   margin-top: 20px;
   background: #fff;

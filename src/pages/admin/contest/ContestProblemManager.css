@@ -127,6 +127,43 @@
     border-color: #667eea;
 }
 
+/* Color Picker Combo */
+.color-picker-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.color-picker-input {
+    width: 60px;
+    height: 42px;
+    padding: 4px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+    background: white;
+    transition: border-color 0.2s;
+}
+
+.color-picker-input:hover:not(:disabled) {
+    border-color: #667eea;
+}
+
+.color-picker-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.color-text-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+}
+
 /* Autocomplete Wrapper */
 .autocomplete-wrapper {
     position: relative;

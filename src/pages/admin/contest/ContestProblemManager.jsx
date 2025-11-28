@@ -289,14 +289,24 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
 
                             <div className="form-group">
                                 <label>RGB Code</label>
-                                <input
-                                    type="text"
-                                    value={rgb}
-                                    onChange={(e) => setRgb(e.target.value)}
-                                    placeholder="#FF0000"
-                                    maxLength="7"
-                                    disabled={loading}
-                                />
+                                <div className="color-picker-wrapper">
+                                    <input
+                                        type="color"
+                                        value={rgb || '#667eea'}
+                                        onChange={(e) => setRgb(e.target.value)}
+                                        className="color-picker-input"
+                                        disabled={loading}
+                                    />
+                                    <input
+                                        type="text"
+                                        value={rgb}
+                                        onChange={(e) => setRgb(e.target.value)}
+                                        placeholder="#667eea"
+                                        maxLength="7"
+                                        className="color-text-input"
+                                        disabled={loading}
+                                    />
+                                </div>
                             </div>
                         </div>
 
