@@ -209,6 +209,30 @@ const ContestService = {
     },
 
     /**
+     * Get user candidates (search) for adding to contest
+     */
+    getUserCandidates: async (contestId, params = {}) => {
+        try {
+            const response = await api.get(`/api/contests/${contestId}/user-candidates/`, { params });
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Bulk add participants to a contest
+     */
+    bulkAddParticipants: async (contestId, userIds) => {
+        try {
+            const response = await api.post(`/api/contests/${contestId}/participants/bulk-add/`, { user_ids: userIds });
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
      * Toggle participant active status
      * @param {number} contestId - Contest ID
      * @param {number} participantId - Participant ID

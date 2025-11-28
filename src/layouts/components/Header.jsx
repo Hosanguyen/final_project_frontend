@@ -70,9 +70,13 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
                     <Link to="/courses" className="nav-link">
                         Khóa học
                     </Link>
-                    <Link to="/practice" className="nav-link">
-                        Thực hành
-                    </Link>
+                    <div className="nav-link dropdown">
+                        <span className="dropdown-toggle">Thực hành</span>
+                        <div className="dropdown-menu">
+                            <Link to="/practice" className="dropdown-item">Bài tập</Link>
+                            <Link to="/practice/ranking" className="dropdown-item">Bảng xếp hạng</Link>
+                        </div>
+                    </div>
                     <Link to="/contests" className="nav-link">
                         Thi đấu
                     </Link>
