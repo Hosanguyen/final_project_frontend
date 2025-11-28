@@ -3,7 +3,7 @@ import notification from '../../../utils/notification';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     FaTrophy, FaArrowLeft, FaEdit, FaTrash, FaCalendarAlt,
-    FaClock, FaEye, FaEyeSlash, FaUsers, FaSpinner
+    FaClock, FaEye, FaEyeSlash, FaUsers, FaSpinner, FaSync
 } from 'react-icons/fa';
 import './ContestDetail.css';
 import ContestService from '../../../services/ContestService';
@@ -16,6 +16,7 @@ const ContestDetail = () => {
     const [contest, setContest] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [recalcLoading, setRecalcLoading] = useState(false);
 
     useEffect(() => {
         loadContest();
@@ -46,6 +47,26 @@ const ContestDetail = () => {
         } catch (error) {
             console.error('Delete failed:', error);
             notification.error(error.error || 'Xóa contest thất bại');
+        }
+    };
+
+    const handleRecalculate = async () => {
+        const result = await notification.confirm(
+            'Bạn có chắc muốn tính lại xếp hạng cho contest này?',
+            'Xác nhận',
+            { confirmButtonText: 'Tính lại', cancelButtonText: 'Hủy' }
+        );
+        if (!result?.isConfirmed) return;
+        setRecalcLoading(true);
+        try {
+            const res = await ContestService.recalculateRankings(id);
+            notification.success(`${res.message || 'Đã tính lại xếp hạng'} (${res.updated_participants} người tham gia)`);
+        } catch (error) {
+            console.error('Recalculate failed:', error);
+            const msg = typeof error === 'string' ? error : (error.error || 'Không thể tính lại xếp hạng');
+            notification.error(msg);
+        } finally {
+            setRecalcLoading(false);
         }
     };
 
@@ -97,6 +118,10 @@ const ContestDetail = () => {
                     <FaArrowLeft /> Quay lại
                 </button>
                 <div className="contest-detail-actions">
+                    <button className="contest-btn-recalc" onClick={handleRecalculate} disabled={recalcLoading}>
+                        {recalcLoading ? <FaSpinner className="spinner" /> : <FaSync />}
+                        {recalcLoading ? 'Đang tính lại...' : 'Tính lại xếp hạng'}
+                    </button>
                     <button className="contest-btn-edit" onClick={handleEdit}>
                         <FaEdit /> Chỉnh sửa
                     </button>

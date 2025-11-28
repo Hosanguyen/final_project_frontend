@@ -259,6 +259,20 @@ const ContestService = {
         } catch (error) {
             throw error.response?.data || error.message;
         }
+    },
+
+    /**
+     * Recalculate rankings for a contest (admin action)
+     * @param {number} contestId - Contest ID
+     * @returns {Promise} Result with updated count
+     */
+    recalculateRankings: async (contestId) => {
+        try {
+            const response = await api.post(`/api/contests/${contestId}/recalculate-rankings/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
     }
 };
 
