@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import notification from '../../../utils/notification';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     FaTrophy, FaArrowLeft, FaEdit, FaTrash, FaCalendarAlt,
@@ -27,7 +28,7 @@ const ContestDetail = () => {
             setContest(data);
         } catch (error) {
             console.error('Error loading contest:', error);
-            alert('Không thể tải thông tin contest');
+            notification.error('Không thể tải thông tin contest');
         } finally {
             setLoading(false);
         }
@@ -40,11 +41,11 @@ const ContestDetail = () => {
     const handleDelete = async () => {
         try {
             const response = await ContestService.delete(id);
-            alert(response.message || 'Contest deleted successfully');
+            notification.success(response.message || 'Contest deleted successfully');
             navigate('/admin/contests');
         } catch (error) {
             console.error('Delete failed:', error);
-            alert(error.error || 'Xóa contest thất bại');
+            notification.error(error.error || 'Xóa contest thất bại');
         }
     };
 

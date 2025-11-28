@@ -5,6 +5,7 @@ import ProblemService from '../../../services/ProblemService';
 import CourseService from '../../../services/CourseService';
 import CKEditorComponent from '../../../components/CKEditor';
 import './ProblemForm.css';
+import notification from '../../../utils/notification';
 
 const ProblemForm = () => {
     const navigate = useNavigate();
@@ -113,7 +114,7 @@ const ProblemForm = () => {
             }
         } catch (error) {
             console.error('Failed to load problem:', error);
-            alert('Không thể tải thông tin bài toán');
+            notification.error('Không thể tải thông tin bài toán');
             navigate('/admin/problems');
         } finally {
             setLoading(false);
@@ -156,12 +157,12 @@ const ProblemForm = () => {
         const file = e.target.files[0];
         if (file) {
             if (!file.name.endsWith('.zip')) {
-                alert('Chỉ chấp nhận file .zip');
+                notification.warning('Chỉ chấp nhận file .zip');
                 e.target.value = '';
                 return;
             }
             if (file.size > 50 * 1024 * 1024) {
-                alert('File ZIP quá lớn (tối đa 50MB)');
+                notification.warning('File ZIP quá lớn (tối đa 50MB)');
                 e.target.value = '';
                 return;
             }
@@ -244,7 +245,7 @@ const ProblemForm = () => {
                 response = await ProblemService.create(submitFormData);
             }
 
-            alert(response.detail || 'Lưu bài toán thành công');
+            notification.success(response.detail || 'Lưu bài toán thành công');
             if (response.sync_message) {
                 console.log('Sync status:', response.sync_status, response.sync_message);
             }
@@ -257,12 +258,12 @@ const ProblemForm = () => {
                 if (typeof serverErrors === 'object' && !serverErrors.detail) {
                     setErrors(serverErrors);
                 } else if (serverErrors.detail) {
-                    alert(serverErrors.detail);
+                    notification.error(serverErrors.detail);
                 } else {
-                    alert('Lưu bài toán thất bại');
+                    notification.error('Lưu bài toán thất bại');
                 }
             } else {
-                alert('Lưu bài toán thất bại');
+                notification.error('Lưu bài toán thất bại');
             }
         } finally {
             setLoading(false);
@@ -317,7 +318,7 @@ const ProblemForm = () => {
 
     const removeTestCase = (index) => {
         if (testCases.length === 1) {
-            alert('Phải có ít nhất 1 test case');
+            notification.warning('Phải có ít nhất 1 test case');
             return;
         }
         setTestCases(testCases.filter((_, i) => i !== index));

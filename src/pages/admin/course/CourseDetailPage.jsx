@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import notification from '../../../utils/notification';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
     FaBook, FaEdit, FaTrash, FaPlus, FaList, FaEye, FaCheckCircle, FaTimesCircle,
@@ -34,7 +35,7 @@ const CourseDetailPage = () => {
             setLessons(lessonsData);
         } catch (error) {
             console.error('Error loading course:', error);
-            alert('Không thể tải dữ liệu khóa học');
+            notification.error('Không thể tải dữ liệu khóa học');
         } finally {
             setLoading(false);
         }
@@ -57,12 +58,17 @@ const CourseDetailPage = () => {
             setSelectedLesson(null);
         } catch (error) {
             console.error('Error deleting lesson:', error);
-            alert('Xóa bài học thất bại: ' + (error.response?.data?.detail || error.message));
+            notification.error('Xóa bài học thất bại: ' + (error.response?.data?.detail || error.message));
         }
     };
 
     const handleUnlinkLesson = async (lessonId) => {
-        if (!window.confirm('Bạn có chắc muốn gỡ bài học này khỏi khóa học? (Bài học vẫn tồn tại nhưng không còn thuộc khóa học này)')) {
+        const result = await notification.confirm(
+            'Bạn có chắc muốn gỡ bài học này khỏi khóa học? (Bài học vẫn tồn tại nhưng không còn thuộc khóa học này)',
+            'Xác nhận gỡ bài học'
+        );
+        
+        if (!result.isConfirmed) {
             return;
         }
 
@@ -77,7 +83,7 @@ const CourseDetailPage = () => {
             setTimeout(() => successMsg.remove(), 3000);
         } catch (error) {
             console.error('Error unlinking lesson:', error);
-            alert('Không thể gỡ bài học: ' + (error.response?.data?.detail || error.message));
+            notification.error('Không thể gỡ bài học: ' + (error.response?.data?.detail || error.message));
         }
     };
 

@@ -4,6 +4,7 @@ import { FaPlus, FaTrash, FaCheckCircle, FaExclamationCircle, FaExternalLinkAlt 
 import './ContestProblemManager.css';
 import ContestService from '../../../services/ContestService';
 import ProblemService from '../../../services/ProblemService';
+import notification from '../../../utils/notification';
 
 const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) => {
     const [problems, setProblems] = useState([]);
@@ -131,7 +132,12 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
     };
 
     const handleRemoveProblem = async (problemId) => {
-        if (!window.confirm('Are you sure you want to remove this problem from the contest?')) {
+        const result = await notification.confirm(
+            'Are you sure you want to remove this problem from the contest?',
+            'Confirm Remove'
+        );
+        
+        if (!result.isConfirmed) {
             return;
         }
 

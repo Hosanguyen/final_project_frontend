@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaTrophy, FaClock, FaCalendar, FaListAlt, FaCheckCircle, FaTimesCircle, FaCircle, FaChevronLeft, FaUserCheck, FaUserTimes } from 'react-icons/fa';
 import ContestService from '../../services/ContestService';
 import './ContestDetailUser.css';
+import notification from '../../utils/notification';
 
 const ContestDetailUser = () => {
     const { id } = useParams();
@@ -35,17 +36,22 @@ const ContestDetailUser = () => {
             setRegistering(true);
             await ContestService.registerForContest(id);
             await fetchContestDetail(); // Refresh contest data
-            alert('Đăng ký tham gia cuộc thi thành công!');
+            notification.success('Đăng ký tham gia cuộc thi thành công!');
         } catch (err) {
             console.error('Error registering for contest:', err);
-            alert(err.error || 'Không thể đăng ký tham gia cuộc thi. Vui lòng thử lại sau.');
+            notification.error(err.error || 'Không thể đăng ký tham gia cuộc thi. Vui lòng thử lại sau.');
         } finally {
             setRegistering(false);
         }
     };
 
     const handleUnregister = async () => {
-        if (!window.confirm('Bạn có chắc chắn muốn hủy đăng ký tham gia cuộc thi này?')) {
+        const result = await notification.confirm(
+            'Bạn có chắc chắn muốn hủy đăng ký tham gia cuộc thi này?',
+            'Xác nhận hủy đăng ký'
+        );
+        
+        if (!result.isConfirmed) {
             return;
         }
 
@@ -53,10 +59,10 @@ const ContestDetailUser = () => {
             setRegistering(true);
             await ContestService.unregisterFromContest(id);
             await fetchContestDetail(); // Refresh contest data
-            alert('Hủy đăng ký tham gia cuộc thi thành công!');
+            notification.success('Hủy đăng ký tham gia cuộc thi thành công!');
         } catch (err) {
             console.error('Error unregistering from contest:', err);
-            alert(err.error || 'Không thể hủy đăng ký. Vui lòng thử lại sau.');
+            notification.error(err.error || 'Không thể hủy đăng ký. Vui lòng thử lại sau.');
         } finally {
             setRegistering(false);
         }

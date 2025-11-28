@@ -5,6 +5,7 @@ import { FaPlus, FaSearch, FaEdit, FaTrash, FaEye, FaBook } from 'react-icons/fa
 import LessonService from '../../../services/LessonService';
 import CourseService from '../../../services/CourseService';
 import './LessonManagement.css';
+import notification from '../../../utils/notification';
 
 const LessonManagement = () => {
     const navigate = useNavigate();
@@ -31,7 +32,7 @@ const LessonManagement = () => {
             setCourses(coursesData);
         } catch (error) {
             console.error('Error loading data:', error);
-            alert('Không thể tải dữ liệu');
+            notification.error('Không thể tải dữ liệu');
         } finally {
             setLoading(false);
         }
@@ -45,10 +46,10 @@ const LessonManagement = () => {
             setLessons(lessons.filter(l => l.id !== lessonToDelete.id));
             setShowDeleteModal(false);
             setLessonToDelete(null);
-            alert('Xóa bài học thành công');
+            notification.success('Xóa bài học thành công');
         } catch (error) {
             console.error('Error deleting lesson:', error);
-            alert('Xóa bài học thất bại');
+            notification.error('Xóa bài học thất bại');
         }
     };
 

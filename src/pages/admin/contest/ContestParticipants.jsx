@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import notification from '../../../utils/notification';
 import { FaUsers, FaUserCheck, FaUserTimes, FaSpinner, FaSearch, FaToggleOn, FaToggleOff } from 'react-icons/fa';
 import ContestService from '../../../services/ContestService';
 import './ContestParticipants.css';
@@ -23,19 +24,24 @@ const ContestParticipants = ({ contestId }) => {
             setStatistics(data.statistics || { total: 0, active: 0, inactive: 0 });
         } catch (error) {
             console.error('Error loading participants:', error);
-            alert('Không thể tải danh sách người tham gia');
+            notification.error('Không thể tải danh sách người tham gia');
         } finally {
             setLoading(false);
         }
     };
 
     const handleToggleStatus = async (participantId, currentStatus) => {
-        if (!currentStatus) {
-            alert('Không thể activate lại người dùng đã tự hủy đăng ký');
+        if (currentStatus === 'withdrawn') {
+            notification.warning('Không thể activate lại người dùng đã tự hủy đăng ký');
             return;
         }
 
-        if (!window.confirm('Bạn có chắc chắn muốn deactivate người tham gia này?')) {
+        const result = await notification.confirm(
+            'Bạn có chắc chắn muốn deactivate người tham gia này?',
+            'Xác nhận'
+        );
+        
+        if (!result.isConfirmed) {
             return;
         }
 
@@ -43,10 +49,10 @@ const ContestParticipants = ({ contestId }) => {
         try {
             await ContestService.toggleParticipantStatus(contestId, participantId);
             await loadParticipants(); // Reload to update statistics
-            alert('Deactivate thành công!');
+            notification.success('Deactivate thành công!');
         } catch (error) {
             console.error('Error toggling participant status:', error);
-            alert(error.error || 'Không thể thay đổi trạng thái');
+            notification.error(error.error || 'Không thể thay đổi trạng thái');
         } finally {
             setTogglingId(null);
         }

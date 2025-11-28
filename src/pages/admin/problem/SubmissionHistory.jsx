@@ -4,6 +4,7 @@ import SubmissionService from '../../../services/SubmissionService';
 import SubmissionCodeViewer from './SubmissionCodeViewer';
 import SubmissionDetailResults from './SubmissionDetailResults';
 import './SubmissionHistory.css';
+import notification from '../../../utils/notification';
 
 const SubmissionHistory = ({ problemId, contestId, contestMode, isShowResult }) => {
     const [submissions, setSubmissions] = useState([]);
@@ -84,7 +85,7 @@ const SubmissionHistory = ({ problemId, contestId, contestMode, isShowResult }) 
             return fullSubmission;
         } catch (error) {
             console.error('Failed to load full submission:', error);
-            alert('Không thể tải chi tiết submission này');
+            notification.error('Không thể tải chi tiết submission này');
             return null;
         }
     };

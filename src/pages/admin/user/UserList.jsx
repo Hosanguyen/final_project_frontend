@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch, FaUserShield, FaCheck, FaTimes } from 'react-icons/fa';
 import UserService from '../../../services/UserService';
 import './UserList.css';
+import notification from '../../../utils/notification';
 
 const UserList = () => {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ const UserList = () => {
             setUsers(data);
         } catch (error) {
             console.error('Failed to load users:', error);
-            alert('Không thể tải danh sách người dùng');
+            notification.error('Không thể tải danh sách người dùng');
         } finally {
             setLoading(false);
         }
@@ -34,16 +35,16 @@ const UserList = () => {
 
         try {
             const response = await UserService.delete(selectedUser.id);
-            alert(response.detail);
+            notification.success(response.detail);
             loadUsers();
             setShowDeleteModal(false);
             setSelectedUser(null);
         } catch (error) {
             console.error('Delete failed:', error);
             if (error.response?.data?.detail) {
-                alert(error.response.data.detail);
+                notification.error(error.response.data.detail);
             } else {
-                alert('Xóa người dùng thất bại');
+                notification.error('Xóa người dùng thất bại');
             }
         }
     };

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 import PermissionCategoryService from '../../../services/PermissionCategoryService';
 import './PermissionCategoryList.css';
+import notification from '../../../utils/notification';
 
 const PermissionCategoryList = () => {
     const navigate = useNavigate();
@@ -22,8 +23,8 @@ const PermissionCategoryList = () => {
             const data = await PermissionCategoryService.getAll();
             setCategories(data);
         } catch (error) {
-            console.error('Failed to load categories:', error);
-            alert('Không thể tải danh sách loại phân quyền');
+            console.error('Failed to load permission categories:', error);
+            notification.error('Không thể tải danh sách loại phân quyền');
         } finally {
             setLoading(false);
         }
@@ -34,16 +35,16 @@ const PermissionCategoryList = () => {
 
         try {
             const response = await PermissionCategoryService.delete(selectedCategory.id);
-            alert(response.detail);
+            notification.success(response.detail);
             loadCategories();
             setShowDeleteModal(false);
             setSelectedCategory(null);
         } catch (error) {
             console.error('Delete failed:', error);
             if (error.response?.data?.detail) {
-                alert(error.response.data.detail);
+                notification.error(error.response.data.detail);
             } else {
-                alert('Xóa loại phân quyền thất bại');
+                notification.error('Xóa loại phân quyền thất bại');
             }
         }
     };

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { loginUser } from '../../services/AuthService';
+import notification from '../../utils/notification';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -46,13 +47,13 @@ const Login = () => {
         setLoading(false);
 
         if (result.success) {
-            alert(result.message);
+            notification.success(result.message);
             navigate('/');
         } else {
             if (result.errors) {
                 setErrors(result.errors);
             } else {
-                alert(result.message);
+                notification.error(result.message);
             }
         }
     };

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import './UserProfile.css';
 import { updateUserProfile } from '../../services/UserService';
+import notification from '../../utils/notification';
 
 const UserProfile = () => {
   const API_URL = process.env.REACT_APP_API_URL;
@@ -103,15 +104,20 @@ const UserProfile = () => {
       setUser(updatedUser.user);
       localStorage.setItem('user', JSON.stringify(updatedUser.user));
       setIsEditing(false);
-      alert('Cập nhật thông tin thành công!');
+      notification.success('Cập nhật thông tin thành công!');
     } catch (error) {
       console.error(error);
-      alert('Cập nhật thất bại hoặc lỗi kết nối máy chủ.');
+      notification.error('Cập nhật thất bại hoặc lỗi kết nối máy chủ.');
     }
   };
 
     const handleDeleteAvatar = async () => {
-        if (!window.confirm('Bạn có chắc muốn xóa ảnh đại diện?')) return;
+        const result = await notification.confirm(
+            'Bạn có chắc muốn xóa ảnh đại diện?',
+            'Xác nhận xóa'
+        );
+        
+        if (!result.isConfirmed) return;
 
         try {
             setFormData({
@@ -122,7 +128,7 @@ const UserProfile = () => {
             setAvatarFile(null);
         } catch (error) {
             console.error(error);
-            alert('Xóa ảnh đại diện thất bại hoặc lỗi máy chủ.');
+            notification.error('Xóa ảnh đại diện thất bại hoặc lỗi máy chủ.');
         }
     };
   

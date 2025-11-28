@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FaSave, FaTimes } from 'react-icons/fa';
 import PermissionCategoryService from '../../../services/PermissionCategoryService';
 import './PermissionCategoryForm.css';
+import notification from '../../../utils/notification';
 
 const PermissionCategoryForm = () => {
     const navigate = useNavigate();
@@ -31,8 +32,8 @@ const PermissionCategoryForm = () => {
                 description: data.description || '',
             });
         } catch (error) {
-            console.error('Failed to load category:', error);
-            alert('Không thể tải thông tin loại phân quyền');
+            console.error('Failed to load permission category:', error);
+            notification.error('Không thể tải thông tin loại phân quyền');
             navigate('/admin/permission-categories');
         } finally {
             setLoading(false);
@@ -69,22 +70,22 @@ const PermissionCategoryForm = () => {
                 response = await PermissionCategoryService.create(formData);
             }
 
-            alert(response.detail);
+            notification.success(response.detail);
             navigate('/admin/permission-categories');
         } catch (error) {
-            console.error('Error saving category:', error);
+            console.error('Error saving permission category:', error);
 
             if (error.response?.data) {
                 const serverErrors = error.response.data;
-                if (typeof serverErrors === 'object') {
+                if (typeof serverErrors === 'object' && !serverErrors.detail) {
                     setErrors(serverErrors);
                 } else if (serverErrors.detail) {
-                    alert(serverErrors.detail);
+                    notification.error(serverErrors.detail);
                 } else {
-                    alert('Lưu loại phân quyền thất bại');
+                    notification.error('Lưu loại phân quyền thất bại');
                 }
             } else {
-                alert('Lưu loại phân quyền thất bại');
+                notification.error('Lưu loại phân quyền thất bại');
             }
         } finally {
             setLoading(false);

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import notification from '../../../utils/notification';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaSave, FaTimes, FaBook, FaInfoCircle } from 'react-icons/fa';
 import CourseService from '../../../services/CourseService';
@@ -56,7 +57,7 @@ const CourseFormPage = () => {
             }
         } catch (error) {
             console.error('Error loading data:', error);
-            alert('Không thể tải dữ liệu');
+            notification.error('Không thể tải dữ liệu');
         }
     };
 
@@ -145,10 +146,10 @@ const CourseFormPage = () => {
         try {
             if (isEdit) {
                 await CourseService.updateCourse(id, formData);
-                alert('Cập nhật khóa học thành công!');
+                notification.success('Cập nhật khóa học thành công!');
             } else {
                 await CourseService.createCourse(formData);
-                alert('Tạo khóa học thành công!');
+                notification.success('Tạo khóa học thành công!');
             }
             navigate('/admin/courses');
         } catch (error) {
@@ -157,7 +158,7 @@ const CourseFormPage = () => {
                 const serverErrors = error.response.data;
                 setErrors(serverErrors);
             }
-            alert('Lưu khóa học thất bại!');
+            notification.error('Lưu khóa học thất bại!');
         } finally {
             setLoading(false);
         }
