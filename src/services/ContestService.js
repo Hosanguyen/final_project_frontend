@@ -221,6 +221,20 @@ const ContestService = {
         } catch (error) {
             throw error.response?.data || error.message;
         }
+    },
+
+    /**
+     * Get contest leaderboard
+     * @param {number} contestId - Contest ID
+     * @returns {Promise} Leaderboard data with rankings and problem details
+     */
+    getLeaderboard: async (contestId) => {
+        try {
+            const response = await api.get(`/api/contests/${contestId}/leaderboard/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
     }
 };
 
