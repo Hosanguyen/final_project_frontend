@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaBell, FaUser, FaSignOutAlt, FaBars, FaSearch } from 'react-icons/fa';
 import { MdDashboard } from 'react-icons/md';
 import logo from '../../assets/images/logo.png';
@@ -11,6 +11,7 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
@@ -51,6 +52,21 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
         };
     }, []);
 
+    // Ensure practice dropdown closes after navigation by removing focus
+    useEffect(() => {
+        const active = document.activeElement;
+        if (active && typeof active.blur === 'function') {
+            active.blur();
+        }
+    }, [location.pathname]);
+
+    const closePracticeMenu = () => {
+        const active = document.activeElement;
+        if (active && typeof active.blur === 'function') {
+            active.blur();
+        }
+    };
+
     return (
         <header className="header">
             <div className="header-left">
@@ -73,8 +89,8 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
                     <div className="nav-link dropdown">
                         <span className="dropdown-toggle">Thực hành</span>
                         <div className="dropdown-menu">
-                            <Link to="/practice" className="dropdown-item">Bài tập</Link>
-                            <Link to="/practice/ranking" className="dropdown-item">Bảng xếp hạng</Link>
+                            <Link to="/practice" className="dropdown-item" onClick={closePracticeMenu}>Bài tập</Link>
+                            <Link to="/practice/ranking" className="dropdown-item" onClick={closePracticeMenu}>Bảng xếp hạng</Link>
                         </div>
                     </div>
                     <Link to="/contests" className="nav-link">
