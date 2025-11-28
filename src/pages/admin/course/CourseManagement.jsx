@@ -1,9 +1,10 @@
-// src/pages/admin/course/CourseManagement.jsx
+﻿// src/pages/admin/course/CourseManagement.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch, FaEye, FaCheck, FaTimes, FaBookOpen, FaUsers } from 'react-icons/fa';
 import CourseService from '../../../services/CourseService';
 import './CourseManagement.css';
+import notification from '../../../utils/notification';
 
 const CourseManagement = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const CourseManagement = () => {
       loadCourses();
     } catch (err) {
       console.error('Error loading data:', err);
-      alert('Không thể tải dữ liệu');
+      notification.error('Không thể tải dữ liệu');
     }
   };
 
@@ -57,7 +58,7 @@ const CourseManagement = () => {
       setCourses(coursesData);
     } catch (err) {
       console.error('Error loading courses:', err);
-      alert('Không thể tải danh sách khóa học');
+      notification.error('Không thể tải danh sách khóa học');
     } finally {
       setLoading(false);
     }
@@ -76,13 +77,13 @@ const CourseManagement = () => {
 
     try {
       await CourseService.deleteCourse(selectedCourse.id);
-      alert('Xóa khóa học thành công');
+      notification.success('Xóa khóa học thành công');
       loadCourses();
       setShowDeleteModal(false);
       setSelectedCourse(null);
     } catch (error) {
       console.error('Delete failed:', error);
-      alert('Xóa khóa học thất bại');
+      notification.error('Xóa khóa học thất bại');
     }
   };
 

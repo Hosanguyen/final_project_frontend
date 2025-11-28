@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 import PermissionService from '../../../services/PermissionService';
 import './PermissionList.css';
+import notification from '../../../utils/notification';
 
 const PermissionList = () => {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ const PermissionList = () => {
             setPermissions(data);
         } catch (error) {
             console.error('Failed to load permissions:', error);
-            alert('Không thể tải danh sách phân quyền');
+            notification.error('Không thể tải danh sách phân quyền');
         } finally {
             setLoading(false);
         }
@@ -34,16 +35,16 @@ const PermissionList = () => {
 
         try {
             const response = await PermissionService.delete(selectedPermission.id);
-            alert(response.detail);
+            notification.success(response.detail);
             loadPermissions();
             setShowDeleteModal(false);
             setSelectedPermission(null);
         } catch (error) {
             console.error('Delete failed:', error);
             if (error.response?.data?.detail) {
-                alert(error.response.data.detail);
+                notification.error(error.response.data.detail);
             } else {
-                alert('Xóa phân quyền thất bại');
+                notification.error('Xóa phân quyền thất bại');
             }
         }
     };

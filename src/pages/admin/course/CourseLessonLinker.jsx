@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import notification from '../../../utils/notification';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaPlus, FaCheck, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import CourseService from '../../../services/CourseService';
@@ -35,7 +36,7 @@ const CourseLessonLinker = () => {
             setCourseLessons(courseLessonsData);
         } catch (error) {
             console.error('Error loading data:', error);
-            alert('Không thể tải dữ liệu');
+            notification.error('Không thể tải dữ liệu');
         } finally {
             setLoading(false);
         }
@@ -61,7 +62,7 @@ const CourseLessonLinker = () => {
 
     const handleAddLessons = async () => {
         if (selectedLessons.length === 0) {
-            alert('Vui lòng chọn ít nhất một bài học');
+            notification.warning('Vui lòng chọn ít nhất một bài học');
             return;
         }
 
@@ -71,11 +72,11 @@ const CourseLessonLinker = () => {
                 await LessonService.patchLesson(lessonId, { course: parseInt(courseId) });
             }
             
-            alert(`Đã thêm ${selectedLessons.length} bài học vào khóa học`);
+            notification.error(`Đã thêm ${selectedLessons.length} bài học vào khóa học`);
             navigate(`/admin/courses/${courseId}`);
         } catch (error) {
             console.error('Error linking lessons:', error);
-            alert('Không thể thêm bài học vào khóa học');
+            notification.error('Không thể thêm bài học vào khóa học');
         }
     };
 

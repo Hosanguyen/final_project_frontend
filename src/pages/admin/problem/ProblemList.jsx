@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch, FaEye, FaCheck, FaTimes } from 'react-icons/fa';
 import ProblemService from '../../../services/ProblemService';
 import './ProblemList.css';
+import notification from '../../../utils/notification';
 
 const ProblemList = () => {
     const navigate = useNavigate();
@@ -46,7 +47,7 @@ const ProblemList = () => {
             });
         } catch (error) {
             console.error('Failed to load problems:', error);
-            alert('Không thể tải danh sách bài toán');
+            notification.error('Không thể tải danh sách bài toán');
         } finally {
             setLoading(false);
         }
@@ -67,16 +68,16 @@ const ProblemList = () => {
 
         try {
             const response = await ProblemService.delete(selectedProblem.id);
-            alert(response.detail);
+            notification.success(response.detail);
             loadProblems();
             setShowDeleteModal(false);
             setSelectedProblem(null);
         } catch (error) {
             console.error('Delete failed:', error);
             if (error.response?.data?.detail) {
-                alert(error.response.data.detail);
+                notification.error(error.response.data.detail);
             } else {
-                alert('Xóa bài toán thất bại');
+                notification.error('Xóa bài toán thất bại');
             }
         }
     };

@@ -6,6 +6,7 @@ import ContestService from '../../../services/ContestService';
 import ProblemSubmission from './ProblemSubmission';
 import SubmissionHistory from './SubmissionHistory';
 import './ProblemDetail.css';
+import notification from '../../../utils/notification';
 
 const ProblemDetail = () => {
     const navigate = useNavigate();
@@ -35,7 +36,7 @@ const ProblemDetail = () => {
             setContestProblem(contestProblemId ? data : null);
         } catch (error) {
             console.error('Failed to load problem:', error);
-            alert('Không thể tải thông tin bài toán');
+            notification.error('Không thể tải thông tin bài toán');
             navigate('/admin/problems');
         } finally {
             setLoading(false);
@@ -45,11 +46,11 @@ const ProblemDetail = () => {
     const handleDelete = async () => {
         try {
             const response = await ProblemService.delete(id);
-            alert(response.detail);
+            notification.success(response.detail);
             navigate('/admin/problems');
         } catch (error) {
             console.error('Delete failed:', error);
-            alert('Xóa bài toán thất bại');
+            notification.error('Xóa bài toán thất bại');
         }
     };
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 import RoleService from '../../../services/RoleService';
 import './RoleList.css';
+import notification from '../../../utils/notification';
 
 const RoleList = () => {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ const RoleList = () => {
             setRoles(data);
         } catch (error) {
             console.error('Failed to load roles:', error);
-            alert('Không thể tải danh sách vai trò');
+            notification.error('Không thể tải danh sách vai trò');
         } finally {
             setLoading(false);
         }
@@ -34,16 +35,16 @@ const RoleList = () => {
 
         try {
             const response = await RoleService.delete(selectedRole.id);
-            alert(response.detail);
+            notification.success(response.detail);
             loadRoles();
             setShowDeleteModal(false);
             setSelectedRole(null);
         } catch (error) {
             console.error('Delete failed:', error);
             if (error.response?.data?.detail) {
-                alert(error.response.data.detail);
+                notification.error(error.response.data.detail);
             } else {
-                alert('Xóa vai trò thất bại');
+                notification.error('Xóa vai trò thất bại');
             }
         }
     };

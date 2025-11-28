@@ -4,6 +4,7 @@ import { FaSave, FaTimes } from 'react-icons/fa';
 import UserService from '../../../services/UserService';
 import RoleService from '../../../services/RoleService';
 import './UserForm.css';
+import notification from '../../../utils/notification';
 
 const UserForm = () => {
     const navigate = useNavigate();
@@ -65,7 +66,7 @@ const UserForm = () => {
             });
         } catch (error) {
             console.error('Failed to load user:', error);
-            alert('Không thể tải thông tin người dùng');
+            notification.error('Không thể tải thông tin người dùng');
             navigate('/admin/users');
         } finally {
             setLoading(false);
@@ -154,7 +155,7 @@ const UserForm = () => {
                 }
             }
 
-            alert(response.detail || 'Lưu người dùng thành công');
+            notification.success(response.detail || 'Lưu người dùng thành công');
             navigate('/admin/users');
         } catch (error) {
             console.error('Error saving user:', error);
@@ -164,12 +165,12 @@ const UserForm = () => {
                 if (typeof serverErrors === 'object' && !serverErrors.detail) {
                     setErrors(serverErrors);
                 } else if (serverErrors.detail) {
-                    alert(serverErrors.detail);
+                    notification.error(serverErrors.detail);
                 } else {
-                    alert('Lưu người dùng thất bại');
+                    notification.error('Lưu người dùng thất bại');
                 }
             } else {
-                alert('Lưu người dùng thất bại');
+                notification.error('Lưu người dùng thất bại');
             }
         } finally {
             setLoading(false);

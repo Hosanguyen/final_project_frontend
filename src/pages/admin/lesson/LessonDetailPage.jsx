@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import notification from '../../../utils/notification';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
     FaBookOpen, FaEdit, FaTrash, FaPlus, FaArrowLeft, 
@@ -33,7 +34,7 @@ const LessonDetailPage = () => {
             }
         } catch (error) {
             console.error('Error loading lesson:', error);
-            alert('Không thể tải dữ liệu bài học');
+            notification.error('Không thể tải dữ liệu bài học');
         } finally {
             setLoading(false);
         }
@@ -44,13 +45,13 @@ const LessonDetailPage = () => {
 
         try {
             await LessonService.deleteLessonResource(selectedResource.id);
-            alert('Xóa tài nguyên thành công');
+            notification.success('Xóa tài nguyên thành công');
             loadLessonData();
             setShowDeleteModal(false);
             setSelectedResource(null);
         } catch (error) {
             console.error('Error deleting resource:', error);
-            alert('Xóa tài nguyên thất bại');
+            notification.error('Xóa tài nguyên thất bại');
         }
     };
 

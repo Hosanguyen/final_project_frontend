@@ -4,6 +4,7 @@ import { FaSave, FaTimes } from 'react-icons/fa';
 import PermissionService from '../../../services/PermissionService';
 import PermissionCategoryService from '../../../services/PermissionCategoryService';
 import './PermissionForm.css';
+import notification from '../../../utils/notification';
 
 const PermissionForm = () => {
     const navigate = useNavigate();
@@ -46,7 +47,7 @@ const PermissionForm = () => {
             });
         } catch (error) {
             console.error('Failed to load permission:', error);
-            alert('Không thể tải thông tin phân quyền');
+            notification.error('Không thể tải thông tin phân quyền');
             navigate('/admin/permissions');
         } finally {
             setLoading(false);
@@ -90,7 +91,7 @@ const PermissionForm = () => {
                 response = await PermissionService.create(submitData);
             }
 
-            alert(response.detail);
+            notification.success(response.detail);
             navigate('/admin/permissions');
         } catch (error) {
             console.error('Error saving permission:', error);
@@ -100,12 +101,12 @@ const PermissionForm = () => {
                 if (typeof serverErrors === 'object' && !serverErrors.detail) {
                     setErrors(serverErrors);
                 } else if (serverErrors.detail) {
-                    alert(serverErrors.detail);
+                    notification.error(serverErrors.detail);
                 } else {
-                    alert('Lưu phân quyền thất bại');
+                    notification.error('Lưu phân quyền thất bại');
                 }
             } else {
-                alert('Lưu phân quyền thất bại');
+                notification.error('Lưu phân quyền thất bại');
             }
         } finally {
             setLoading(false);

@@ -6,6 +6,7 @@ import ContestService from '../../services/ContestService';
 import ProblemSubmission from '../admin/problem/ProblemSubmission';
 import SubmissionHistory from '../admin/problem/SubmissionHistory';
 import './ProblemDetailUser.css';
+import notification from '../../utils/notification';
 
 const ProblemDetailUser = () => {
     const { contestProblemId } = useParams();
@@ -24,7 +25,7 @@ const ProblemDetailUser = () => {
             setProblem(data.problem);
         } catch (error) {
             console.error('Failed to load problem:', error);
-            alert('Không thể tải thông tin bài toán');
+            notification.error('Không thể tải thông tin bài toán');
             navigate('/contests');
         } finally {
             setLoading(false);

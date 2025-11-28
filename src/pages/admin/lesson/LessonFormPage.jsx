@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import notification from '../../../utils/notification';
 import { useNavigate, useParams } from 'react-router-dom';
 import { 
     FaSave, FaTimes, FaBookOpen, FaInfoCircle, FaPlus, FaTrash, 
@@ -12,7 +13,7 @@ const LessonFormPage = () => {
     const navigate = useNavigate();
     const { courseId, id } = useParams();
     const isEdit = Boolean(id);
-    const isStandalone = !courseId; // Tạo lesson độc lập, không gắn với course cụ thể
+    const isStandalone = !courseId; // T?o lesson d?c l?p, kh�ng g?n v?i course c? th?
 
     const [formData, setFormData] = useState({
         course: courseId || '',
@@ -57,7 +58,7 @@ const LessonFormPage = () => {
             }
         } catch (error) {
             console.error('Error loading data:', error);
-            alert('Không thể tải dữ liệu');
+            notification.error('Không thể tải dữ liệu');
         }
     };
 
@@ -91,7 +92,7 @@ const LessonFormPage = () => {
 
     const removeResource = (index) => {
         const resource = resources[index];
-        // Nếu resource đã tồn tại (có id), thêm vào danh sách xóa
+        // N?u resource d� t?n t?i (c� id), th�m v�o danh s�ch x�a
         if (resource.id) {
             setDeletedResourceIds([...deletedResourceIds, resource.id]);
         }
@@ -103,14 +104,14 @@ const LessonFormPage = () => {
         newResources[index] = {
             ...newResources[index],
             [field]: value,
-            // Đánh dấu resource đã được sửa đổi nếu nó đã tồn tại
+            // ��nh d?u resource d� du?c s?a d?i n?u n� d� t?n t?i
             isModified: newResources[index].id ? true : newResources[index].isModified
         };
         setResources(newResources);
     };
 
     const handleFileChange = (index, file) => {
-        // Cập nhật cả file và fileName cùng lúc để tránh race condition
+        // C?p nh?t c? file v� fileName c�ng l�c d? tr�nh race condition
         const newResources = [...resources];
         newResources[index] = {
             ...newResources[index],
@@ -124,12 +125,12 @@ const LessonFormPage = () => {
         const newErrors = {};
 
         if (!formData.title.trim()) {
-            newErrors.title = 'Tiêu đề là bắt buộc';
+            newErrors.title = 'Ti�u d? l� b?t bu?c';
         }
 
-        // Chỉ bắt buộc course nếu đang tạo từ course detail page
+        // Ch? b?t bu?c course n?u dang t?o t? course detail page
         if (!isStandalone && !formData.course) {
-            newErrors.course = 'Vui lòng chọn khóa học';
+            newErrors.course = 'Vui l�ng ch?n kh�a h?c';
         }
 
         setErrors(newErrors);
@@ -150,11 +151,11 @@ const LessonFormPage = () => {
             // Save lesson
             if (isEdit) {
                 await LessonService.updateLesson(id, formData);
-                alert('Cập nhật bài học thành công!');
+                notification.error('C?p nh?t b�i h?c th�nh c�ng!');
             } else {
                 const newLesson = await LessonService.createLesson(formData);
                 lessonId = newLesson.id;
-                alert('Tạo bài học thành công!');
+                notification.error('T?o b�i h?c th�nh c�ng!');
             }
 
             // Delete removed resources
@@ -202,7 +203,7 @@ const LessonFormPage = () => {
                     resourceFormData.append('title', resource.title || '');
                     resourceFormData.append('sequence', resource.sequence);
 
-                    // Handle file upload - chỉ append nếu có file MỚI được chọn
+                    // Handle file upload - ch? append n?u c� file M?I du?c ch?n
                     if ((resource.type === 'file' || resource.type === 'video' || resource.type === 'pdf') && resource.file) {
                         console.log('Appending new file to FormData:', resource.file.name);
                         resourceFormData.append('file', resource.file);
@@ -230,7 +231,7 @@ const LessonFormPage = () => {
                 const serverErrors = error.response.data;
                 setErrors(serverErrors);
             }
-            alert('Lưu bài học thất bại!');
+            notification.error('Luu b�i h?c th?t b?i!');
         } finally {
             setLoading(false);
         }
@@ -251,7 +252,7 @@ const LessonFormPage = () => {
             <div className="lesson-form-page-header">
                 <div className="lesson-form-page-header-left">
                     <FaBookOpen className="lesson-form-page-header-icon" />
-                    <h1>{isEdit ? 'Chỉnh sửa bài học' : 'Tạo bài học mới'}</h1>
+                    <h1>{isEdit ? 'Ch?nh s?a b�i h?c' : 'T?o b�i h?c m?i'}</h1>
                 </div>
                 <button 
                     className="lesson-form-page-btn-back" 
@@ -263,17 +264,17 @@ const LessonFormPage = () => {
                         }
                     }}
                 >
-                    <FaTimes /> Hủy
+                    <FaTimes /> H?y
                 </button>
             </div>
 
             <form onSubmit={handleSubmit} className="lesson-form-page-form">
                 <div className="lesson-form-page-card">
-                    <h2>Thông tin bài học</h2>
+                    <h2>Th�ng tin b�i h?c</h2>
                     
                     <div className="lesson-form-page-form-group">
                         <label>
-                            Khóa học {!isStandalone && <span className="lesson-form-page-required">*</span>}
+                            Kh�a h?c {!isStandalone && <span className="lesson-form-page-required">*</span>}
                         </label>
                         <select
                             name="course"
@@ -282,7 +283,7 @@ const LessonFormPage = () => {
                             className={errors.course ? 'error' : ''}
                             disabled={Boolean(courseId)}
                         >
-                            <option value="">-- Không gắn khóa học --</option>
+                            <option value="">-- Kh�ng g?n kh�a h?c --</option>
                             {courses.map(course => (
                                 <option key={course.id} value={course.id}>
                                     {course.title}
@@ -298,14 +299,14 @@ const LessonFormPage = () => {
 
                     <div className="lesson-form-page-form-group">
                         <label>
-                            Tiêu đề <span className="lesson-form-page-required">*</span>
+                            Ti�u d? <span className="lesson-form-page-required">*</span>
                         </label>
                         <input
                             type="text"
                             name="title"
                             value={formData.title}
                             onChange={handleChange}
-                            placeholder="Nhập tiêu đề bài học"
+                            placeholder="Nh?p ti�u d? b�i h?c"
                             className={errors.title ? 'error' : ''}
                         />
                         {errors.title && (
@@ -316,18 +317,18 @@ const LessonFormPage = () => {
                     </div>
 
                     <div className="lesson-form-page-form-group">
-                        <label>Mô tả</label>
+                        <label>M� t?</label>
                         <textarea
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            placeholder="Mô tả nội dung bài học"
+                            placeholder="M� t? n?i dung b�i h?c"
                             rows="4"
                         />
                     </div>
 
                     <div className="lesson-form-page-form-group">
-                        <label>Thứ tự</label>
+                        <label>Th? t?</label>
                         <input
                             type="number"
                             name="sequence"
@@ -340,20 +341,20 @@ const LessonFormPage = () => {
 
                 <div className="lesson-form-page-card">
                     <div className="lesson-form-page-resources-header">
-                        <h2>Tài nguyên bài học</h2>
+                        <h2>T�i nguy�n b�i h?c</h2>
                         <button 
                             type="button"
                             className="lesson-form-page-btn-add-resource"
                             onClick={addResource}
                         >
-                            <FaPlus /> Thêm tài nguyên
+                            <FaPlus /> Th�m t�i nguy�n
                         </button>
                     </div>
 
                     {resources.length === 0 ? (
                         <div className="lesson-form-page-empty-resources">
                             <FaFileUpload className="empty-icon" />
-                            <p>Chưa có tài nguyên nào</p>
+                            <p>Chua c� t�i nguy�n n�o</p>
                         </div>
                     ) : (
                         <div className="lesson-form-page-resources-list">
@@ -368,7 +369,7 @@ const LessonFormPage = () => {
                                             onChange={(e) => updateResource(index, 'type', e.target.value)}
                                             className="resource-type-select"
                                         >
-                                            <option value="text">Văn bản</option>
+                                            <option value="text">Van b?n</option>
                                             <option value="video">Video</option>
                                             <option value="pdf">PDF</option>
                                             <option value="file">File</option>
@@ -385,22 +386,22 @@ const LessonFormPage = () => {
 
                                     <div className="lesson-form-page-resource-body">
                                         <div className="lesson-form-page-form-group">
-                                            <label>Tiêu đề</label>
+                                            <label>Ti�u d?</label>
                                             <input
                                                 type="text"
                                                 value={resource.title || ''}
                                                 onChange={(e) => updateResource(index, 'title', e.target.value)}
-                                                placeholder="Tiêu đề tài nguyên"
+                                                placeholder="Ti�u d? t�i nguy�n"
                                             />
                                         </div>
 
                                         {resource.type === 'text' && (
                                             <div className="lesson-form-page-form-group">
-                                                <label>Nội dung</label>
+                                                <label>N?i dung</label>
                                                 <textarea
                                                     value={resource.content || ''}
                                                     onChange={(e) => updateResource(index, 'content', e.target.value)}
-                                                    placeholder="Nhập nội dung văn bản"
+                                                    placeholder="Nh?p n?i dung van b?n"
                                                     rows="4"
                                                 />
                                             </div>
@@ -438,7 +439,7 @@ const LessonFormPage = () => {
                                                     )}
                                                     {resource.file_url && !resource.file && (
                                                         <div className="file-name">
-                                                            <FaFileAlt /> File đã tải lên
+                                                            <FaFileAlt /> File d� t?i l�n
                                                         </div>
                                                     )}
                                                 </div>
@@ -463,14 +464,14 @@ const LessonFormPage = () => {
                             }
                         }}
                     >
-                        <FaTimes /> Hủy
+                        <FaTimes /> H?y
                     </button>
                     <button 
                         type="submit" 
                         className="lesson-form-page-btn-submit"
                         disabled={loading}
                     >
-                        <FaSave /> {loading ? 'Đang lưu...' : 'Lưu bài học'}
+                        <FaSave /> {loading ? '�ang luu...' : 'Luu b�i h?c'}
                     </button>
                 </div>
             </form>
