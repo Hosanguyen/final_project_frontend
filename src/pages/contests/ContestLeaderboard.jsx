@@ -86,8 +86,8 @@ const ContestLeaderboard = ({ contestId, contestMode, autoRefresh = false }) => 
                 return (
                     <div className={getProblemCellClass(problemData)}>
                         <div className="problem-time">{problemData.time_minutes}</div>
-                        {problemData.wrong_attempts > 0 && (
-                            <div className="problem-attempts">-{problemData.wrong_attempts}</div>
+                        {problemData.wrong_attempts >= 0 && (
+                            <div className="problem-attempts">+{problemData.wrong_attempts + 1} {problemData.wrong_attempts > 0 ? 'tries' : 'try'}</div>
                         )}
                     </div>
                 );
@@ -95,7 +95,7 @@ const ContestLeaderboard = ({ contestId, contestMode, autoRefresh = false }) => 
                 // Not AC yet
                 return (
                     <div className={getProblemCellClass(problemData)}>
-                        <div className="problem-attempts">-{problemData.attempts}</div>
+                        <div className="problem-attempts">+{problemData.attempts} {problemData.attempts > 1 ? 'tries' : 'try'}</div>
                     </div>
                 );
             }
@@ -180,11 +180,25 @@ const ContestLeaderboard = ({ contestId, contestMode, autoRefresh = false }) => 
                             {contest_mode === 'OI' && (
                                 <th className="col-score">Điểm</th>
                             )}
-                            {contest_mode === 'ICPC' && problems && problems.map(problem => (
-                                <th key={problem.id} className="col-problem" title={problem.title}>
-                                    {problem.label}
-                                </th>
-                            ))}
+                            {contest_mode === 'ICPC' && problems && problems.map(problem => {
+                                const bgColor = (problem.rgb && problem.rgb.trim()) || (problem.color && problem.color.trim()) || '#f8f9fa';
+                                const hasCustomColor = (problem.rgb && problem.rgb.trim()) || (problem.color && problem.color.trim());
+                                
+                                return (
+                                    <th 
+                                        key={problem.id} 
+                                        className="col-problem" 
+                                        title={problem.title}
+                                        style={{
+                                            backgroundColor: bgColor,
+                                            color: hasCustomColor ? '#fff' : '#495057',
+                                            fontWeight: 'bold'
+                                        }}
+                                    >
+                                        {problem.label}
+                                    </th>
+                                );
+                            })}
                         </tr>
                     </thead>
                     <tbody>
