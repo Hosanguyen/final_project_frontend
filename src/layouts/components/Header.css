@@ -78,6 +78,43 @@
     background: #0066ff;
 }
 
+/* Dropdown for Practice nav */
+.header-nav .dropdown {
+    position: relative;
+}
+.header-nav .dropdown .dropdown-toggle {
+    cursor: pointer;
+}
+.header-nav .dropdown .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 220px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    padding: 8px 0;
+    display: none;
+    z-index: 1002;
+}
+.header-nav .dropdown:hover .dropdown-menu {
+    display: block;
+}
+.header-nav .dropdown:focus-within .dropdown-menu {
+    display: block;
+}
+.header-nav .dropdown .dropdown-item {
+    display: block;
+    padding: 10px 14px;
+    color: #374151;
+    text-decoration: none;
+    font-size: 14px;
+}
+.header-nav .dropdown .dropdown-item:hover {
+    background: #f9fafb;
+}
+
 .header-right {
     display: flex;
     align-items: center;

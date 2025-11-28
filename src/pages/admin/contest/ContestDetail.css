@@ -70,6 +70,30 @@
     gap: 8px;
 }
 
+/* Recalculate rankings button */
+.contest-btn-recalc {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #10b981;
+    color: #fff;
+}
+
+.contest-btn-recalc:hover {
+    background: #059669;
+}
+
+.contest-btn-recalc:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
 .contest-btn-edit {
     background: #3b82f6;
     color: #fff;

@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import notification from '../../../utils/notification';
-import { FaUsers, FaUserCheck, FaUserTimes, FaSpinner, FaSearch, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+import { FaUsers, FaUserCheck, FaUserTimes, FaSpinner, FaSearch, FaToggleOn, FaToggleOff, FaPlus, FaTimes } from 'react-icons/fa';
 import ContestService from '../../../services/ContestService';
 import './ContestParticipants.css';
 
@@ -11,6 +11,15 @@ const ContestParticipants = ({ contestId }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all'); // all, active, inactive
     const [togglingId, setTogglingId] = useState(null);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [candidateQuery, setCandidateQuery] = useState('');
+    const [candidates, setCandidates] = useState([]);
+    const [loadingCandidates, setLoadingCandidates] = useState(false);
+    const [candPage, setCandPage] = useState(1);
+    const [candPageSize, setCandPageSize] = useState(20);
+    const [candTotalPages, setCandTotalPages] = useState(1);
+    const [candTotalItems, setCandTotalItems] = useState(0);
+    const [selectedUserIds, setSelectedUserIds] = useState(new Set());
 
     useEffect(() => {
         loadParticipants();
@@ -77,6 +86,85 @@ const ContestParticipants = ({ contestId }) => {
         return matchesSearch && matchesStatus;
     });
 
+    // Load candidates when modal open, page or query changes (debounced on query)
+    useEffect(() => {
+        if (!showAddModal) return;
+
+        let timer;
+        const fetchCandidates = async () => {
+            setLoadingCandidates(true);
+            try {
+                const params = {
+                    q: candidateQuery.trim() || undefined,
+                    page: candPage,
+                    page_size: candPageSize,
+                    exclude_participating: true
+                };
+                const data = await ContestService.getUserCandidates(contestId, params);
+                setCandidates(data?.results || []);
+                const pg = data?.pagination || {};
+                setCandTotalPages(pg.total_pages || 1);
+                setCandTotalItems(pg.total_items || 0);
+            } catch (e) {
+                setCandidates([]);
+                setCandTotalPages(1);
+                setCandTotalItems(0);
+            } finally {
+                setLoadingCandidates(false);
+            }
+        };
+
+        // debounce only for query changes
+        if (candidateQuery) {
+            timer = setTimeout(fetchCandidates, 300);
+        } else {
+            fetchCandidates();
+        }
+
+        return () => { if (timer) clearTimeout(timer); };
+    }, [showAddModal, candidateQuery, contestId, candPage, candPageSize]);
+
+    // Reset pagination when query changes
+    useEffect(() => {
+        setCandPage(1);
+        setSelectedUserIds(new Set());
+    }, [candidateQuery]);
+
+    const toggleUserSelect = (userId) => {
+        setSelectedUserIds(prev => {
+            const next = new Set(prev);
+            if (next.has(userId)) next.delete(userId); else next.add(userId);
+            return next;
+        });
+    };
+
+    const toggleAll = () => {
+        if (selectedUserIds.size === candidates.length) {
+            setSelectedUserIds(new Set());
+        } else {
+            setSelectedUserIds(new Set(candidates.map(c => c.id)));
+        }
+    };
+
+    const handleBulkAdd = async () => {
+        if (selectedUserIds.size === 0) {
+            notification.warning('Vui lòng chọn ít nhất một người dùng');
+            return;
+        }
+        try {
+            const ids = Array.from(selectedUserIds);
+            const res = await ContestService.bulkAddParticipants(contestId, ids);
+            notification.success(res?.message || 'Đã thêm người tham gia');
+            setShowAddModal(false);
+            setSelectedUserIds(new Set());
+            setCandidateQuery('');
+            setCandidates([]);
+            await loadParticipants();
+        } catch (e) {
+            notification.error(e?.error || 'Không thể thêm người tham gia');
+        }
+    };
+
     if (loading) {
         return (
             <div className="participants-loading">
@@ -92,6 +180,9 @@ const ContestParticipants = ({ contestId }) => {
                 <h3>
                     <FaUsers /> Danh sách người tham gia
                 </h3>
+                <button className="btn-primary" onClick={() => setShowAddModal(true)}>
+                    <FaPlus /> Thêm người tham gia
+                </button>
             </div>
 
             {/* Statistics */}
@@ -223,6 +314,78 @@ const ContestParticipants = ({ contestId }) => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            )}
+
+            {showAddModal && (
+                <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h4>Thêm người tham gia</h4>
+                            <button className="icon-btn" onClick={() => setShowAddModal(false)}><FaTimes /></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="candidate-search">
+                                <FaSearch />
+                                <input
+                                    type="text"
+                                    placeholder="Tìm theo username, họ tên, email..."
+                                    value={candidateQuery}
+                                    onChange={(e) => setCandidateQuery(e.target.value)}
+                                />
+                                <button className="btn-secondary" onClick={toggleAll} disabled={candidates.length === 0}>
+                                    {selectedUserIds.size === candidates.length && candidates.length > 0 ? 'Bỏ chọn tất cả' : 'Chọn tất cả'}
+                                </button>
+                            </div>
+                            <div className="candidate-list">
+                                {loadingCandidates ? (
+                                    <div className="loading-row"><FaSpinner className="spinner" /> Đang tải...</div>
+                                ) : candidates.length === 0 ? (
+                                    <div className="empty-row">Không có người dùng phù hợp</div>
+                                ) : (
+                                    candidates.map(u => (
+                                        <label key={u.id} className="candidate-row">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedUserIds.has(u.id)}
+                                                onChange={() => toggleUserSelect(u.id)}
+                                            />
+                                            <img className="cand-avatar" src={u.avatar_url || 'https://via.placeholder.com/28'} alt={u.username} />
+                                            <div className="cand-info">
+                                                <div className="cand-name">{u.full_name || u.username}</div>
+                                                <div className="cand-sub">@{u.username} · {u.email}</div>
+                                            </div>
+                                        </label>
+                                    ))
+                                )}
+                            </div>
+                            <div className="candidate-pagination">
+                                <div className="cand-page-info">
+                                    {candTotalItems} người dùng · Trang {candPage}/{candTotalPages}
+                                </div>
+                                <div className="cand-page-actions">
+                                    <button
+                                        className="btn-secondary"
+                                        disabled={candPage <= 1 || loadingCandidates}
+                                        onClick={() => setCandPage(p => Math.max(1, p - 1))}
+                                    >
+                                        Trang trước
+                                    </button>
+                                    <button
+                                        className="btn-secondary"
+                                        disabled={candPage >= candTotalPages || loadingCandidates}
+                                        onClick={() => setCandPage(p => Math.min(candTotalPages, p + 1))}
+                                    >
+                                        Trang sau
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn-secondary" onClick={() => setShowAddModal(false)}>Hủy</button>
+                            <button className="btn-primary" onClick={handleBulkAdd} disabled={selectedUserIds.size === 0}>Thêm đã chọn</button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

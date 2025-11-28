@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaTrophy, FaClock, FaCalendar, FaListAlt, FaCheckCircle, FaTimesCircle, FaCircle, FaChevronLeft, FaUserCheck, FaUserTimes } from 'react-icons/fa';
 import ContestService from '../../services/ContestService';
+import ContestLeaderboard from './ContestLeaderboard';
 import './ContestDetailUser.css';
 import notification from '../../utils/notification';
 
@@ -12,6 +13,7 @@ const ContestDetailUser = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [registering, setRegistering] = useState(false);
+    const [activeTab, setActiveTab] = useState('problems'); // 'problems' or 'leaderboard'
 
     useEffect(() => {
         fetchContestDetail();
@@ -287,12 +289,30 @@ const ContestDetailUser = () => {
                 </div>
             </div>
 
-            {/* Problems List */}
-            <div className="problems-section">
-                <div className="section-header">
-                    <h2>Danh sách bài tập</h2>
-                    <span className="problem-count">{contest.problems?.length || 0} bài</span>
-                </div>
+            {/* Tabs Navigation */}
+            <div className="contest-tabs">
+                <button 
+                    className={`tab-button ${activeTab === 'problems' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('problems')}
+                >
+                    <FaListAlt /> Danh sách bài tập
+                </button>
+                <button 
+                    className={`tab-button ${activeTab === 'leaderboard' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('leaderboard')}
+                >
+                    <FaTrophy /> Bảng xếp hạng
+                </button>
+            </div>
+
+            {/* Tab Content */}
+            {activeTab === 'problems' ? (
+                /* Problems List */
+                <div className="problems-section">
+                    <div className="section-header">
+                        <h2>Danh sách bài tập</h2>
+                        <span className="problem-count">{contest.problems?.length || 0} bài</span>
+                    </div>
 
                 {contest.status === 'finished' ? (
                     // Contest đã kết thúc - mọi người đều xem được bài
@@ -452,6 +472,24 @@ const ContestDetailUser = () => {
                     </div>
                 )}
             </div>
+            ) : (
+                /* Leaderboard Tab */
+                <div className="leaderboard-section">
+                    {contest.status === 'upcoming' ? (
+                        <div className="contest-locked">
+                            <div className="locked-icon">🔒</div>
+                            <h3>Bảng xếp hạng chưa khả dụng</h3>
+                            <p>Bảng xếp hạng sẽ được công bố khi cuộc thi bắt đầu</p>
+                        </div>
+                    ) : (
+                        <ContestLeaderboard 
+                            contestId={contest.id} 
+                            contestMode={contest.contest_mode}
+                            autoRefresh={contest.status === 'running' || contest.status === 'finished'}
+                        />
+                    )}
+                </div>
+            )}
 
             {/* Contest Rules */}
             <div className="contest-rules">

@@ -209,6 +209,30 @@ const ContestService = {
     },
 
     /**
+     * Get user candidates (search) for adding to contest
+     */
+    getUserCandidates: async (contestId, params = {}) => {
+        try {
+            const response = await api.get(`/api/contests/${contestId}/user-candidates/`, { params });
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Bulk add participants to a contest
+     */
+    bulkAddParticipants: async (contestId, userIds) => {
+        try {
+            const response = await api.post(`/api/contests/${contestId}/participants/bulk-add/`, { user_ids: userIds });
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
      * Toggle participant active status
      * @param {number} contestId - Contest ID
      * @param {number} participantId - Participant ID
@@ -217,6 +241,34 @@ const ContestService = {
     toggleParticipantStatus: async (contestId, participantId) => {
         try {
             const response = await api.patch(`/api/contests/${contestId}/participants/${participantId}/toggle/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Get contest leaderboard
+     * @param {number} contestId - Contest ID
+     * @returns {Promise} Leaderboard data with rankings and problem details
+     */
+    getLeaderboard: async (contestId) => {
+        try {
+            const response = await api.get(`/api/contests/${contestId}/leaderboard/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Recalculate rankings for a contest (admin action)
+     * @param {number} contestId - Contest ID
+     * @returns {Promise} Result with updated count
+     */
+    recalculateRankings: async (contestId) => {
+        try {
+            const response = await api.post(`/api/contests/${contestId}/recalculate-rankings/`);
             return response.data;
         } catch (error) {
             throw error.response?.data || error.message;

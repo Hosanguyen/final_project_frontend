@@ -33,6 +33,7 @@ import ContestManagement from '../pages/admin/contest/ContestManagement';
 import ContestForm from '../pages/admin/contest/ContestForm';
 import ContestDetail from '../pages/admin/contest/ContestDetail';
 import Practice from '../pages/practice/Practice';
+import PracticeLeaderboard from '../pages/contests/PracticeLeaderboard';
 import UserForm from '../pages/admin/user/UserForm';
 import UserList from '../pages/admin/user/UserList';
 import ProblemDetailUser from '../pages/problem/ProblemDetailUser';
@@ -53,6 +54,7 @@ const AppRoutes = () => {
                     <Route path="/courses" element={<Courses />} />
                     <Route path="/courses/:slug" element={<CourseDetail />} />
                     <Route path="/practice" element={<Practice />} />
+                    <Route path="/practice/ranking" element={<PracticeLeaderboard />} />
                     <Route path="/contests" element={<Contests />} />
                     <Route path="/contests/:id" element={<ContestDetailUser />} />
                     <Route path="/problems/:id" element={<ProblemDetailUser />} />
