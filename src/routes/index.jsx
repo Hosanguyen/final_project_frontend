@@ -38,6 +38,9 @@ import UserList from '../pages/admin/user/UserList';
 import ProblemDetailUser from '../pages/problem/ProblemDetailUser';
 import Contests from '../pages/contests/Contests';
 import ContestDetailUser from '../pages/contests/ContestDetailUser';
+import QuizList from '../pages/admin/quiz/QuizList';
+import QuizForm from '../pages/admin/quiz/QuizForm';
+import QuizDetail from '../pages/admin/quiz/QuizDetail';
 
 const AppRoutes = () => {
     return (
@@ -343,6 +346,40 @@ const AppRoutes = () => {
                         element={
                             <PrivateRoute>
                                 <ContestDetail />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    {/* Quiz Routes */}
+                    <Route
+                        path="/admin/quizzes"
+                        element={
+                            <PrivateRoute>
+                                <QuizList />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/quizzes/create"
+                        element={
+                            <PrivateRoute>
+                                <QuizForm />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/quizzes/:id/edit"
+                        element={
+                            <PrivateRoute>
+                                <QuizForm />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/quizzes/:id"
+                        element={
+                            <PrivateRoute>
+                                <QuizDetail />
                             </PrivateRoute>
                         }
                     />
