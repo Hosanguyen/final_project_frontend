@@ -258,8 +258,8 @@
 }
 
 .problem-cell.pending {
-    background: #fff3cd;
-    color: #856404;
+    background: #cfe2ff;
+    color: #084298;
 }
 
 .problem-time {
@@ -271,6 +271,12 @@
     font-size: 11px;
     color: #dc3545;
     margin-top: 2px;
+}
+
+.problem-attempts .frozen-indicator {
+    color: #fd7e14;
+    font-weight: 600;
+    opacity: 0.85;
 }
 
 .problem-score {

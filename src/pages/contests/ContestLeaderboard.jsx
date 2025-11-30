@@ -83,19 +83,41 @@ const ContestLeaderboard = ({ contestId, contestMode, autoRefresh = false }) => 
         if (contestMode === 'ICPC' || !contestMode) {
             // ICPC mode: show time and attempts
             if (problemData.status === 'AC') {
+                // Calculate display attempts (unfrozen only for AC)
+                const displayAttempts = problemData.wrong_attempts + 1;
+                
                 return (
                     <div className={getProblemCellClass(problemData)}>
                         <div className="problem-time">{problemData.time_minutes}</div>
-                        {problemData.wrong_attempts >= 0 && (
-                            <div className="problem-attempts">+{problemData.wrong_attempts + 1} {problemData.wrong_attempts > 0 ? 'tries' : 'try'}</div>
+                        {problemData.frozen_attempts > 0 ? (
+                            <div className="problem-attempts">
+                                +{displayAttempts} {displayAttempts > 1 ? 'tries' : 'try'}
+                                <span className="frozen-indicator"> + {problemData.frozen_attempts}</span>
+                            </div>
+                        ) : (
+                            <div className="problem-attempts">
+                                +{displayAttempts} {displayAttempts > 1 ? 'tries' : 'try'}
+                            </div>
                         )}
                     </div>
                 );
             } else {
-                // Not AC yet
+                // Not AC yet - show unfrozen attempts + frozen attempts
+                const unfrozenAttempts = problemData.attempts || 0;
+                const frozenAttempts = problemData.frozen_attempts || 0;
+                
                 return (
                     <div className={getProblemCellClass(problemData)}>
-                        <div className="problem-attempts">+{problemData.attempts} {problemData.attempts > 1 ? 'tries' : 'try'}</div>
+                        {frozenAttempts > 0 ? (
+                            <div className="problem-attempts">
+                                +{unfrozenAttempts} {unfrozenAttempts !== 1 ? 'tries' : 'try'}
+                                <span className="frozen-indicator"> + {frozenAttempts}</span>
+                            </div>
+                        ) : (
+                            <div className="problem-attempts">
+                                +{unfrozenAttempts} {unfrozenAttempts !== 1 ? 'tries' : 'try'}
+                            </div>
+                        )}
                     </div>
                 );
             }
