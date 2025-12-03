@@ -42,6 +42,7 @@ import ContestDetailUser from '../pages/contests/ContestDetailUser';
 import QuizList from '../pages/admin/quiz/QuizList';
 import QuizForm from '../pages/admin/quiz/QuizForm';
 import QuizDetail from '../pages/admin/quiz/QuizDetail';
+import GlobalRanking from '../pages/GlobalRanking/GlobalRanking';
 
 const AppRoutes = () => {
     return (
@@ -58,6 +59,7 @@ const AppRoutes = () => {
                     <Route path="/courses/:slug" element={<CourseDetail />} />
                     <Route path="/practice" element={<Practice />} />
                     <Route path="/practice/ranking" element={<PracticeLeaderboard />} />
+                    <Route path="/global-ranking" element={<GlobalRanking />} />
                     <Route path="/contests" element={<Contests />} />
                     <Route path="/contests/:id" element={<ContestDetailUser />} />
                     <Route path="/problems/:id" element={<ProblemDetailUser />} />

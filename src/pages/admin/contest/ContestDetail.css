@@ -94,6 +94,35 @@
     cursor: not-allowed;
 }
 
+/* Update ratings button */
+.contest-btn-rating {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f59e0b;
+    color: #fff;
+}
+
+.contest-btn-rating:hover:not(:disabled) {
+    background: #d97706;
+}
+
+.contest-btn-rating:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #9ca3af;
+}
+
+.contest-btn-rating .spinner {
+    animation: spin 1s linear infinite;
+}
+
 .contest-btn-edit {
     background: #3b82f6;
     color: #fff;

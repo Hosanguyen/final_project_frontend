@@ -96,7 +96,7 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
                     <Link to="/contests" className="nav-link">
                         Thi đấu
                     </Link>
-                    <Link to="/leaderboard" className="nav-link">
+                    <Link to="/global-ranking" className="nav-link">
                         Bảng xếp hạng
                     </Link>
                     <Link to="/forum" className="nav-link">
