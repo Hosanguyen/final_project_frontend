@@ -1,17 +1,24 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Cropper from 'react-easy-crop';
 import './UserProfile.css';
 import { updateUserProfile } from '../../services/UserService';
+import CourseService from '../../services/CourseService';
 import notification from '../../utils/notification';
 
 const UserProfile = () => {
   const API_URL = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('courses');
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
+
+  // Enrolled courses state
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [loadingCourses, setLoadingCourses] = useState(false);
 
   // Cropper states
   const [cropMode, setCropMode] = useState(false);
@@ -27,7 +34,24 @@ const UserProfile = () => {
       setFormData(parsed);
       setAvatarPreview(parsed.avatar_url ? `${API_URL}${parsed.avatar_url}` : null);
     }
+    loadEnrolledCourses();
   }, []);
+
+  const loadEnrolledCourses = async () => {
+    try {
+      setLoadingCourses(true);
+      const response = await CourseService.getMyEnrollments();
+      console.log('Enrolled courses response:', response);
+      // API trả về array trực tiếp, không phải object với key enrollments
+      const courses = Array.isArray(response) ? response : (response.enrollments || []);
+      setEnrolledCourses(courses);
+    } catch (error) {
+      console.error('Error loading enrolled courses:', error);
+      setEnrolledCourses([]);
+    } finally {
+      setLoadingCourses(false);
+    }
+  };
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -138,7 +162,91 @@ const UserProfile = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'courses':
-        return <div className="tab-content">Danh sách khóa học đã tham gia</div>;
+        return (
+          <div className="tab-content">
+            {loadingCourses ? (
+              <div className="loading-message">Đang tải khóa học...</div>
+            ) : enrolledCourses.length === 0 ? (
+              <div className="empty-message">
+                <p>Bạn chưa đăng ký khóa học nào</p>
+                <button 
+                  className="browse-courses-btn"
+                  onClick={() => navigate('/courses')}
+                >
+                  Khám phá khóa học
+                </button>
+              </div>
+            ) : (
+              <div className="courses-table-container">
+                <table className="courses-table">
+                  <thead>
+                    <tr>
+                      <th>STT</th>
+                      <th>Tên khóa học</th>
+                      <th>Cấp độ</th>
+                      <th>Ngày đăng ký</th>
+                      <th>Tiến độ</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {enrolledCourses.map((enrollment, index) => (
+                      <tr key={enrollment.id}>
+                        <td>{index + 1}</td>
+                        <td 
+                          className="course-name-cell"
+                          onClick={() => navigate(`/courses/${enrollment.course.slug}`)}
+                        >
+                          <div className="course-name">
+                            {enrollment.course.title}
+                          </div>
+                          {enrollment.course.short_description && (
+                            <div className="course-subtitle">
+                              {enrollment.course.short_description}
+                            </div>
+                          )}
+                        </td>
+                        <td>
+                          {enrollment.course.level ? (
+                            <span className={`level-badge ${enrollment.course.level}`}>
+                              {enrollment.course.level}
+                            </span>
+                          ) : (
+                            <span className="level-badge">-</span>
+                          )}
+                        </td>
+                        <td>
+                          {new Date(enrollment.enrolled_at).toLocaleDateString('vi-VN')}
+                        </td>
+                        <td>
+                          <div className="progress-cell">
+                            <div className="progress-bar">
+                              <div 
+                                className="progress-fill"
+                                style={{ width: `${enrollment.progress_percent || 0}%` }}
+                              ></div>
+                            </div>
+                            <span className="progress-text">
+                              {Number(enrollment.progress_percent || 0).toFixed(0)}%
+                            </span>
+                          </div>
+                        </td>
+                        <td>
+                          <button
+                            className="action-btn learn-btn"
+                            onClick={() => navigate(`/courses/${enrollment.course.slug}/learn`)}
+                          >
+                            Vào học
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        );
       case 'problems':
         return <div className="tab-content">Các bài tập đã giải</div>;
       case 'submissions':
