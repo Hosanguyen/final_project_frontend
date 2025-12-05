@@ -82,7 +82,7 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
                         <div className="notification-wrapper">
                             <button className="icon-button" onClick={() => setShowNotifications(!showNotifications)}>
                                 <FaBell />
-                                <span className="badge">3</span>
+                                <span className="badge notification">3</span>
                             </button>
 
                             {showNotifications && (

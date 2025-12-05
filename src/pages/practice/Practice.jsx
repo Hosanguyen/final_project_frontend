@@ -181,19 +181,19 @@ const Practice = () => {
             </div>
 
             <div className="practice-stats">
-                <div className="stat-card total">
+                <div className="stat-card practice total">
                     <div className="stat-number">{stats.total}</div>
                     <div className="stat-label">Tổng bài tập</div>
                 </div>
-                <div className="stat-card solved">
+                <div className="stat-card practice solved">
                     <div className="stat-number">{stats.solved}</div>
                     <div className="stat-label">Đã giải</div>
                 </div>
-                <div className="stat-card attempted">
+                <div className="stat-card practice attempted">
                     <div className="stat-number">{stats.attempted}</div>
                     <div className="stat-label">Đã thử</div>
                 </div>
-                <div className="stat-card progress">
+                <div className="stat-card practice progress">
                     <div className="stat-number">
                         {stats.total > 0 ? Math.round((stats.solved / stats.total) * 100) : 0}%
                     </div>

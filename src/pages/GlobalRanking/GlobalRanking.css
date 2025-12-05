@@ -50,16 +50,6 @@
     margin-top: 20px;
 }
 
-.stat-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px 30px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 12px;
-    color: white;
-}
-
 .stat-number {
     font-size: 28px;
     font-weight: 700;

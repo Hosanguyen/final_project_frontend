@@ -81,7 +81,7 @@ const AdminDashboard = () => {
       )}
 
       <div className="stats-grid">
-        <div className="stat-card">
+        <div className="stat-card dashboard">
           <div className="stat-icon courses">
             <BookOpen />
           </div>
@@ -92,7 +92,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card dashboard">
           <div className="stat-icon lessons">
             <FileText />
           </div>
@@ -103,7 +103,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card dashboard">
           <div className="stat-icon users">
             <Users />
           </div>
@@ -114,7 +114,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card dashboard">
           <div className="stat-icon resources">
             <Play />
           </div>
@@ -125,7 +125,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card dashboard">
           <div className="stat-icon tags">
             <FileText />
           </div>

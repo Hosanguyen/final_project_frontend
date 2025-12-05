@@ -170,7 +170,7 @@
     background: #f0f0f0;
 }
 
-.badge {
+.badge.notification{
     position: absolute;
     top: 5px;
     right: 5px;

@@ -47,7 +47,7 @@
     margin-bottom: 40px;
 }
 
-.stat-card {
+.stat-card.practice {
     background: white;
     padding: 25px;
     border-radius: 12px;
@@ -56,7 +56,7 @@
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.stat-card:hover {
+.stat-card.practice:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -72,19 +72,19 @@
     color: #64748b;
 }
 
-.stat-card.total .stat-number {
+.stat-card.practice.total .stat-number {
     color: #6366f1;
 }
 
-.stat-card.solved .stat-number {
+.stat-card.practice.solved .stat-number {
     color: #10b981;
 }
 
-.stat-card.attempted .stat-number {
+.stat-card.practice.attempted .stat-number {
     color: #f59e0b;
 }
 
-.stat-card.progress .stat-number {
+.stat-card.practice.progress .stat-number {
     color: #8b5cf6;
 }
 

@@ -62,7 +62,7 @@
   margin-bottom: 3rem;
 }
 
-.stat-card {
+.stat-card.dashboard {
   background: white;
   padding: 2rem;
   border-radius: 1rem;
@@ -74,7 +74,7 @@
   border: 1px solid #e5e7eb;
 }
 
-.stat-card:hover {
+.stat-card.dashboard:hover {
   transform: translateY(-2px);
 }
 
@@ -352,7 +352,7 @@
     grid-template-columns: 1fr;
   }
   
-  .stat-card {
+  .stat-card.dashboard {
     padding: 1.5rem;
   }
   
