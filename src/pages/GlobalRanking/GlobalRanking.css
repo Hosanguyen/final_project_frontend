@@ -2,16 +2,17 @@
     min-height: calc(100vh - 70px);
     margin-top: 70px;
     padding: 40px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #f5f7fa;
 }
 
 .ranking-header {
     max-width: 1200px;
     margin: 0 auto 30px;
     background: white;
-    border-radius: 20px;
+    border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e8eef5;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -28,18 +29,19 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    color: #333;
+    color: #1a1a1a;
     margin: 0 0 10px 0;
     font-size: 32px;
+    font-weight: 700;
 }
 
 .header-icon {
-    color: #667eea;
+    color: #4a90e2;
     font-size: 36px;
 }
 
 .header-description {
-    color: #666;
+    color: #6b7280;
     margin: 0;
     font-size: 16px;
 }
@@ -62,19 +64,20 @@
 
 /* My Rank Card */
 .my-rank-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 16px;
+    background: white;
+    border: 2px solid #4a90e2;
+    border-radius: 12px;
     padding: 20px;
-    color: white;
     min-width: 280px;
     max-width: 350px;
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.15);
 }
 
 .my-rank-card h3 {
     margin: 0 0 15px 0;
     font-size: 16px;
-    opacity: 0.9;
-    font-weight: 500;
+    color: #1a1a1a;
+    font-weight: 600;
 }
 
 .my-rank-content {
@@ -97,7 +100,7 @@
 .my-rank-position .rank-number {
     font-size: 36px;
     font-weight: bold;
-    color: white;
+    color: #1a1a1a;
 }
 
 .my-rank-details {
@@ -110,9 +113,6 @@
 .my-rank-title .rank-badge {
     font-size: 13px;
     padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
-    color: white !important;
 }
 
 .my-rank-rating {
@@ -123,12 +123,12 @@
 
 .max-rating-label {
     font-size: 14px;
-    opacity: 0.8;
+    color: #6b7280;
 }
 
 .my-rank-stats {
     font-size: 13px;
-    opacity: 0.9;
+    color: #6b7280;
 }
 
 .my-rank-stats .wins {
@@ -140,9 +140,10 @@
     max-width: 1200px;
     margin: 0 auto;
     background: white;
-    border-radius: 20px;
+    border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e8eef5;
 }
 
 .ranking-table-wrapper {
@@ -155,21 +156,21 @@
 }
 
 .ranking-table thead {
-    background: #f8f9fa;
+    background: #f8fafc;
 }
 
 .ranking-table th {
     padding: 15px;
     text-align: left;
     font-weight: 600;
-    color: #333;
-    border-bottom: 2px solid #e0e0e0;
+    color: #1a1a1a;
+    border-bottom: 2px solid #e8eef5;
     white-space: nowrap;
 }
 
 .ranking-table td {
     padding: 15px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .ranking-row {
@@ -178,7 +179,7 @@
 }
 
 .ranking-row:hover {
-    background: #f8f9fa;
+    background: #f8fafc;
     transform: translateX(5px);
 }
 
@@ -208,7 +209,7 @@
 
 .rank-number {
     font-weight: 600;
-    color: #666;
+    color: #4b5563;
     font-size: 18px;
 }
 
@@ -228,15 +229,15 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #e0e0e0;
+    border: 2px solid #e8eef5;
 }
 
 .user-avatar-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f0f0f0;
-    color: #999;
+    background: #f1f5f9;
+    color: #94a3b8;
 }
 
 .user-details {
@@ -246,13 +247,13 @@
 
 .user-fullname {
     font-weight: 600;
-    color: #333;
+    color: #1a1a1a;
     font-size: 15px;
 }
 
 .user-username {
     font-size: 13px;
-    color: #999;
+    color: #94a3b8;
 }
 
 .rank-badge {
@@ -272,7 +273,7 @@
 }
 
 .max-rating-value {
-    color: #666;
+    color: #6b7280;
     font-size: 16px;
 }
 
@@ -306,31 +307,33 @@
 .pagination-btn,
 .page-btn {
     padding: 8px 16px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #e8eef5;
     background: white;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 14px;
     font-weight: 500;
+    color: #1a1a1a;
 }
 
 .pagination-btn:hover:not(:disabled),
 .page-btn:hover {
-    background: #667eea;
+    background: #4a90e2;
     color: white;
-    border-color: #667eea;
+    border-color: #4a90e2;
 }
 
 .pagination-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    background: #f1f5f9;
 }
 
 .page-btn.active {
-    background: #667eea;
+    background: #4a90e2;
     color: white;
-    border-color: #667eea;
+    border-color: #4a90e2;
 }
 
 .page-numbers {
@@ -353,8 +356,8 @@
 .spinner {
     width: 50px;
     height: 50px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #667eea;
+    border: 4px solid #f1f5f9;
+    border-top: 4px solid #4a90e2;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -367,7 +370,7 @@
 .retry-btn {
     margin-top: 20px;
     padding: 10px 24px;
-    background: #667eea;
+    background: #4a90e2;
     color: white;
     border: none;
     border-radius: 8px;
@@ -378,9 +381,9 @@
 }
 
 .retry-btn:hover {
-    background: #5568d3;
+    background: #357abd;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 }
 
 /* Responsive */

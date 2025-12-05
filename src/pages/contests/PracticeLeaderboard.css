@@ -6,7 +6,7 @@
 
 /* Podium */
 .pl-topcards{margin-bottom:24px}
-.pl-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:end}
+.pl-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:end;width:50%;margin-left:auto;margin-right:auto}
 .pl-podium-card{position:relative}
 .pl-podium-card.second{transform: translateY(8px); opacity: .96}
 .pl-podium-card.third{transform: translateY(12px); opacity: .96}
