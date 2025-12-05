@@ -26,6 +26,7 @@ import LessonDetailPage from '../pages/admin/lesson/LessonDetailPage';
 import AdminDashboard from '../pages/admin/dashboard/AdminDashboard';
 import Courses from '../pages/courses/Courses';
 import CourseDetail from '../pages/courses/CourseDetail';
+import CourseLearning from '../pages/courses/CourseLearning';
 import ProblemForm from '../pages/admin/problem/ProblemForm';
 import ProblemDetail from '../pages/admin/problem/ProblemDetail';
 import ProblemList from '../pages/admin/problem/ProblemList';
@@ -59,6 +60,14 @@ const AppRoutes = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/courses" element={<Courses />} />
                     <Route path="/courses/:slug" element={<CourseDetail />} />
+                    <Route 
+                        path="/courses/:slug/learn" 
+                        element={
+                            <PrivateRoute>
+                                <CourseLearning />
+                            </PrivateRoute>
+                        } 
+                    />
                     <Route path="/payment-result" element={<PaymentResult />} />
                     <Route 
                         path="/order-history" 
