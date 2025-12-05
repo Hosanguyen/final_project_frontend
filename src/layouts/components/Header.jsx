@@ -2,55 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaBell, FaUser, FaSignOutAlt, FaBars, FaSearch } from 'react-icons/fa';
 import { MdDashboard } from 'react-icons/md';
+import { useUser } from '../../contexts/UserContext';
 import logo from '../../assets/images/logo.png';
 import './Header.css';
 
 const Header = ({ toggleSidebar, isAdmin = false }) => {
     const [showUserMenu, setShowUserMenu] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] = useState(null);
+    const { user, isAuthenticated, logout: userLogout, hasRole } = useUser();
     const navigate = useNavigate();
     const location = useLocation();
 
     const handleLogout = () => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-        setUser(null);
-        setIsLoggedIn(false);
+        userLogout();
         navigate('/login');
     };
-
-    // Check authentication status on component mount
-    useEffect(() => {
-        const checkAuth = () => {
-            const token = localStorage.getItem('accessToken');
-            const userData = localStorage.getItem('user');
-            
-            if (token && userData) {
-                try {
-                    const parsedUser = JSON.parse(userData);
-                    setUser(parsedUser);
-                    setIsLoggedIn(true);
-                } catch (error) {
-                    console.error('Error parsing user data:', error);
-                    setIsLoggedIn(false);
-                }
-            } else {
-                setIsLoggedIn(false);
-            }
-        };
-
-        checkAuth();
-
-        // Listen for storage changes (e.g., login in another tab)
-        window.addEventListener('storage', checkAuth);
-        
-        return () => {
-            window.removeEventListener('storage', checkAuth);
-        };
-    }, []);
 
     // Ensure practice dropdown closes after navigation by removing focus
     useEffect(() => {
@@ -111,7 +77,7 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
                     <input type="text" placeholder="Tìm kiếm khóa học, bài tập..."/>
                 </div>
 
-                {isLoggedIn ? (
+                {isAuthenticated ? (
                     <>
                         <div className="notification-wrapper">
                             <button className="icon-button" onClick={() => setShowNotifications(!showNotifications)}>
@@ -150,7 +116,7 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
                                     <Link to="/profile" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                                         <FaUser /> Hồ sơ cá nhân
                                     </Link>
-                                    {!isAdmin && (
+                                    {!isAdmin && hasRole('admin') && (
                                         <Link to="/admin/dashboard" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
                                             <MdDashboard /> Quản trị
                                         </Link>

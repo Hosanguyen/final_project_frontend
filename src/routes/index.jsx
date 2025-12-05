@@ -8,6 +8,7 @@ import AdminLayout from '../layouts/AdminLayout';
 import Register from '../pages/register/Register';
 import UserProfile from '../pages/UserProfile/UserProfile';
 import PrivateRoute from './PrivateRoute';
+import RoleGuard from '../components/RoleGuard';
 import PermissionCategoryList from '../pages/admin/permissionCategory/PermissionCategoryList';
 import PermissionCategoryForm from '../pages/admin/permissionCategory/PermissionCategoryForm';
 import PermissionForm from '../pages/admin/permission/PermissionForm';
@@ -96,13 +97,20 @@ const AppRoutes = () => {
 
                 {/* Routes với AdminLayout */}
                 <Route element={<AdminLayout />}>
-                    <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                    <Route 
+                        path="/admin/dashboard" 
+                        element={
+                            <RoleGuard roles="admin">
+                                <AdminDashboard />
+                            </RoleGuard>
+                        } 
+                    />
                     <Route
                         path="/admin/permission-categories"
                         element={
-                            <PrivateRoute>
+                            <RoleGuard roles="admin">
                                 <PermissionCategoryList />
-                            </PrivateRoute>
+                            </RoleGuard>
                         }
                     />
                     <Route
