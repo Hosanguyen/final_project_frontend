@@ -20,7 +20,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     transition: background 0.2s;
 }
 
@@ -28,16 +28,86 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.header-info {
+    flex: 1;
+}
+
 .course-header h1 {
-    margin: 0;
+    margin: 0 0 0.5rem 0;
     font-size: 2rem;
     font-weight: 700;
 }
 
 .course-subtitle {
-    margin: 0.5rem 0 0 0;
+    margin: 0.5rem 0 1rem 0;
     font-size: 1.1rem;
     opacity: 0.95;
+}
+
+.course-meta {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.level-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.header-actions {
+    min-width: 280px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.price-section {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.price-display {
+    padding: 0.75rem;
+}
+
+.price-amount {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+}
+
+.price-free {
+    padding: 0.75rem;
+}
+
+.price-free span {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #38ef7d;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .course-content {
@@ -445,6 +515,40 @@
     background: #5568d3;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .header-content {
+        flex-direction: column;
+    }
+
+    .header-actions {
+        width: 100%;
+        max-width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .course-header {
+        padding: 1.5rem;
+    }
+
+    .course-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .course-subtitle {
+        font-size: 1rem;
+    }
+
+    .price-amount {
+        font-size: 1.5rem;
+    }
+
+    .header-actions {
+        padding: 1rem;
+    }
 }
 
 /* Loading & Error States */

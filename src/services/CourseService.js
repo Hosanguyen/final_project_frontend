@@ -127,6 +127,26 @@ const CourseService = {
       console.error('Error fetching lessons:', error);
       throw error;
     }
+  },
+
+  // Kiểm tra enrollment status
+  checkEnrollment: async (courseId) => {
+    try {
+      const response = await api.get(`/api/enrollment/check/${courseId}/`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Lấy danh sách courses đã đăng ký
+  getMyEnrollments: async () => {
+    try {
+      const response = await api.get('/api/enrollment/list/');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   }
   
 };

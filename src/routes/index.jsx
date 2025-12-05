@@ -43,6 +43,8 @@ import QuizList from '../pages/admin/quiz/QuizList';
 import QuizForm from '../pages/admin/quiz/QuizForm';
 import QuizDetail from '../pages/admin/quiz/QuizDetail';
 import GlobalRanking from '../pages/GlobalRanking/GlobalRanking';
+import PaymentResult from '../pages/PaymentResult';
+import OrderHistory from '../pages/OrderHistory';
 
 const AppRoutes = () => {
     return (
@@ -57,6 +59,15 @@ const AppRoutes = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/courses" element={<Courses />} />
                     <Route path="/courses/:slug" element={<CourseDetail />} />
+                    <Route path="/payment-result" element={<PaymentResult />} />
+                    <Route 
+                        path="/order-history" 
+                        element={
+                            <PrivateRoute>
+                                <OrderHistory />
+                            </PrivateRoute>
+                        } 
+                    />
                     <Route path="/practice" element={<Practice />} />
                     <Route path="/practice/ranking" element={<PracticeLeaderboard />} />
                     <Route path="/global-ranking" element={<GlobalRanking />} />

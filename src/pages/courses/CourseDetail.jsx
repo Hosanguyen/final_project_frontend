@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaBook, FaChevronDown, FaChevronRight, FaVideo, FaFilePdf, FaFileAlt, FaLink, FaFile, FaClock, FaArrowLeft } from 'react-icons/fa';
 import CourseService from '../../services/CourseService';
+import CourseEnrollButton from './CourseEnrollButton';
 import './CourseDetail.css';
 
 // Backend API URL
@@ -228,10 +229,48 @@ const CourseDetail = () => {
                 <button className="back-btn" onClick={() => navigate('/courses')}>
                     <FaArrowLeft /> Quay lại
                 </button>
-                <h1>{course.title}</h1>
-                {course.short_description && (
-                    <p className="course-subtitle">{course.short_description}</p>
-                )}
+                <div className="header-content">
+                    <div className="header-info">
+                        <h1>{course.title}</h1>
+                        {course.short_description && (
+                            <p className="course-subtitle">{course.short_description}</p>
+                        )}
+                        <div className="course-meta">
+                            <span className="meta-item">
+                                <FaClock /> {lessons.length} bài học
+                            </span>
+                            {course.created_by_name && (
+                                <span className="meta-item">
+                                    👤 {course.created_by_name}
+                                </span>
+                            )}
+                            {course.level && (
+                                <span className={`level-badge ${course.level}`}>
+                                    {course.level}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    <div className="header-actions">
+                        <div className="price-section">
+                            {course.price && Number(course.price) > 0 ? (
+                                <div className="price-display">
+                                    <span className="price-amount">
+                                        {Number(course.price).toLocaleString('vi-VN')} VND
+                                    </span>
+                                </div>
+                            ) : (
+                                <div className="price-free">
+                                    <span>Miễn phí</span>
+                                </div>
+                            )}
+                        </div>
+                        <CourseEnrollButton 
+                            course={course} 
+                            onEnrollSuccess={loadCourseData}
+                        />
+                    </div>
+                </div>
             </div>
 
             <div className="course-content">
