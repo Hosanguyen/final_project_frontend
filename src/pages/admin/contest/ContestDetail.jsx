@@ -3,10 +3,11 @@ import notification from '../../../utils/notification';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     FaTrophy, FaArrowLeft, FaEdit, FaTrash, FaCalendarAlt,
-    FaClock, FaEye, FaEyeSlash, FaUsers, FaSpinner, FaSync
+    FaClock, FaEye, FaEyeSlash, FaUsers, FaSpinner, FaSync, FaStar
 } from 'react-icons/fa';
 import './ContestDetail.css';
 import ContestService from '../../../services/ContestService';
+import RatingService from '../../../services/RatingService';
 import ContestProblemManager from './ContestProblemManager';
 import ContestParticipants from './ContestParticipants';
 
@@ -17,6 +18,7 @@ const ContestDetail = () => {
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [recalcLoading, setRecalcLoading] = useState(false);
+    const [ratingLoading, setRatingLoading] = useState(false);
 
     useEffect(() => {
         loadContest();
@@ -67,6 +69,32 @@ const ContestDetail = () => {
             notification.error(msg);
         } finally {
             setRecalcLoading(false);
+        }
+    };
+
+    const handleUpdateRatings = async () => {
+        if (contest?.slug === 'practice') {
+            notification.warning('Contest Practice không tính rating');
+            return;
+        }
+
+        const result = await notification.confirm(
+            'Cập nhật rating cho tất cả người tham gia contest này?\n\nLưu ý: Nếu đã cập nhật trước đó, hệ thống sẽ rollback và tính lại từ đầu.',
+            'Xác nhận cập nhật Rating',
+            { confirmButtonText: 'Cập nhật', cancelButtonText: 'Hủy' }
+        );
+        if (!result?.isConfirmed) return;
+
+        setRatingLoading(true);
+        try {
+            const res = await RatingService.updateContestRatings(id);
+            notification.success(`${res.detail} - Đã cập nhật ${res.updated_count} người tham gia`);
+        } catch (error) {
+            console.error('Update ratings failed:', error);
+            const msg = error.response?.data?.detail || error.message || 'Không thể cập nhật rating';
+            notification.error(msg);
+        } finally {
+            setRatingLoading(false);
         }
     };
 
@@ -121,6 +149,15 @@ const ContestDetail = () => {
                     <button className="contest-btn-recalc" onClick={handleRecalculate} disabled={recalcLoading}>
                         {recalcLoading ? <FaSpinner className="spinner" /> : <FaSync />}
                         {recalcLoading ? 'Đang tính lại...' : 'Tính lại xếp hạng'}
+                    </button>
+                    <button 
+                        className="contest-btn-rating" 
+                        onClick={handleUpdateRatings} 
+                        disabled={ratingLoading || contest?.slug === 'practice'}
+                        title={contest?.slug === 'practice' ? 'Practice không tính rating' : 'Cập nhật rating cho user'}
+                    >
+                        {ratingLoading ? <FaSpinner className="spinner" /> : <FaStar />}
+                        {ratingLoading ? 'Đang cập nhật...' : 'Cập nhật Rating'}
                     </button>
                     <button className="contest-btn-edit" onClick={handleEdit}>
                         <FaEdit /> Chỉnh sửa

@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { loginUser } from '../../services/AuthService';
+import { useUser } from '../../contexts/UserContext';
 import notification from '../../utils/notification';
 
 const Login = () => {
     const navigate = useNavigate();
+    const { login: userLogin } = useUser();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -47,6 +49,10 @@ const Login = () => {
         setLoading(false);
 
         if (result.success) {
+            // Lưu user data vào UserContext
+            if (result.user) {
+                userLogin(result.user);
+            }
             notification.success(result.message);
             navigate('/');
         } else {

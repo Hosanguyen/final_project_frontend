@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { FaClock, FaCheckCircle, FaTimesCircle, FaArrowLeft } from 'react-icons/fa';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { FaClock, FaArrowLeft } from 'react-icons/fa';
 import QuizService from '../../services/QuizService';
 import notification from '../../utils/notification';
 import './QuizTaking.css';
@@ -10,12 +10,15 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
     const [timeLeft, setTimeLeft] = useState(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    
+    const handleSubmitQuizRef = useRef(null);
 
     // Key để lưu thời gian trong localStorage
     const getStorageKey = (submissionId) => `quiz_timer_${submissionId}`;
 
     useEffect(() => {
         startQuiz();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [quiz.id]);
 
     // Timer effect - chạy liên tục và lưu vào localStorage
@@ -31,9 +34,21 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
                     localStorage.setItem(getStorageKey(submission.id), newTime.toString());
                 }
 
+                // Cảnh báo khi còn 5 phút
+                if (newTime === 300) {
+                    notification.warning('⚠️ Còn 5 phút! Hãy kiểm tra lại bài làm.');
+                }
+
+                // Cảnh báo khi còn 1 phút
+                if (newTime === 60) {
+                    notification.error('⚠️ CHỈ CÒN 1 PHÚT! Chuẩn bị nộp bài!');
+                }
+
                 // Tự động nộp bài khi hết giờ
                 if (newTime <= 0) {
-                    handleSubmitQuiz(true);
+                    if (handleSubmitQuizRef.current) {
+                        handleSubmitQuizRef.current(true);
+                    }
                     return 0;
                 }
 
@@ -57,24 +72,55 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
             });
 
             let response;
+            let isResuming = false;
+
             if (submissionsResponse.results && submissionsResponse.results.length > 0) {
                 // Có submission đang làm dở - tiếp tục
                 response = submissionsResponse.results[0];
-                notification.info('Tiếp tục làm bài quiz');
+                isResuming = true;
+                
+                // Load lại submission chi tiết để có answers
+                const detailResponse = await QuizService.getSubmissionById(response.id);
+                response = detailResponse;
+                
+                // Load lại các câu trả lời đã lưu
+                const savedAnswers = {};
+                if (response.answers && response.answers.length > 0) {
+                    response.answers.forEach((answer) => {
+                        // API trả về: question (id), selected_option (single id)
+                        const questionId = answer.question || answer.question_id;
+                        const selectedOptions = answer.selected_option_ids || 
+                                              (answer.selected_option ? [answer.selected_option] : []);
+                        
+                        if (questionId && selectedOptions.length > 0) {
+                            savedAnswers[questionId] = selectedOptions;
+                        }
+                    });
+                }
+                
+                console.log('Loaded saved answers:', savedAnswers); // Debug
+                setAnswers(savedAnswers);
+                
+                notification.info('Tiếp tục làm bài quiz từ lần trước');
             } else {
                 // Tạo submission mới
                 response = await QuizService.startSubmission(quiz.id, lessonId);
-                notification.success('Bắt đầu làm bài quiz');
+                notification.success('Bắt đầu làm bài quiz mới');
             }
 
             setSubmission(response);
 
             // Tính toán thời gian còn lại
-            if (quiz.time_limit_seconds) {
+            // Lấy time_limit từ quiz hoặc quiz_snapshot
+            const timeLimit = quiz.time_limit_seconds || response.quiz_snapshot?.time_limit_seconds;
+            
+            console.log('Quiz time limit:', timeLimit); // Debug
+
+            if (timeLimit && timeLimit > 0) {
                 const storageKey = getStorageKey(response.id);
                 const savedTime = localStorage.getItem(storageKey);
 
-                if (savedTime !== null) {
+                if (savedTime !== null && isResuming) {
                     // Có thời gian đã lưu - tiếp tục từ đó
                     const remainingTime = parseInt(savedTime);
                     if (remainingTime > 0) {
@@ -85,13 +131,24 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
                     } else {
                         // Hết giờ rồi - tự động nộp
                         setTimeLeft(0);
-                        setTimeout(() => handleSubmitQuiz(true), 100);
+                        setTimeout(() => {
+                            if (handleSubmitQuizRef.current) {
+                                handleSubmitQuizRef.current(true);
+                            }
+                        }, 100);
                     }
                 } else {
                     // Lần đầu làm bài - khởi tạo thời gian
-                    setTimeLeft(quiz.time_limit_seconds);
-                    localStorage.setItem(storageKey, quiz.time_limit_seconds.toString());
+                    setTimeLeft(timeLimit);
+                    localStorage.setItem(storageKey, timeLimit.toString());
+                    
+                    const mins = Math.floor(timeLimit / 60);
+                    const secs = timeLimit % 60;
+                    notification.success(`Thời gian làm bài: ${mins} phút ${secs} giây`);
                 }
+            } else {
+                console.log('Quiz không có giới hạn thời gian');
+                notification.info('Bài quiz không giới hạn thời gian');
             }
         } catch (error) {
             console.error('Error starting quiz:', error);
@@ -105,10 +162,11 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
     const handleAnswerChange = async (questionId, optionId, questionType) => {
         const newAnswers = { ...answers };
 
-        if (questionType === 'single') {
+        // questionType: 1 = single choice, 2 = multiple choice
+        if (questionType === 1) {
             // Single choice: chỉ chọn 1
             newAnswers[questionId] = [optionId];
-        } else {
+        } else if (questionType === 2) {
             // Multiple choice: có thể chọn nhiều
             if (!newAnswers[questionId]) {
                 newAnswers[questionId] = [];
@@ -124,57 +182,71 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
 
         setAnswers(newAnswers);
 
-        // Gửi câu trả lời lên server
+        // Gửi câu trả lời lên server ngay lập tức
         try {
             await QuizService.submitAnswer(submission.id, {
                 question_id: questionId,
                 selected_option_ids: newAnswers[questionId] || [],
             });
+            console.log(`Đã lưu câu trả lời cho câu ${questionId}`);
         } catch (error) {
             console.error('Error submitting answer:', error);
-            notification.error('Không thể lưu câu trả lời');
+            notification.error('Không thể lưu câu trả lời. Vui lòng thử lại!');
+            
+            // Rollback về trạng thái cũ nếu lưu thất bại
+            setAnswers(answers);
         }
     };
 
-    const handleSubmitQuiz = async (autoSubmit = false) => {
-        if (submitting) return;
-
-        const unansweredCount = getUnansweredCount();
-
-        // Nếu không phải tự động nộp và còn câu chưa trả lời thì hỏi xác nhận
-        if (!autoSubmit && unansweredCount > 0) {
-            const confirm = window.confirm(`Bạn còn ${unansweredCount} câu chưa trả lời. Bạn có chắc muốn nộp bài?`);
-            if (!confirm) return;
-        }
-
-        try {
-            setSubmitting(true);
-            const result = await QuizService.submitQuiz(submission.id);
-
-            // Xóa thời gian đã lưu trong localStorage
-            if (submission.id) {
-                localStorage.removeItem(getStorageKey(submission.id));
-            }
-
-            if (autoSubmit) {
-                notification.warning('Hết thời gian làm bài! Bài làm đã được tự động nộp.');
-            } else {
-                notification.success('Nộp bài thành công!');
-            }
-
-            onComplete(result);
-        } catch (error) {
-            console.error('Error submitting quiz:', error);
-            notification.error('Không thể nộp bài');
-        } finally {
-            setSubmitting(false);
-        }
-    };
-
-    const getUnansweredCount = () => {
+    const getUnansweredCount = useCallback(() => {
         const questions = submission?.quiz_snapshot?.questions || [];
         return questions.filter((q) => !answers[q.question_id] || answers[q.question_id].length === 0).length;
-    };
+    }, [submission, answers]);
+
+    const handleSubmitQuiz = useCallback(
+        async (autoSubmit = false) => {
+            if (submitting) return;
+
+            const unansweredCount = getUnansweredCount();
+
+            // Nếu không phải tự động nộp và còn câu chưa trả lời thì hỏi xác nhận
+            if (!autoSubmit && unansweredCount > 0) {
+                const confirm = window.confirm(
+                    `Bạn còn ${unansweredCount} câu chưa trả lời. Bạn có chắc muốn nộp bài?`,
+                );
+                if (!confirm) return;
+            }
+
+            try {
+                setSubmitting(true);
+                const result = await QuizService.submitQuiz(submission.id);
+
+                // Xóa thời gian đã lưu trong localStorage
+                if (submission.id) {
+                    localStorage.removeItem(getStorageKey(submission.id));
+                }
+
+                if (autoSubmit) {
+                    notification.warning('⏰ HẾT GIỜ! Bài làm đã được tự động nộp.');
+                } else {
+                    notification.success('✅ Nộp bài thành công!');
+                }
+
+                onComplete(result);
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+                notification.error('Không thể nộp bài. Vui lòng thử lại!');
+            } finally {
+                setSubmitting(false);
+            }
+        },
+        [submitting, submission, onComplete, getUnansweredCount],
+    );
+
+    // Cập nhật ref khi handleSubmitQuiz thay đổi
+    useEffect(() => {
+        handleSubmitQuizRef.current = handleSubmitQuiz;
+    }, [handleSubmitQuiz]);
 
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
@@ -201,6 +273,10 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
     const questions = submission.quiz_snapshot?.questions || [];
     const answeredCount = Object.keys(answers).filter((qId) => answers[qId]?.length > 0).length;
 
+    // Debug: Log để kiểm tra
+    console.log('Current answers state:', answers);
+    console.log('Questions:', questions.map(q => ({ id: q.question_id, options: q.options.map(o => o.option_id) })));
+
     return (
         <div className="quiz-taking-container">
             <div className="quiz-taking-header">
@@ -213,9 +289,13 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
                         <span className="quiz-progress">
                             Đã trả lời: {answeredCount}/{questions.length}
                         </span>
-                        {timeLeft !== null && (
+                        {timeLeft !== null && timeLeft >= 0 ? (
                             <span className={`quiz-timer ${timeLeft < 60 ? 'warning' : ''}`}>
                                 <FaClock /> {formatTime(timeLeft)}
+                            </span>
+                        ) : (
+                            <span className="quiz-timer no-limit">
+                                <FaClock /> Không giới hạn
                             </span>
                         )}
                     </div>
@@ -229,45 +309,53 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
                 {questions.length === 0 ? (
                     <div className="quiz-no-questions">Không có câu hỏi nào</div>
                 ) : (
-                    questions.map((question, index) => (
-                        <div key={question.question_id} className="quiz-question-card">
-                            <div className="quiz-question-header">
-                                <span className="quiz-question-number">Câu {index + 1}</span>
-                                <span className="quiz-question-points">{question.points} điểm</span>
+                    questions.map((question, index) => {
+                        // Flexible question ID mapping
+                        const questionId = question.question_id || question.id;
+                        
+                        return (
+                            <div key={questionId} className="quiz-question-card">
+                                <div className="quiz-question-header">
+                                    <span className="quiz-question-number">Câu {index + 1}</span>
+                                    <span className="quiz-question-points">{question.points} điểm</span>
+                                </div>
+                                <div className="quiz-question-content">
+                                    <p dangerouslySetInnerHTML={{ __html: question.content }} />
+                                </div>
+                                <div className="quiz-question-type">
+                                    {question.question_type === 1 ? '(Chọn 1 đáp án)' : '(Chọn nhiều đáp án)'}
+                                </div>
+                                <div className="quiz-options-list">
+                                    {question.options.map((option) => {
+                                        // Flexible option ID mapping
+                                        const optionId = option.option_id || option.id;
+                                        const isSelected = answers[questionId]?.includes(optionId);
+                                        
+                                        return (
+                                            <label
+                                                key={optionId}
+                                                className={`quiz-option ${isSelected ? 'selected' : ''}`}
+                                            >
+                                                <input
+                                                    type={question.question_type === 1 ? 'radio' : 'checkbox'}
+                                                    name={`question-${questionId}`}
+                                                    checked={isSelected}
+                                                    onChange={() =>
+                                                        handleAnswerChange(
+                                                            questionId,
+                                                            optionId,
+                                                            question.question_type,
+                                                        )
+                                                    }
+                                                />
+                                                <span className="quiz-option-text">{option.option_text}</span>
+                                            </label>
+                                        );
+                                    })}
+                                </div>
                             </div>
-                            <div className="quiz-question-content">
-                                <p dangerouslySetInnerHTML={{ __html: question.content }} />
-                            </div>
-                            <div className="quiz-question-type">
-                                {question.question_type === 'single' ? '(Chọn 1 đáp án)' : '(Chọn nhiều đáp án)'}
-                            </div>
-                            <div className="quiz-options-list">
-                                {question.options.map((option) => {
-                                    const isSelected = answers[question.question_id]?.includes(option.option_id);
-                                    return (
-                                        <label
-                                            key={option.option_id}
-                                            className={`quiz-option ${isSelected ? 'selected' : ''}`}
-                                        >
-                                            <input
-                                                type={question.question_type === 'single' ? 'radio' : 'checkbox'}
-                                                name={`question-${question.question_id}`}
-                                                checked={isSelected}
-                                                onChange={() =>
-                                                    handleAnswerChange(
-                                                        question.question_id,
-                                                        option.option_id,
-                                                        question.question_type,
-                                                    )
-                                                }
-                                            />
-                                            <span className="quiz-option-text">{option.option_text}</span>
-                                        </label>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    ))
+                        );
+                    })
                 )}
             </div>
         </div>

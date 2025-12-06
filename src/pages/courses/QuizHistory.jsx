@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaClipboardList, FaTrophy, FaClock, FaCheckCircle, FaEye } from 'react-icons/fa';
+import { FaClipboardList, FaTrophy, FaClock, FaEye } from 'react-icons/fa';
 import QuizService from '../../services/QuizService';
 import './QuizHistory.css';
 
@@ -88,7 +88,7 @@ const QuizHistory = ({ courseId, lessonId, onViewResult }) => {
                     <p>Bạn chưa nộp bài quiz nào</p>
                 </div>
             ) : (
-                <div className="quiz-history-list">
+                <div className="quiz-history-table">
                     {submissions.map((submission) => {
                         const maxScore = calculateMaxScore(submission);
                         const scoreColor = getScoreColor(submission.total_score, maxScore);
@@ -96,45 +96,22 @@ const QuizHistory = ({ courseId, lessonId, onViewResult }) => {
                             maxScore > 0 ? Math.round((submission.total_score / maxScore) * 100) : 0;
 
                         return (
-                            <div key={submission.id} className="quiz-history-card">
-                                <div className="quiz-history-card-header">
-                                    <div className="quiz-history-card-title">
-                                        <FaClipboardList className="quiz-icon" />
-                                        <span>{submission.quiz_title || 'Quiz'}</span>
-                                    </div>
-                                    {submission.lesson_title && (
-                                        <span className="quiz-history-lesson">Bài học: {submission.lesson_title}</span>
-                                    )}
+                            <div key={submission.id} className="quiz-history-row">
+                                <div className="quiz-history-row-title">
+                                    <FaClipboardList className="quiz-icon" />
+                                    <span>{submission.quiz?.title || 'Quiz'}</span>
                                 </div>
-
-                                <div className="quiz-history-card-body">
-                                    <div className="quiz-history-score">
-                                        <div className="score-circle" style={{ borderColor: scoreColor }}>
-                                            <span className="score-value" style={{ color: scoreColor }}>
-                                                {submission.total_score?.toFixed(1) || 0}
-                                            </span>
-                                            <span className="score-max">/ {maxScore}</span>
-                                        </div>
-                                        <div className="score-percentage" style={{ color: scoreColor }}>
-                                            {scorePercentage}%
-                                        </div>
-                                    </div>
-
-                                    <div className="quiz-history-info">
-                                        <div className="info-item">
-                                            <FaCheckCircle />
-                                            <span>{submission.quiz_snapshot?.questions?.length || 0} câu hỏi</span>
-                                        </div>
-                                        <div className="info-item">
-                                            <FaClock />
-                                            <span>{formatDate(submission.submitted_at)}</span>
-                                        </div>
-                                    </div>
+                                <div className="quiz-history-row-score" style={{ color: scoreColor }}>
+                                    <strong>{submission.total_score?.toFixed(1) || 0}</strong>/{maxScore} (
+                                    {scorePercentage}%)
                                 </div>
-
-                                <div className="quiz-history-card-footer">
+                                <div className="quiz-history-row-date">
+                                    <FaClock />
+                                    <span>{formatDate(submission.submitted_at)}</span>
+                                </div>
+                                <div className="quiz-history-row-action">
                                     <button className="btn-view-result" onClick={() => onViewResult(submission.id)}>
-                                        <FaEye /> Xem chi tiết
+                                        <FaEye /> Xem
                                     </button>
                                 </div>
                             </div>

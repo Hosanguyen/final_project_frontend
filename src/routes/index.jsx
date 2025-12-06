@@ -8,6 +8,7 @@ import AdminLayout from '../layouts/AdminLayout';
 import Register from '../pages/register/Register';
 import UserProfile from '../pages/UserProfile/UserProfile';
 import PrivateRoute from './PrivateRoute';
+import RoleGuard from '../components/RoleGuard';
 import PermissionCategoryList from '../pages/admin/permissionCategory/PermissionCategoryList';
 import PermissionCategoryForm from '../pages/admin/permissionCategory/PermissionCategoryForm';
 import PermissionForm from '../pages/admin/permission/PermissionForm';
@@ -26,6 +27,7 @@ import LessonDetailPage from '../pages/admin/lesson/LessonDetailPage';
 import AdminDashboard from '../pages/admin/dashboard/AdminDashboard';
 import Courses from '../pages/courses/Courses';
 import CourseDetail from '../pages/courses/CourseDetail';
+import CourseLearning from '../pages/courses/CourseLearning';
 import ProblemForm from '../pages/admin/problem/ProblemForm';
 import ProblemDetail from '../pages/admin/problem/ProblemDetail';
 import ProblemList from '../pages/admin/problem/ProblemList';
@@ -42,6 +44,9 @@ import ContestDetailUser from '../pages/contests/ContestDetailUser';
 import QuizList from '../pages/admin/quiz/QuizList';
 import QuizForm from '../pages/admin/quiz/QuizForm';
 import QuizDetail from '../pages/admin/quiz/QuizDetail';
+import GlobalRanking from '../pages/GlobalRanking/GlobalRanking';
+import PaymentResult from '../pages/PaymentResult';
+import OrderHistory from '../pages/OrderHistory';
 
 const AppRoutes = () => {
     return (
@@ -56,8 +61,26 @@ const AppRoutes = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/courses" element={<Courses />} />
                     <Route path="/courses/:slug" element={<CourseDetail />} />
+                    <Route 
+                        path="/courses/:slug/learn" 
+                        element={
+                            <PrivateRoute>
+                                <CourseLearning />
+                            </PrivateRoute>
+                        } 
+                    />
+                    <Route path="/payment-result" element={<PaymentResult />} />
+                    <Route 
+                        path="/order-history" 
+                        element={
+                            <PrivateRoute>
+                                <OrderHistory />
+                            </PrivateRoute>
+                        } 
+                    />
                     <Route path="/practice" element={<Practice />} />
                     <Route path="/practice/ranking" element={<PracticeLeaderboard />} />
+                    <Route path="/global-ranking" element={<GlobalRanking />} />
                     <Route path="/contests" element={<Contests />} />
                     <Route path="/contests/:id" element={<ContestDetailUser />} />
                     <Route path="/problems/:id" element={<ProblemDetailUser />} />
@@ -74,13 +97,20 @@ const AppRoutes = () => {
 
                 {/* Routes với AdminLayout */}
                 <Route element={<AdminLayout />}>
-                    <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                    <Route 
+                        path="/admin/dashboard" 
+                        element={
+                            <RoleGuard roles="admin">
+                                <AdminDashboard />
+                            </RoleGuard>
+                        } 
+                    />
                     <Route
                         path="/admin/permission-categories"
                         element={
-                            <PrivateRoute>
+                            <RoleGuard roles="admin">
                                 <PermissionCategoryList />
-                            </PrivateRoute>
+                            </RoleGuard>
                         }
                     />
                     <Route

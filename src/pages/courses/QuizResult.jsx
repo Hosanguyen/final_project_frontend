@@ -25,9 +25,14 @@ const QuizResult = ({ submissionId, onBack, onViewHistory }) => {
     };
 
     const getAnswerStatus = (question, userAnswers) => {
-        const correctOptions = question.options.filter((opt) => opt.is_correct).map((opt) => opt.option_id);
+        const correctOptions = question.options
+            .filter((opt) => opt.is_correct)
+            .map((opt) => opt.option_id || opt.id);
+        
         // Backend trả về selected_option là ID (integer), không phải object
-        const selectedOptions = userAnswers.map((ans) => ans.selected_option).filter(Boolean);
+        const selectedOptions = userAnswers
+            .map((ans) => ans.selected_option || ans.selected_option_id)
+            .filter(Boolean);
 
         const isCorrect =
             correctOptions.length === selectedOptions.length &&
@@ -44,7 +49,10 @@ const QuizResult = ({ submissionId, onBack, onViewHistory }) => {
         let incorrect = 0;
 
         questions.forEach((question) => {
-            const userAnswers = submission.answers?.filter((ans) => ans.question === question.question_id) || [];
+            const questionId = question.question_id || question.id;
+            const userAnswers = submission.answers?.filter(
+                (ans) => (ans.question || ans.question_id) === questionId
+            ) || [];
             const { isCorrect } = getAnswerStatus(question, userAnswers);
             if (isCorrect) correct++;
             else incorrect++;
@@ -149,8 +157,10 @@ const QuizResult = ({ submissionId, onBack, onViewHistory }) => {
                     <div className="quiz-result-answers">
                         <h3>Chi tiết câu trả lời</h3>
                         {submission.quiz_snapshot?.questions?.map((question, index) => {
-                            const userAnswers =
-                                submission.answers?.filter((ans) => ans.question === question.question_id) || [];
+                            const questionId = question.question_id || question.id;
+                            const userAnswers = submission.answers?.filter(
+                                (ans) => (ans.question || ans.question_id) === questionId
+                            ) || [];
                             const { isCorrect, correctOptions, selectedOptions } = getAnswerStatus(
                                 question,
                                 userAnswers,
@@ -158,7 +168,7 @@ const QuizResult = ({ submissionId, onBack, onViewHistory }) => {
 
                             return (
                                 <div
-                                    key={question.question_id}
+                                    key={questionId}
                                     className={`quiz-review-card ${isCorrect ? 'correct' : 'incorrect'}`}
                                 >
                                     <div className="quiz-review-header">
@@ -179,8 +189,9 @@ const QuizResult = ({ submissionId, onBack, onViewHistory }) => {
                                     </div>
                                     <div className="quiz-review-options">
                                         {question.options.map((option) => {
-                                            const isSelected = selectedOptions.includes(option.option_id);
-                                            const isCorrectOption = correctOptions.includes(option.option_id);
+                                            const optionId = option.option_id || option.id;
+                                            const isSelected = selectedOptions.includes(optionId);
+                                            const isCorrectOption = correctOptions.includes(optionId);
 
                                             let optionClass = 'quiz-review-option';
                                             if (isSelected && isCorrectOption) {
@@ -192,7 +203,7 @@ const QuizResult = ({ submissionId, onBack, onViewHistory }) => {
                                             }
 
                                             return (
-                                                <div key={option.option_id} className={optionClass}>
+                                                <div key={optionId} className={optionClass}>
                                                     <span className="option-indicator">
                                                         {isSelected && isCorrectOption && <FaCheckCircle />}
                                                         {isSelected && !isCorrectOption && <FaTimesCircle />}

@@ -39,9 +39,15 @@ const CourseCard = ({ course }) => {
 
       <div className="course-footer">
         <div className="course-price">
-          {Number(course.price).toLocaleString("vi-VN")}₫
+          {Number(course.price) > 0 ? (
+            <span className="price-amount">
+              {Number(course.price).toLocaleString("vi-VN")}₫
+            </span>
+          ) : (
+            <span className="price-free">Miễn phí</span>
+          )}
         </div>
-        <button className="course-card btn-view">Xem chi tiết</button>
+        <button className="course-card-btn btn-view">Xem chi tiết</button>
       </div>
     </div>
   );
