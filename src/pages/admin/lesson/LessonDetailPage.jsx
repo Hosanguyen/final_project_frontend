@@ -1,9 +1,20 @@
 ﻿import React, { useState, useEffect } from 'react';
 import notification from '../../../utils/notification';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-    FaBookOpen, FaEdit, FaTrash, FaPlus, FaArrowLeft, 
-    FaFileAlt, FaVideo, FaFilePdf, FaLink, FaCheckCircle
+import {
+    FaBookOpen,
+    FaEdit,
+    FaTrash,
+    FaPlus,
+    FaArrowLeft,
+    FaFileAlt,
+    FaVideo,
+    FaFilePdf,
+    FaLink,
+    FaCheckCircle,
+    FaClock,
+    FaListOl,
+    FaClipboardList,
 } from 'react-icons/fa';
 import LessonService from '../../../services/LessonService';
 import './LessonDetailPage.css';
@@ -11,9 +22,10 @@ import './LessonDetailPage.css';
 const LessonDetailPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    
+
     const [lesson, setLesson] = useState(null);
     const [resources, setResources] = useState([]);
+    const [quizzes, setQuizzes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedResource, setSelectedResource] = useState(null);
@@ -28,9 +40,13 @@ const LessonDetailPage = () => {
         try {
             const lessonData = await LessonService.getLesson(id);
             setLesson(lessonData);
-            
+
             if (lessonData.resources) {
                 setResources(lessonData.resources);
+            }
+
+            if (lessonData.quizzes) {
+                setQuizzes(lessonData.quizzes);
             }
         } catch (error) {
             console.error('Error loading lesson:', error);
@@ -62,11 +78,16 @@ const LessonDetailPage = () => {
 
     const getResourceIcon = (type) => {
         switch (type) {
-            case 'video': return <FaVideo className="resource-icon video" />;
-            case 'pdf': return <FaFilePdf className="resource-icon pdf" />;
-            case 'file': return <FaFileAlt className="resource-icon file" />;
-            case 'link': return <FaLink className="resource-icon link" />;
-            default: return <FaFileAlt className="resource-icon text" />;
+            case 'video':
+                return <FaVideo className="resource-icon video" />;
+            case 'pdf':
+                return <FaFilePdf className="resource-icon pdf" />;
+            case 'file':
+                return <FaFileAlt className="resource-icon file" />;
+            case 'link':
+                return <FaLink className="resource-icon link" />;
+            default:
+                return <FaFileAlt className="resource-icon text" />;
         }
     };
 
@@ -76,9 +97,16 @@ const LessonDetailPage = () => {
             video: 'Video',
             pdf: 'PDF',
             file: 'File',
-            link: 'Link'
+            link: 'Link',
         };
         return labels[type] || type;
+    };
+
+    const formatDuration = (seconds) => {
+        if (!seconds) return 'Không giới hạn';
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes} phút ${remainingSeconds > 0 ? remainingSeconds + ' giây' : ''}`;
     };
 
     if (loading) {
@@ -105,14 +133,16 @@ const LessonDetailPage = () => {
         <div className="lesson-detail-page">
             {/* Header */}
             <div className="lesson-detail-header">
-                <button 
+                <button
                     className="lesson-detail-btn-back"
-                    onClick={() => lesson.course ? navigate(`/admin/courses/${lesson.course}`) : navigate('/admin/lessons')}
+                    onClick={() =>
+                        lesson.course ? navigate(`/admin/courses/${lesson.course}`) : navigate('/admin/lessons')
+                    }
                 >
                     <FaArrowLeft /> Quay lại
                 </button>
                 <div className="lesson-detail-header-actions">
-                    <button 
+                    <button
                         className="lesson-detail-btn-edit"
                         onClick={() => {
                             if (lesson.course) {
@@ -141,7 +171,7 @@ const LessonDetailPage = () => {
                             <span>{lesson.course_title}</span>
                         </div>
                     )}
-                    
+
                     <div className="lesson-detail-info-item">
                         <label>Thứ tự:</label>
                         <span className="lesson-sequence">{lesson.sequence}</span>
@@ -160,7 +190,7 @@ const LessonDetailPage = () => {
             <div className="lesson-detail-card">
                 <div className="lesson-detail-resources-header">
                     <h2>Tài nguyên bài học ({resources.length})</h2>
-                    <button 
+                    <button
                         className="lesson-detail-btn-add-resource"
                         onClick={() => {
                             if (lesson.course) {
@@ -184,9 +214,7 @@ const LessonDetailPage = () => {
                         {resources.map((resource) => (
                             <div key={resource.id} className="lesson-detail-resource-item">
                                 <div className="resource-item-left">
-                                    <div className="resource-type-icon">
-                                        {getResourceIcon(resource.type)}
-                                    </div>
+                                    <div className="resource-type-icon">{getResourceIcon(resource.type)}</div>
                                     <div className="resource-item-info">
                                         <div className="resource-item-header">
                                             <h3 className="resource-title">{resource.title || 'Không có tiêu đề'}</h3>
@@ -194,7 +222,7 @@ const LessonDetailPage = () => {
                                                 {getResourceTypeLabel(resource.type)}
                                             </span>
                                         </div>
-                                        
+
                                         <div className="resource-item-details">
                                             {resource.type === 'text' && resource.content && (
                                                 <p className="resource-preview">
@@ -202,11 +230,11 @@ const LessonDetailPage = () => {
                                                     {resource.content.length > 100 && '...'}
                                                 </p>
                                             )}
-                                            
+
                                             {resource.type === 'link' && resource.url && (
-                                                <a 
-                                                    href={resource.url} 
-                                                    target="_blank" 
+                                                <a
+                                                    href={resource.url}
+                                                    target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="resource-link-url"
                                                     onClick={(e) => e.stopPropagation()}
@@ -214,39 +242,97 @@ const LessonDetailPage = () => {
                                                     <FaLink /> {resource.url}
                                                 </a>
                                             )}
-                                            
-                                            {(resource.type === 'file' || resource.type === 'pdf' || resource.type === 'video') && resource.file_url && (
-                                                <div className="resource-file-info">
-                                                    <FaFileAlt />
-                                                    <span>{resource.filename || 'File đã tải lên'}</span>
-                                                </div>
-                                            )}
+
+                                            {(resource.type === 'file' ||
+                                                resource.type === 'pdf' ||
+                                                resource.type === 'video') &&
+                                                resource.file_url && (
+                                                    <div className="resource-file-info">
+                                                        <FaFileAlt />
+                                                        <span>{resource.filename || 'File đã tải lên'}</span>
+                                                    </div>
+                                                )}
                                         </div>
-                                        
+
                                         <div className="resource-item-meta">
                                             <span className="resource-sequence-badge">Thứ tự: {resource.sequence}</span>
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div className="resource-item-actions">
-                                    {(resource.type === 'file' || resource.type === 'pdf' || resource.type === 'video') && resource.file_url && (
-                                        <a 
-                                            href={`${API_BASE_URL}/api/media-proxy/?path=${resource.file_url}`} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="lessons-detail btn-view"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            Xem
-                                        </a>
-                                    )}
+                                    {(resource.type === 'file' ||
+                                        resource.type === 'pdf' ||
+                                        resource.type === 'video') &&
+                                        resource.file_url && (
+                                            <a
+                                                href={`${API_BASE_URL}/api/media-proxy/?path=${resource.file_url}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="lessons-detail btn-view"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                Xem
+                                            </a>
+                                        )}
                                     <button
                                         className="btn-delete-resource"
                                         onClick={() => openDeleteModal(resource)}
                                         title="Xóa tài nguyên"
                                     >
                                         <FaTrash />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Quizzes Section */}
+            <div className="lesson-detail-card">
+                <div className="lesson-detail-resources-header">
+                    <h2>Danh sách Quiz ({quizzes.length})</h2>
+                    <button
+                        className="lesson-detail-btn-add-resource"
+                        onClick={() => {
+                            if (lesson.course) {
+                                navigate(`/admin/courses/${lesson.course}/lessons/edit/${id}`);
+                            } else {
+                                navigate(`/admin/lessons/edit/${id}`);
+                            }
+                        }}
+                    >
+                        <FaPlus /> Thêm quiz
+                    </button>
+                </div>
+
+                {quizzes.length === 0 ? (
+                    <div className="lesson-detail-empty">
+                        <FaClipboardList className="empty-icon" />
+                        <p>Chưa có quiz nào</p>
+                    </div>
+                ) : (
+                    <div className="lesson-detail-quiz-list">
+                        {quizzes.map((quizItem, index) => (
+                            <div key={quizItem.id} className="lesson-detail-quiz-item">
+                                <div className="quiz-item-number">{index + 1}</div>
+                                <div className="quiz-item-content">
+                                    <h3 className="quiz-title">{quizItem.quiz_title || 'Không có tiêu đề'}</h3>
+                                    <div className="quiz-item-meta">
+                                        <span className="quiz-meta-item">
+                                            <FaClock /> {formatDuration(quizItem.quiz_time_limit)}
+                                        </span>
+                                        <span className="quiz-sequence-badge">Thứ tự: {quizItem.sequence}</span>
+                                    </div>
+                                </div>
+                                <div className="quiz-item-actions">
+                                    <button
+                                        className="btn-view-quiz"
+                                        onClick={() => navigate(`/admin/quizzes/${quizItem.quiz}`)}
+                                        title="Xem chi tiết quiz"
+                                    >
+                                        Xem chi tiết
                                     </button>
                                 </div>
                             </div>
@@ -264,20 +350,15 @@ const LessonDetailPage = () => {
                         </div>
                         <div className="lesson-detail-modal-body">
                             <p>
-                                Bạn có chắc chắn muốn xóa tài nguyên <strong>"{selectedResource?.title || 'này'}"</strong>?
+                                Bạn có chắc chắn muốn xóa tài nguyên{' '}
+                                <strong>"{selectedResource?.title || 'này'}"</strong>?
                             </p>
                         </div>
                         <div className="lesson-detail-modal-footer">
-                            <button 
-                                className="lesson-detail-btn-cancel"
-                                onClick={() => setShowDeleteModal(false)}
-                            >
+                            <button className="lesson-detail-btn-cancel" onClick={() => setShowDeleteModal(false)}>
                                 Hủy
                             </button>
-                            <button 
-                                className="lesson-detail-btn-confirm-delete"
-                                onClick={handleDeleteResource}
-                            >
+                            <button className="lesson-detail-btn-confirm-delete" onClick={handleDeleteResource}>
                                 Xóa
                             </button>
                         </div>

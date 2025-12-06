@@ -252,29 +252,70 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
+    margin-bottom: 0;
+    padding: 15px;
     border-bottom: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: background 0.2s;
+    user-select: none;
 }
 
-.quiz-form-drag-handle {
-    cursor: grab;
-    color: #9ca3af;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-}
-
-.quiz-form-drag-handle:active {
-    cursor: grabbing;
+.quiz-form-question-header:hover {
+    background: #f3f4f6;
 }
 
 .quiz-form-question-header h3 {
     flex: 1;
     margin: 0;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: #1a1d29;
+    display: flex;
+    align-items: center;
+}
+
+.quiz-form-question-preview {
+    font-size: 14px;
+    font-weight: 400;
+    color: #6b7280;
+    margin-left: 8px;
+}
+
+.quiz-form-question-header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.quiz-form-btn-toggle-question {
+    padding: 8px;
+    background: transparent;
+    color: #667eea;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.quiz-form-btn-toggle-question:hover {
+    background: #ede9fe;
+}
+
+.quiz-form-drag-handle {
+    cursor: grab;
+    color: #9ca3af;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.quiz-form-drag-handle:active {
+    cursor: grabbing;
 }
 
 .quiz-form-btn-remove-question {
@@ -285,6 +326,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.2s;
+    flex-shrink: 0;
 }
 
 .quiz-form-btn-remove-question:hover {
@@ -295,6 +337,19 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
+    padding: 20px;
+    animation: quiz-form-slide-down 0.3s ease-out;
+}
+
+@keyframes quiz-form-slide-down {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 2000px;
+    }
 }
 
 /* ============================================================

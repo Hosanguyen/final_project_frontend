@@ -1,7 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaBook, FaChevronDown, FaChevronRight, FaVideo, FaFilePdf, FaFileAlt, FaLink, FaFile, FaArrowLeft } from 'react-icons/fa';
+import {
+    FaBook,
+    FaChevronDown,
+    FaChevronRight,
+    FaVideo,
+    FaFilePdf,
+    FaFileAlt,
+    FaLink,
+    FaFile,
+    FaArrowLeft,
+    FaClipboardList,
+    FaHistory,
+} from 'react-icons/fa';
 import CourseService from '../../services/CourseService';
+import QuizItem from './QuizItem';
+import QuizTaking from './QuizTaking';
+import QuizResult from './QuizResult';
+import QuizHistory from './QuizHistory';
 import './CourseLearning.css';
 
 // Backend API URL
@@ -17,6 +33,15 @@ const CourseLearning = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Tab state: 'content' or 'history'
+    const [activeTab, setActiveTab] = useState('content');
+
+    // Quiz states
+    const [activeQuiz, setActiveQuiz] = useState(null);
+    const [quizMode, setQuizMode] = useState(null); // 'taking', 'result'
+    const [currentSubmissionId, setCurrentSubmissionId] = useState(null);
+    const [currentLessonId, setCurrentLessonId] = useState(null);
+
     useEffect(() => {
         loadCourseData();
     }, [slug]);
@@ -25,7 +50,7 @@ const CourseLearning = () => {
         try {
             setLoading(true);
             setError(null);
-            
+
             // Load course details
             const courseResponse = await CourseService.getCourseBySlug(slug);
             console.log('Course response:', courseResponse);
@@ -34,7 +59,7 @@ const CourseLearning = () => {
             // Load lessons with resources
             const lessonsResponse = await CourseService.getLessonsByCourse(courseResponse.data.id);
             console.log('Lessons response:', lessonsResponse);
-            
+
             const lessonsData = Array.isArray(lessonsResponse.data) ? lessonsResponse.data : [];
             setLessons(lessonsData);
 
@@ -42,7 +67,7 @@ const CourseLearning = () => {
             if (lessonsData.length > 0) {
                 const firstLesson = lessonsData[0];
                 setExpandedLessons({ [firstLesson.id]: true });
-                
+
                 if (firstLesson.resources && firstLesson.resources.length > 0) {
                     setSelectedResource(firstLesson.resources[0]);
                 }
@@ -57,14 +82,41 @@ const CourseLearning = () => {
     };
 
     const toggleLesson = (lessonId) => {
-        setExpandedLessons(prev => ({
+        setExpandedLessons((prev) => ({
             ...prev,
-            [lessonId]: !prev[lessonId]
+            [lessonId]: !prev[lessonId],
         }));
     };
 
     const handleResourceClick = (resource) => {
         setSelectedResource(resource);
+        setActiveQuiz(null);
+        setQuizMode(null);
+    };
+
+    const handleQuizClick = (quiz, lessonId) => {
+        setActiveQuiz(quiz);
+        setCurrentLessonId(lessonId);
+        setQuizMode('taking');
+        setSelectedResource(null);
+    };
+
+    const handleQuizComplete = (submission) => {
+        setCurrentSubmissionId(submission.id);
+        setQuizMode('result');
+    };
+
+    const handleBackFromQuiz = () => {
+        setActiveQuiz(null);
+        setQuizMode(null);
+        setCurrentSubmissionId(null);
+        setCurrentLessonId(null);
+    };
+
+    const handleViewHistoryResult = (submissionId) => {
+        setCurrentSubmissionId(submissionId);
+        setQuizMode('result');
+        setActiveTab('content');
     };
 
     const getResourceIcon = (type) => {
@@ -96,7 +148,11 @@ const CourseLearning = () => {
 
         switch (type) {
             case 'video':
-                const videoUrl = file_url ? (file_url.startsWith('http') ? file_url : `${API_BASE_URL}/api/media-proxy/?path=${file_url}`) : url;
+                const videoUrl = file_url
+                    ? file_url.startsWith('http')
+                        ? file_url
+                        : `${API_BASE_URL}/api/media-proxy/?path=${file_url}`
+                    : url;
                 return (
                     <div className="resource-content">
                         <h2>{title}</h2>
@@ -122,7 +178,11 @@ const CourseLearning = () => {
                 );
 
             case 'pdf':
-                const pdfUrl = file_url ? (file_url.startsWith('http') ? file_url : `${API_BASE_URL}/api/media-proxy/?path=${file_url}`) : url;
+                const pdfUrl = file_url
+                    ? file_url.startsWith('http')
+                        ? file_url
+                        : `${API_BASE_URL}/api/media-proxy/?path=${file_url}`
+                    : url;
                 return (
                     <div className="resource-content">
                         <h2>{title}</h2>
@@ -138,16 +198,16 @@ const CourseLearning = () => {
                             )}
                         </div>
                         <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-                            <a 
-                                href={pdfUrl} 
-                                target="_blank" 
+                            <a
+                                href={pdfUrl}
+                                target="_blank"
                                 rel="noopener noreferrer"
-                                style={{ 
+                                style={{
                                     display: 'inline-block',
                                     padding: '0.5rem 1rem',
                                     color: '#667eea',
                                     textDecoration: 'none',
-                                    fontSize: '0.9rem'
+                                    fontSize: '0.9rem',
                                 }}
                             >
                                 Mở trong tab mới →
@@ -235,70 +295,132 @@ const CourseLearning = () => {
                 {/* Sidebar - Danh sách lessons */}
                 <div className="lessons-sidebar">
                     <div className="sidebar-header">
-                        <h3>Nội dung khóa học</h3>
-                        <span className="lessons-count">
-                            {lessons.length} bài học
-                        </span>
+                        <div className="sidebar-tabs">
+                            <button
+                                className={`sidebar-tab ${activeTab === 'content' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('content')}
+                            >
+                                <FaBook /> Nội dung
+                            </button>
+                            <button
+                                className={`sidebar-tab ${activeTab === 'history' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('history')}
+                            >
+                                <FaHistory /> Lịch sử
+                            </button>
+                        </div>
                     </div>
 
-                    <div className="lessons-list">
-                        {lessons.length === 0 ? (
-                            <div className="no-lessons">
-                                <p>Chưa có bài học nào</p>
-                            </div>
-                        ) : (
-                            lessons.map((lesson, index) => (
-                                <div key={lesson.id} className="lesson-item">
-                                    <div 
-                                        className="lesson-header"
-                                        onClick={() => toggleLesson(lesson.id)}
-                                    >
-                                        <div className="lesson-info">
-                                            {expandedLessons[lesson.id] ? 
-                                                <FaChevronDown className="chevron" /> : 
-                                                <FaChevronRight className="chevron" />
-                                            }
-                                            <span className="lesson-number">{index + 1}.</span>
-                                            <span className="lesson-title">{lesson.title}</span>
-                                        </div>
-                                        {lesson.resources_count > 0 && (
-                                            <span className="resources-count">
-                                                {lesson.resources_count} tài liệu
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    {expandedLessons[lesson.id] && lesson.resources && (
-                                        <div className="resources-list">
-                                            {lesson.resources.length === 0 ? (
-                                                <div className="no-resources">
-                                                    <p>Chưa có tài liệu</p>
-                                                </div>
-                                            ) : (
-                                                lesson.resources.map((resource) => (
-                                                    <div
-                                                        key={resource.id}
-                                                        className={`resource-item ${selectedResource?.id === resource.id ? 'active' : ''}`}
-                                                        onClick={() => handleResourceClick(resource)}
-                                                    >
-                                                        {getResourceIcon(resource.type)}
-                                                        <span className="resource-title">
-                                                            {resource.title || `${resource.type} resource`}
-                                                        </span>
-                                                    </div>
-                                                ))
+                    {activeTab === 'content' ? (
+                        <div className="lessons-list">
+                            {lessons.length === 0 ? (
+                                <div className="no-lessons">
+                                    <p>Chưa có bài học nào</p>
+                                </div>
+                            ) : (
+                                lessons.map((lesson, index) => (
+                                    <div key={lesson.id} className="lesson-item">
+                                        <div className="lesson-header" onClick={() => toggleLesson(lesson.id)}>
+                                            <div className="lesson-info">
+                                                {expandedLessons[lesson.id] ? (
+                                                    <FaChevronDown className="chevron" />
+                                                ) : (
+                                                    <FaChevronRight className="chevron" />
+                                                )}
+                                                <span className="lesson-number">{index + 1}.</span>
+                                                <span className="lesson-title">{lesson.title}</span>
+                                            </div>
+                                            {(lesson.resources_count > 0 ||
+                                                (lesson.quizzes && lesson.quizzes.length > 0)) && (
+                                                <span className="resources-count">
+                                                    {(lesson.resources_count || 0) + (lesson.quizzes?.length || 0)} mục
+                                                </span>
                                             )}
                                         </div>
-                                    )}
-                                </div>
-                            ))
-                        )}
-                    </div>
+
+                                        {expandedLessons[lesson.id] && lesson.resources && (
+                                            <div className="resources-list">
+                                                {lesson.resources.length === 0 &&
+                                                (!lesson.quizzes || lesson.quizzes.length === 0) ? (
+                                                    <div className="no-resources">
+                                                        <p>Chưa có tài liệu</p>
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        {lesson.resources.length > 0 && (
+                                                            <>
+                                                                <div className="resource-section-label">
+                                                                    <span>Tài liệu</span>
+                                                                </div>
+                                                                {lesson.resources.map((resource) => (
+                                                                    <div
+                                                                        key={resource.id}
+                                                                        className={`resource-item ${
+                                                                            selectedResource?.id === resource.id
+                                                                                ? 'active'
+                                                                                : ''
+                                                                        }`}
+                                                                        onClick={() => handleResourceClick(resource)}
+                                                                    >
+                                                                        {getResourceIcon(resource.type)}
+                                                                        <span className="resource-title">
+                                                                            {resource.title ||
+                                                                                `${resource.type} resource`}
+                                                                        </span>
+                                                                    </div>
+                                                                ))}
+                                                            </>
+                                                        )}
+                                                        {lesson.quizzes && lesson.quizzes.length > 0 && (
+                                                            <>
+                                                                <div className="resource-section-label">
+                                                                    <span>Bài tập</span>
+                                                                </div>
+                                                                {lesson.quizzes.map((quiz) => (
+                                                                    <QuizItem
+                                                                        key={quiz.id}
+                                                                        quiz={quiz}
+                                                                        onStartQuiz={(q) =>
+                                                                            handleQuizClick(q, lesson.id)
+                                                                        }
+                                                                        isActive={activeQuiz?.id === quiz.id}
+                                                                    />
+                                                                ))}
+                                                            </>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    ) : (
+                        <div className="quiz-history-wrapper">
+                            <QuizHistory courseId={course?.id} lessonId={null} onViewResult={handleViewHistoryResult} />
+                        </div>
+                    )}
                 </div>
 
-                {/* Main Content - Hiển thị resource */}
+                {/* Main Content - Hiển thị resource hoặc quiz */}
                 <div className="resource-display">
-                    {renderResourceContent()}
+                    {quizMode === 'taking' && activeQuiz ? (
+                        <QuizTaking
+                            quiz={activeQuiz}
+                            lessonId={currentLessonId}
+                            onBack={handleBackFromQuiz}
+                            onComplete={handleQuizComplete}
+                        />
+                    ) : quizMode === 'result' && currentSubmissionId ? (
+                        <QuizResult
+                            submissionId={currentSubmissionId}
+                            onBack={handleBackFromQuiz}
+                            onViewHistory={() => setActiveTab('history')}
+                        />
+                    ) : (
+                        renderResourceContent()
+                    )}
                 </div>
             </div>
         </div>

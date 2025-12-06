@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaArrowLeft, FaSave, FaPlus, FaTrash, FaGripVertical } from 'react-icons/fa';
+import { FaArrowLeft, FaSave, FaPlus, FaTrash, FaGripVertical, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import QuizService from '../../../services/QuizService';
 import LessonService from '../../../services/LessonService';
@@ -25,6 +25,7 @@ const QuizForm = () => {
     const [lessons, setLessons] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
+    const [expandedQuestions, setExpandedQuestions] = useState(new Set());
 
     useEffect(() => {
         loadLessons();
@@ -202,12 +203,38 @@ const QuizForm = () => {
                 { id: null, content: '', is_correct: false, sequence: 2 },
             ],
         };
-        setQuestions([...questions, newQuestion]);
+        const newQuestions = [...questions, newQuestion];
+        setQuestions(newQuestions);
+        // Auto expand new question
+        setExpandedQuestions(new Set([...expandedQuestions, newQuestions.length - 1]));
     };
 
     const removeQuestion = (index) => {
         const newQuestions = questions.filter((_, i) => i !== index);
         setQuestions(newQuestions);
+        // Remove from expanded set
+        const newExpanded = new Set(expandedQuestions);
+        newExpanded.delete(index);
+        // Adjust indices for questions after deleted one
+        const adjustedExpanded = new Set();
+        newExpanded.forEach((i) => {
+            if (i > index) {
+                adjustedExpanded.add(i - 1);
+            } else {
+                adjustedExpanded.add(i);
+            }
+        });
+        setExpandedQuestions(adjustedExpanded);
+    };
+
+    const toggleQuestion = (index) => {
+        const newExpanded = new Set(expandedQuestions);
+        if (newExpanded.has(index)) {
+            newExpanded.delete(index);
+        } else {
+            newExpanded.add(index);
+        }
+        setExpandedQuestions(newExpanded);
     };
 
     const updateQuestion = (index, field, value) => {
@@ -407,168 +434,216 @@ const QuizForm = () => {
                                                     ref={provided.innerRef}
                                                     {...provided.draggableProps}
                                                 >
-                                                    <div className="quiz-form-question-header">
+                                                    <div
+                                                        className="quiz-form-question-header"
+                                                        onClick={() => toggleQuestion(qIndex)}
+                                                    >
                                                         <div
                                                             className="quiz-form-drag-handle"
                                                             {...provided.dragHandleProps}
+                                                            onClick={(e) => e.stopPropagation()}
                                                         >
                                                             <FaGripVertical />
                                                         </div>
-                                                        <h3>Câu hỏi {qIndex + 1}</h3>
-                                                        <button
-                                                            type="button"
-                                                            className="quiz-form-btn-remove-question"
-                                                            onClick={() => removeQuestion(qIndex)}
-                                                        >
-                                                            <FaTrash />
-                                                        </button>
-                                                    </div>
-
-                                                    <div className="quiz-form-question-body">
-                                                        <div className="quiz-form-group">
-                                                            <label>
-                                                                Nội dung câu hỏi{' '}
-                                                                <span className="quiz-form-required">*</span>
-                                                            </label>
-                                                            <textarea
-                                                                value={question.content}
-                                                                onChange={(e) =>
-                                                                    updateQuestion(qIndex, 'content', e.target.value)
-                                                                }
-                                                                placeholder="Nhập nội dung câu hỏi"
-                                                                rows="3"
-                                                                className={
-                                                                    errors[`question_${qIndex}_content`]
-                                                                        ? 'quiz-form-error'
-                                                                        : ''
-                                                                }
-                                                            />
-                                                            {errors[`question_${qIndex}_content`] && (
-                                                                <span className="quiz-form-error-message">
-                                                                    {errors[`question_${qIndex}_content`]}
+                                                        <h3>
+                                                            Câu hỏi {qIndex + 1}
+                                                            {question.content && (
+                                                                <span className="quiz-form-question-preview">
+                                                                    {' '}
+                                                                    - {question.content.substring(0, 50)}
+                                                                    {question.content.length > 50 ? '...' : ''}
                                                                 </span>
                                                             )}
+                                                        </h3>
+                                                        <div className="quiz-form-question-header-actions">
+                                                            <button
+                                                                type="button"
+                                                                className="quiz-form-btn-toggle-question"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    toggleQuestion(qIndex);
+                                                                }}
+                                                            >
+                                                                {expandedQuestions.has(qIndex) ? (
+                                                                    <FaChevronUp />
+                                                                ) : (
+                                                                    <FaChevronDown />
+                                                                )}
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className="quiz-form-btn-remove-question"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    removeQuestion(qIndex);
+                                                                }}
+                                                            >
+                                                                <FaTrash />
+                                                            </button>
                                                         </div>
+                                                    </div>
 
-                                                        <div className="quiz-form-row">
+                                                    {expandedQuestions.has(qIndex) && (
+                                                        <div className="quiz-form-question-body">
                                                             <div className="quiz-form-group">
-                                                                <label>Loại câu hỏi</label>
-                                                                <select
-                                                                    value={question.question_type}
+                                                                <label>
+                                                                    Nội dung câu hỏi{' '}
+                                                                    <span className="quiz-form-required">*</span>
+                                                                </label>
+                                                                <textarea
+                                                                    value={question.content}
                                                                     onChange={(e) =>
                                                                         updateQuestion(
                                                                             qIndex,
-                                                                            'question_type',
-                                                                            parseInt(e.target.value),
+                                                                            'content',
+                                                                            e.target.value,
                                                                         )
                                                                     }
-                                                                >
-                                                                    <option value={1}>Một đáp án đúng</option>
-                                                                    <option value={2}>Nhiều đáp án đúng</option>
-                                                                </select>
-                                                            </div>
-
-                                                            <div className="quiz-form-group">
-                                                                <label>
-                                                                    Điểm <span className="quiz-form-required">*</span>
-                                                                </label>
-                                                                <input
-                                                                    type="number"
-                                                                    value={question.points}
-                                                                    onChange={(e) =>
-                                                                        updateQuestion(qIndex, 'points', e.target.value)
-                                                                    }
-                                                                    min="0"
-                                                                    step="0.5"
+                                                                    placeholder="Nhập nội dung câu hỏi"
+                                                                    rows="3"
                                                                     className={
-                                                                        errors[`question_${qIndex}_points`]
+                                                                        errors[`question_${qIndex}_content`]
                                                                             ? 'quiz-form-error'
                                                                             : ''
                                                                     }
                                                                 />
-                                                                {errors[`question_${qIndex}_points`] && (
+                                                                {errors[`question_${qIndex}_content`] && (
                                                                     <span className="quiz-form-error-message">
-                                                                        {errors[`question_${qIndex}_points`]}
+                                                                        {errors[`question_${qIndex}_content`]}
                                                                     </span>
                                                                 )}
                                                             </div>
-                                                        </div>
 
-                                                        {/* Options */}
-                                                        <div className="quiz-form-options-section">
-                                                            <div className="quiz-form-options-header">
-                                                                <label>
-                                                                    Các đáp án{' '}
-                                                                    <span className="quiz-form-required">*</span>
-                                                                </label>
-                                                                <button
-                                                                    type="button"
-                                                                    className="quiz-form-btn-add-option"
-                                                                    onClick={() => addOption(qIndex)}
-                                                                >
-                                                                    <FaPlus /> Thêm đáp án
-                                                                </button>
+                                                            <div className="quiz-form-row">
+                                                                <div className="quiz-form-group">
+                                                                    <label>Loại câu hỏi</label>
+                                                                    <select
+                                                                        value={question.question_type}
+                                                                        onChange={(e) =>
+                                                                            updateQuestion(
+                                                                                qIndex,
+                                                                                'question_type',
+                                                                                parseInt(e.target.value),
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <option value={1}>Một đáp án đúng</option>
+                                                                        <option value={2}>Nhiều đáp án đúng</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div className="quiz-form-group">
+                                                                    <label>
+                                                                        Điểm{' '}
+                                                                        <span className="quiz-form-required">*</span>
+                                                                    </label>
+                                                                    <input
+                                                                        type="number"
+                                                                        value={question.points}
+                                                                        onChange={(e) =>
+                                                                            updateQuestion(
+                                                                                qIndex,
+                                                                                'points',
+                                                                                e.target.value,
+                                                                            )
+                                                                        }
+                                                                        min="0"
+                                                                        step="0.5"
+                                                                        className={
+                                                                            errors[`question_${qIndex}_points`]
+                                                                                ? 'quiz-form-error'
+                                                                                : ''
+                                                                        }
+                                                                    />
+                                                                    {errors[`question_${qIndex}_points`] && (
+                                                                        <span className="quiz-form-error-message">
+                                                                            {errors[`question_${qIndex}_points`]}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
                                                             </div>
 
-                                                            {errors[`question_${qIndex}_options`] && (
-                                                                <span className="quiz-form-error-message">
-                                                                    {errors[`question_${qIndex}_options`]}
-                                                                </span>
-                                                            )}
+                                                            {/* Options */}
+                                                            <div className="quiz-form-options-section">
+                                                                <div className="quiz-form-options-header">
+                                                                    <label>
+                                                                        Các đáp án{' '}
+                                                                        <span className="quiz-form-required">*</span>
+                                                                    </label>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="quiz-form-btn-add-option"
+                                                                        onClick={() => addOption(qIndex)}
+                                                                    >
+                                                                        <FaPlus /> Thêm đáp án
+                                                                    </button>
+                                                                </div>
 
-                                                            {errors[`question_${qIndex}_correct`] && (
-                                                                <span className="quiz-form-error-message">
-                                                                    {errors[`question_${qIndex}_correct`]}
-                                                                </span>
-                                                            )}
+                                                                {errors[`question_${qIndex}_options`] && (
+                                                                    <span className="quiz-form-error-message">
+                                                                        {errors[`question_${qIndex}_options`]}
+                                                                    </span>
+                                                                )}
 
-                                                            <div className="quiz-form-options-list">
-                                                                {question.options.map((option, oIndex) => (
-                                                                    <div key={oIndex} className="quiz-form-option-item">
-                                                                        <input
-                                                                            type={
-                                                                                question.question_type === 1
-                                                                                    ? 'radio'
-                                                                                    : 'checkbox'
-                                                                            }
-                                                                            checked={option.is_correct}
-                                                                            onChange={(e) =>
-                                                                                updateOption(
-                                                                                    qIndex,
-                                                                                    oIndex,
-                                                                                    'is_correct',
-                                                                                    e.target.checked,
-                                                                                )
-                                                                            }
-                                                                            name={`question-${qIndex}-correct`}
-                                                                        />
-                                                                        <input
-                                                                            type="text"
-                                                                            value={option.content}
-                                                                            onChange={(e) =>
-                                                                                updateOption(
-                                                                                    qIndex,
-                                                                                    oIndex,
-                                                                                    'content',
-                                                                                    e.target.value,
-                                                                                )
-                                                                            }
-                                                                            placeholder={`Đáp án ${oIndex + 1}`}
-                                                                            className="quiz-form-option-input"
-                                                                        />
-                                                                        <button
-                                                                            type="button"
-                                                                            className="quiz-form-btn-remove-option"
-                                                                            onClick={() => removeOption(qIndex, oIndex)}
-                                                                            disabled={question.options.length <= 2}
+                                                                {errors[`question_${qIndex}_correct`] && (
+                                                                    <span className="quiz-form-error-message">
+                                                                        {errors[`question_${qIndex}_correct`]}
+                                                                    </span>
+                                                                )}
+
+                                                                <div className="quiz-form-options-list">
+                                                                    {question.options.map((option, oIndex) => (
+                                                                        <div
+                                                                            key={oIndex}
+                                                                            className="quiz-form-option-item"
                                                                         >
-                                                                            <FaTrash />
-                                                                        </button>
-                                                                    </div>
-                                                                ))}
+                                                                            <input
+                                                                                type={
+                                                                                    question.question_type === 1
+                                                                                        ? 'radio'
+                                                                                        : 'checkbox'
+                                                                                }
+                                                                                checked={option.is_correct}
+                                                                                onChange={(e) =>
+                                                                                    updateOption(
+                                                                                        qIndex,
+                                                                                        oIndex,
+                                                                                        'is_correct',
+                                                                                        e.target.checked,
+                                                                                    )
+                                                                                }
+                                                                                name={`question-${qIndex}-correct`}
+                                                                            />
+                                                                            <input
+                                                                                type="text"
+                                                                                value={option.content}
+                                                                                onChange={(e) =>
+                                                                                    updateOption(
+                                                                                        qIndex,
+                                                                                        oIndex,
+                                                                                        'content',
+                                                                                        e.target.value,
+                                                                                    )
+                                                                                }
+                                                                                placeholder={`Đáp án ${oIndex + 1}`}
+                                                                                className="quiz-form-option-input"
+                                                                            />
+                                                                            <button
+                                                                                type="button"
+                                                                                className="quiz-form-btn-remove-option"
+                                                                                onClick={() =>
+                                                                                    removeOption(qIndex, oIndex)
+                                                                                }
+                                                                                disabled={question.options.length <= 2}
+                                                                            >
+                                                                                <FaTrash />
+                                                                            </button>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    )}
                                                 </div>
                                             )}
                                         </Draggable>

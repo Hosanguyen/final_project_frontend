@@ -21,7 +21,7 @@ const CourseDetail = () => {
         try {
             setLoading(true);
             setError(null);
-            
+
             // Load course details
             const courseResponse = await CourseService.getCourseBySlug(slug);
             console.log('Course response:', courseResponse);
@@ -30,7 +30,7 @@ const CourseDetail = () => {
             // Load lessons để hiển thị số lượng
             const lessonsResponse = await CourseService.getLessonsByCourse(courseResponse.data.id);
             console.log('Lessons response:', lessonsResponse);
-            
+
             const lessonsData = Array.isArray(lessonsResponse.data) ? lessonsResponse.data : [];
             setLessons(lessonsData);
         } catch (error) {
@@ -90,10 +90,8 @@ const CourseDetail = () => {
                         </div>
 
                         <h1 className="course-title-main">{course.title}</h1>
-                        
-                        {course.short_description && (
-                            <p className="course-description">{course.short_description}</p>
-                        )}
+
+                        {course.short_description && <p className="course-description">{course.short_description}</p>}
 
                         <div className="course-stats">
                             <div className="stat-item">
@@ -135,10 +133,7 @@ const CourseDetail = () => {
                                     </div>
                                 )}
                             </div>
-                            <CourseEnrollButton 
-                                course={course} 
-                                onEnrollSuccess={loadCourseData}
-                            />
+                            <CourseEnrollButton course={course} onEnrollSuccess={loadCourseData} />
                         </div>
                     </div>
 
@@ -159,10 +154,7 @@ const CourseDetail = () => {
                                 <FaBook />
                                 Về khóa học này
                             </h2>
-                            <div 
-                                className="section-content" 
-                                dangerouslySetInnerHTML={{ __html: course.description }}
-                            />
+                            <div className="section-content" dangerouslySetInnerHTML={{ __html: course.description }} />
                         </section>
                     )}
 
@@ -180,9 +172,7 @@ const CourseDetail = () => {
                                             <div className="lesson-number">{index + 1}</div>
                                             <div className="lesson-details">
                                                 <h3>{lesson.title}</h3>
-                                                {lesson.description && (
-                                                    <p>{lesson.description}</p>
-                                                )}
+                                                {lesson.description && <p>{lesson.description}</p>}
                                                 {lesson.resources_count > 0 && (
                                                     <span className="resources-badge">
                                                         {lesson.resources_count} tài liệu
@@ -206,7 +196,9 @@ const CourseDetail = () => {
                             <div className="section-content">
                                 <div className="instructor-info">
                                     <div className="instructor-avatar">
-                                        {(course.created_by_full_name || course.created_by_name).charAt(0).toUpperCase()}
+                                        {(course.created_by_full_name || course.created_by_name)
+                                            .charAt(0)
+                                            .toUpperCase()}
                                     </div>
                                     <div className="instructor-details">
                                         <h3>{course.created_by_full_name || course.created_by_name}</h3>

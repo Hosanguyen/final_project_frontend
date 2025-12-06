@@ -70,9 +70,49 @@
 .sidebar-header {
     padding: 1.5rem;
     border-bottom: 1px solid #e2e8f0;
+}
+
+.sidebar-tabs {
     display: flex;
-    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.sidebar-tab {
+    flex: 1;
+    background: white;
+    border: 2px solid #e2e8f0;
+    padding: 0.625rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #64748b;
+    transition: all 0.2s;
+}
+
+.sidebar-tab:hover {
+    background: #f8fafc;
+    border-color: #667eea;
+}
+
+.sidebar-tab.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.sidebar-tab svg {
+    font-size: 0.875rem;
+}
+
+.quiz-history-wrapper {
+    padding: 1rem;
+    overflow-y: auto;
+    flex: 1;
 }
 
 .sidebar-header h3 {
@@ -162,6 +202,19 @@
     border-top: 1px solid #e2e8f0;
 }
 
+.resource-section-label {
+    padding: 0.75rem 0.75rem 0.5rem 0.75rem;
+    background: #f1f5f9;
+}
+
+.resource-section-label span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #667eea;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 .no-resources,
 .no-lessons {
     padding: 2rem;
@@ -189,7 +242,7 @@
 }
 
 .resource-item.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #667eea;
     color: white;
     border-color: transparent;
 }
@@ -339,15 +392,16 @@
 .download-btn {
     display: inline-block;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #667eea;
     color: white;
     text-decoration: none;
     border-radius: 6px;
     font-weight: 500;
-    transition: transform 0.2s;
+    transition: all 0.2s;
 }
 
 .download-btn:hover {
+    background: #5568d3;
     transform: translateY(-2px);
 }
 
@@ -364,16 +418,17 @@
 
 .error .back-btn {
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #667eea;
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     font-weight: 500;
-    transition: transform 0.2s;
+    transition: all 0.2s;
 }
 
 .error .back-btn:hover {
+    background: #5568d3;
     transform: translateY(-2px);
 }
 
