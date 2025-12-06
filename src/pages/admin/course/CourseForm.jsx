@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, AlertCircle } from 'lucide-react';
 import './CourseForm.css';
+import notification from '../../../utils/notification';
 
 const CourseForm = ({ course, languages, tags, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
@@ -93,6 +94,12 @@ const CourseForm = ({ course, languages, tags, onSubmit, onClose }) => {
     }
 
     setErrors(newErrors);
+    
+    if (Object.keys(newErrors).length > 0) {
+      const firstError = Object.values(newErrors)[0];
+      notification.error(firstError, 'Lỗi validation');
+    }
+    
     return Object.keys(newErrors).length === 0;
   };
 

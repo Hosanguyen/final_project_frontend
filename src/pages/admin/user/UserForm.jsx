@@ -109,7 +109,12 @@ const UserForm = () => {
         }
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const errorKeys = Object.keys(newErrors);
+        if (errorKeys.length > 0) {
+            const firstError = newErrors[errorKeys[0]];
+            notification.error(firstError, 'Lỗi validation');
+        }
+        return errorKeys.length === 0;
     };
 
     const handleSubmit = async (e) => {

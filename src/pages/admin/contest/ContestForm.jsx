@@ -7,6 +7,7 @@ import {
 import './ContestForm.css';
 import ContestService from '../../../services/ContestService';
 import ContestProblemManager from './ContestProblemManager';
+import notification from '../../../utils/notification';
 
 const ContestForm = () => {
     const navigate = useNavigate();
@@ -128,7 +129,15 @@ const ContestForm = () => {
         }
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        
+        // Show notification for first error
+        const errorKeys = Object.keys(newErrors);
+        if (errorKeys.length > 0) {
+            const firstError = newErrors[errorKeys[0]];
+            notification.error(firstError, 'Validation Error');
+        }
+        
+        return errorKeys.length === 0;
     };
 
     const handleSubmit = async (e) => {
@@ -139,8 +148,6 @@ const ContestForm = () => {
         }
 
         setIsSubmitting(true);
-        setErrorMessage('');
-        setSuccessMessage('');
 
         try {
             // Format dates to ISO 8601
@@ -157,10 +164,10 @@ const ContestForm = () => {
             let response;
             if (isEditMode) {
                 response = await ContestService.update(id, submitData);
-                setSuccessMessage('Contest đã được cập nhật thành công!');
+                notification.success('Contest đã được cập nhật thành công!');
             } else {
                 response = await ContestService.create(submitData);
-                setSuccessMessage(`Contest đã được tạo thành công! DOMjudge ID: ${response.domjudge_contest_id}`);
+                notification.success(`Contest đã được tạo thành công! DOMjudge ID: ${response.domjudge_contest_id}`);
             }
 
             setTimeout(() => {
@@ -169,7 +176,7 @@ const ContestForm = () => {
 
         } catch (error) {
             console.error('Error saving contest:', error);
-            setErrorMessage(error.details || error.error || 'Failed to save contest');
+            notification.error(error.details || error.error || 'Failed to save contest');
         } finally {
             setIsSubmitting(false);
         }

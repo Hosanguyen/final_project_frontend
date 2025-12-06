@@ -73,6 +73,9 @@ const Register = () => {
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            const errorKeys = Object.keys(newErrors);
+            const firstError = newErrors[errorKeys[0]];
+            notification.error(firstError, 'Lỗi validation');
             return;
         }
 

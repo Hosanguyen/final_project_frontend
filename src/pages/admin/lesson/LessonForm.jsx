@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Save, AlertCircle, Plus, Trash2 } from 'lucide-react';
 import './LessonForm.css';
 import LessonService from '../../../services/LessonService';
+import notification from '../../../utils/notification';
 
 const LessonForm = ({ lesson, courses, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
@@ -93,6 +94,12 @@ const LessonForm = ({ lesson, courses, onSubmit, onClose }) => {
     }
 
     setErrors(newErrors);
+    
+    if (Object.keys(newErrors).length > 0) {
+      const firstError = Object.values(newErrors)[0];
+      notification.error(firstError, 'Lỗi validation');
+    }
+    
     return Object.keys(newErrors).length === 0;
   };
 

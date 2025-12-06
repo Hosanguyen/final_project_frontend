@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaBell, FaUser, FaSignOutAlt, FaBars, FaSearch } from 'react-icons/fa';
 import { MdDashboard } from 'react-icons/md';
@@ -7,8 +7,6 @@ import logo from '../../assets/images/logo.png';
 import './Header.css';
 
 const Header = ({ toggleSidebar, isAdmin = false }) => {
-    const [showUserMenu, setShowUserMenu] = useState(false);
-    const [showNotifications, setShowNotifications] = useState(false);
     const { user, isAuthenticated, logout: userLogout, hasRole } = useUser();
     const navigate = useNavigate();
     const location = useLocation();
@@ -79,56 +77,49 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
 
                 {isAuthenticated ? (
                     <>
-                        <div className="notification-wrapper">
-                            <button className="icon-button" onClick={() => setShowNotifications(!showNotifications)}>
+                        <div className="notification-wrapper dropdown">
+                            <button className="icon-button dropdown-toggle">
                                 <FaBell />
                                 <span className="badge notification">3</span>
                             </button>
 
-                            {showNotifications && (
-                                <div className="notification-dropdown">
-                                    <div className="notification-header">
-                                        <h4>Thông báo</h4>
-                                        <Link to="/notifications">Xem tất cả</Link>
+                            <div className="notification-dropdown dropdown-menu">
+                                <div className="notification-header">
+                                    <h4>Thông báo</h4>
+                                    <Link to="/notifications">Xem tất cả</Link>
+                                </div>
+                                <div className="notification-list">
+                                    <div className="notification-item unread">
+                                        <p>Bạn có bài tập mới trong khóa Python cơ bản</p>
+                                        <span className="time">2 giờ trước</span>
                                     </div>
-                                    <div className="notification-list">
-                                        <div className="notification-item unread">
-                                            <p>Bạn có bài tập mới trong khóa Python cơ bản</p>
-                                            <span className="time">2 giờ trước</span>
-                                        </div>
-                                        <div className="notification-item">
-                                            <p>Contest "Weekly Challenge #45" sắp bắt đầu</p>
-                                            <span className="time">5 giờ trước</span>
-                                        </div>
+                                    <div className="notification-item">
+                                        <p>Contest "Weekly Challenge #45" sắp bắt đầu</p>
+                                        <span className="time">5 giờ trước</span>
                                     </div>
                                 </div>
-                            )}
+                            </div>
                         </div>
 
-                        <div className="user-menu-wrapper">
-                            <button className="user-button" onClick={() => setShowUserMenu(!showUserMenu)}>
+                        <div className="user-menu-wrapper dropdown">
+                            <button className="user-button dropdown-toggle">
                                 <FaUser />
                                 <span>{user?.full_name || user?.username || user?.email || 'User'}</span>
                             </button>
 
-                            {showUserMenu && (
-                                <div className="user-dropdown">
-                                    <Link to="/profile" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
-                                        <FaUser /> Hồ sơ cá nhân
+                            <div className="user-dropdown dropdown-menu">
+                                <Link to="/profile" className="dropdown-item">
+                                    <FaUser /> Hồ sơ cá nhân
+                                </Link>
+                                {!isAdmin && hasRole('admin') && (
+                                    <Link to="/admin/dashboard" className="dropdown-item">
+                                        <MdDashboard /> Quản trị
                                     </Link>
-                                    {!isAdmin && hasRole('admin') && (
-                                        <Link to="/admin/dashboard" className="dropdown-item" onClick={() => setShowUserMenu(false)}>
-                                            <MdDashboard /> Quản trị
-                                        </Link>
-                                    )}
-                                    <button onClick={() => {
-                                            setShowUserMenu(false); 
-                                            handleLogout();         
-                                        }} className="dropdown-item logout">
-                                        <FaSignOutAlt /> Đăng xuất
-                                    </button>
-                                </div>
-                            )}
+                                )}
+                                <button onClick={handleLogout} className="dropdown-item logout">
+                                    <FaSignOutAlt /> Đăng xuất
+                                </button>
+                            </div>
                         </div>
                     </>
                 ) : (
