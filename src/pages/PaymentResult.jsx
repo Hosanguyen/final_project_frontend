@@ -127,7 +127,7 @@ const PaymentResult = () => {
               <p><strong>Mã lỗi:</strong> {orderInfo.vnp_response_code}</p>
             )}
           </div>
-          <div className="error-message">
+          <div className="payment-error-message">
             <p>Giao dịch không thành công. Vui lòng thử lại hoặc chọn phương thức thanh toán khác.</p>
           </div>
           <div className="action-buttons">

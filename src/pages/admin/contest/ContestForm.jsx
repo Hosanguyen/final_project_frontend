@@ -226,7 +226,7 @@ const ContestForm = () => {
                         disabled={isEditMode}
                         className={errors.slug ? 'error' : ''}
                     />
-                    {errors.slug && <span className="error-message">{errors.slug}</span>}
+                    {errors.slug && <span className="contest-error-message">{errors.slug}</span>}
                     <small>Unique identifier (lowercase, numbers, hyphens, underscores only)</small>
                 </div>
 
@@ -244,7 +244,7 @@ const ContestForm = () => {
                         placeholder="Programming Contest 2025"
                         className={errors.title ? 'error' : ''}
                     />
-                    {errors.title && <span className="error-message">{errors.title}</span>}
+                    {errors.title && <span className="contest-error-message">{errors.title}</span>}
                 </div>
 
                 {/* Description */}
@@ -274,7 +274,7 @@ const ContestForm = () => {
                             onChange={handleChange}
                             className={errors.start_at ? 'error' : ''}
                         />
-                        {errors.start_at && <span className="error-message">{errors.start_at}</span>}
+                        {errors.start_at && <span className="contest-error-message">{errors.start_at}</span>}
                     </div>
 
                     <div className="contest-form-group">
@@ -289,7 +289,7 @@ const ContestForm = () => {
                             onChange={handleChange}
                             className={errors.end_at ? 'error' : ''}
                         />
-                        {errors.end_at && <span className="error-message">{errors.end_at}</span>}
+                        {errors.end_at && <span className="contest-error-message">{errors.end_at}</span>}
                     </div>
                 </div>
 
@@ -384,7 +384,7 @@ const ContestForm = () => {
                             onChange={handleChange}
                             className={errors.freeze_rankings_at ? 'error' : ''}
                         />
-                        {errors.freeze_rankings_at && <span className="error-message">{errors.freeze_rankings_at}</span>}
+                        {errors.freeze_rankings_at && <span className="contest-error-message">{errors.freeze_rankings_at}</span>}
                         <small>Optional: Time to freeze the scoreboard</small>
                     </div>
                 </div>

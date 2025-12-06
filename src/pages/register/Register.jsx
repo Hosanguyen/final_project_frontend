@@ -117,7 +117,7 @@ const Register = () => {
                             className={`register-input ${errors.username ? 'error' : ''}`}
                             disabled={loading}
                         />
-                        {errors.username && <span className="error-message">{errors.username}</span>}
+                        {errors.username && <span className="register-error-message">{errors.username}</span>}
                     </div>
 
                     <div className="input-group">
@@ -130,7 +130,7 @@ const Register = () => {
                             className={`register-input ${errors.email ? 'error' : ''}`}
                             disabled={loading}
                         />
-                        {errors.email && <span className="error-message">{errors.email}</span>}
+                        {errors.email && <span className="register-error-message">{errors.email}</span>}
                     </div>
 
                     <div className="input-group">
@@ -143,7 +143,7 @@ const Register = () => {
                             className={`register-input ${errors.full_name ? 'error' : ''}`}
                             disabled={loading}
                         />
-                        {errors.full_name && <span className="error-message">{errors.full_name}</span>}
+                        {errors.full_name && <span className="register-error-message">{errors.full_name}</span>}
                     </div>
 
                     <div className="input-group">
@@ -164,7 +164,7 @@ const Register = () => {
                         >
                             {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                         </button>
-                        {errors.password && <span className="error-message">{errors.password}</span>}
+                        {errors.password && <span className="register-error-message">{errors.password}</span>}
                     </div>
 
                     <div className="input-group">
@@ -185,7 +185,7 @@ const Register = () => {
                         >
                             {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                         </button>
-                        {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
+                        {errors.confirmPassword && <span className="register-error-message">{errors.confirmPassword}</span>}
                     </div>
 
                     <button type="submit" className="register-button" disabled={loading}>

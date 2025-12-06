@@ -168,7 +168,7 @@ const LessonForm = ({ lesson, courses, onSubmit, onClose }) => {
                 ))}
               </select>
               {errors.course && (
-                <div className="error-message">
+                <div className="lesson-form-error-message">
                   <AlertCircle className="error-icon" />
                   {errors.course}
                 </div>
@@ -190,7 +190,7 @@ const LessonForm = ({ lesson, courses, onSubmit, onClose }) => {
                 min="0"
               />
               {errors.sequence && (
-                <div className="error-message">
+                <div className="lesson-form-error-message">
                   <AlertCircle className="error-icon" />
                   {errors.sequence}
                 </div>
@@ -211,7 +211,7 @@ const LessonForm = ({ lesson, courses, onSubmit, onClose }) => {
                 placeholder="Nhập tiêu đề bài học"
               />
               {errors.title && (
-                <div className="error-message">
+                <div className="lesson-form-error-message">
                   <AlertCircle className="error-icon" />
                   {errors.title}
                 </div>

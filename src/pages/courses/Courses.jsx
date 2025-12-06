@@ -136,7 +136,7 @@ const Courses = () => {
         </div>
 
         {error && (
-          <div className="error-message">
+          <div className="courses-error-message">
             {error}
           </div>
         )}

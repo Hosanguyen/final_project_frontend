@@ -47,7 +47,7 @@ const OrderHistory = () => {
   if (error) {
     return (
       <div className="order-history-container">
-        <div className="error-message">{error}</div>
+        <div className="order-error-message">{error}</div>
       </div>
     );
   }

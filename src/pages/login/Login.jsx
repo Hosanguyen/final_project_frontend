@@ -82,7 +82,7 @@ const Login = () => {
                             className={`login-input ${errors.username ? 'error' : ''}`}
                             disabled={loading}
                         />
-                        {errors.username && <span className="error-message">{errors.username}</span>}
+                        {errors.username && <span className="login-error-message">{errors.username}</span>}
                     </div>
 
                     <div className="input-group">
@@ -105,7 +105,7 @@ const Login = () => {
                         >
                             {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                         </button>
-                        {errors.password && <span className="error-message">{errors.password}</span>}
+                        {errors.password && <span className="login-error-message">{errors.password}</span>}
                     </div>
 
                     <button type="submit" className="login-button" disabled={loading}>

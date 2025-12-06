@@ -152,7 +152,7 @@
   user-select: none;
 }
 
-.error-message {
+.course-form-error-message {
   display: flex;
   align-items: center;
   gap: 0.375rem;

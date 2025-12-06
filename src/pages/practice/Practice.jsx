@@ -159,7 +159,7 @@ const Practice = () => {
     if (error) {
         return (
             <div className="practice-container">
-                <div className="error-message">
+                <div className="practice-error-message">
                     <FaTimesCircle />
                     <p>{error}</p>
                     <button onClick={loadPracticeProblems} className="btn-retry">

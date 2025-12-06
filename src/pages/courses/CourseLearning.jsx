@@ -261,7 +261,7 @@ const CourseLearning = () => {
 
     if (error) {
         return (
-            <div className="error">
+            <div className="error-lesson">
                 <p>{error}</p>
                 <button onClick={() => navigate(`/courses/${slug}`)} className="back-btn">
                     Quay lại khóa học
@@ -272,7 +272,7 @@ const CourseLearning = () => {
 
     if (!course) {
         return (
-            <div className="error">
+            <div className="error-lesson">
                 <p>Không tìm thấy khóa học</p>
                 <button onClick={() => navigate('/courses')} className="back-btn">
                     Quay lại danh sách khóa học

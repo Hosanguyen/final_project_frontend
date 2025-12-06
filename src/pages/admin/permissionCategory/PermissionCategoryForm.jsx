@@ -142,7 +142,7 @@ const PermissionCategoryForm = () => {
                             className={errors.name ? 'error' : ''}
                             placeholder="Ví dụ: User Management, Course Management..."
                         />
-                        {errors.name && <span className="error-message">{errors.name}</span>}
+                        {errors.name && <span className="permission-category-error-message">{errors.name}</span>}
                     </div>
 
                     <div className="form-group">
@@ -155,7 +155,7 @@ const PermissionCategoryForm = () => {
                             rows="4"
                             placeholder="Mô tả chi tiết về loại phân quyền này..."
                         />
-                        {errors.description && <span className="error-message">{errors.description}</span>}
+                        {errors.description && <span className="permission-category-error-message">{errors.description}</span>}
                     </div>
 
                     <div className="form-actions">

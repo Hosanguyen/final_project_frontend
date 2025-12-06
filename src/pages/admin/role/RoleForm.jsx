@@ -200,7 +200,7 @@ const RoleForm = () => {
                                 className={errors.name ? 'error' : ''}
                                 placeholder="Ví dụ: Admin, Teacher, Student..."
                             />
-                            {errors.name && <span className="error-message">{errors.name}</span>}
+                            {errors.name && <span className="role-error-message">{errors.name}</span>}
                         </div>
 
                         <div className="form-group">
@@ -213,7 +213,7 @@ const RoleForm = () => {
                                 rows="3"
                                 placeholder="Mô tả chi tiết về vai trò này..."
                             />
-                            {errors.description && <span className="error-message">{errors.description}</span>}
+                            {errors.description && <span className="role-error-message">{errors.description}</span>}
                         </div>
                     </div>
 

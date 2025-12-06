@@ -53,7 +53,7 @@ const CourseDetail = () => {
 
     if (error) {
         return (
-            <div className="error">
+            <div className="error-course">
                 <p>{error}</p>
                 <button onClick={() => navigate('/courses')} className="back-btn">
                     Quay lại danh sách khóa học

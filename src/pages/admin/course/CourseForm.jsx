@@ -149,7 +149,7 @@ const CourseForm = ({ course, languages, tags, onSubmit, onClose }) => {
                 placeholder="Nhập tiêu đề khóa học"
               />
               {errors.title && (
-                <div className="error-message">
+                <div className="course-form-error-message">
                   <AlertCircle className="error-icon" />
                   {errors.title}
                 </div>
@@ -170,7 +170,7 @@ const CourseForm = ({ course, languages, tags, onSubmit, onClose }) => {
                 placeholder="slug-khoa-hoc"
               />
               {errors.slug && (
-                <div className="error-message">
+                <div className="course-form-error-message">
                   <AlertCircle className="error-icon" />
                   {errors.slug}
                 </div>
@@ -212,7 +212,7 @@ const CourseForm = ({ course, languages, tags, onSubmit, onClose }) => {
                 step="1000"
               />
               {errors.price && (
-                <div className="error-message">
+                <div className="course-form-error-message">
                   <AlertCircle className="error-icon" />
                   {errors.price}
                 </div>

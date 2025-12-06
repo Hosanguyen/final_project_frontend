@@ -289,7 +289,7 @@
 
 /* Loading & Error States */
 .loading-spinner,
-.error-message {
+.practice-error-message {
     text-align: center;
     padding: 80px 20px;
 }
@@ -315,11 +315,11 @@
     font-size: 1.1rem;
 }
 
-.error-message {
+.practice-error-message {
     color: #ef4444;
 }
 
-.error-message svg {
+.practice-error-message svg {
     font-size: 3rem;
     margin-bottom: 15px;
 }

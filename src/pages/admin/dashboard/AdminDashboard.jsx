@@ -75,7 +75,7 @@ const AdminDashboard = () => {
       </div>
 
       {error && (
-        <div className="error-message">
+        <div className="admin-error-message">
           {error}
         </div>
       )}

@@ -162,7 +162,7 @@ const PermissionForm = () => {
                             className={errors.code ? 'error' : ''}
                             placeholder="Ví dụ: user.create, course.update..."
                         />
-                        {errors.code && <span className="error-message">{errors.code}</span>}
+                        {errors.code && <span className="permission-error-message">{errors.code}</span>}
                         <span className="input-hint">Chỉ sử dụng chữ thường, số, dấu chấm (.) và gạch dưới (_)</span>
                     </div>
 
@@ -176,7 +176,7 @@ const PermissionForm = () => {
                             rows="4"
                             placeholder="Mô tả chi tiết về phân quyền này..."
                         />
-                        {errors.description && <span className="error-message">{errors.description}</span>}
+                        {errors.description && <span className="permission-error-message">{errors.description}</span>}
                     </div>
 
                     <div className="form-group">
@@ -195,7 +195,7 @@ const PermissionForm = () => {
                                 </option>
                             ))}
                         </select>
-                        {errors.category_id && <span className="error-message">{errors.category_id}</span>}
+                        {errors.category_id && <span className="permission-error-message">{errors.category_id}</span>}
                     </div>
 
                     <div className="form-actions">

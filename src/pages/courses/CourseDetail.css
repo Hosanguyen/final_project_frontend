@@ -280,7 +280,7 @@
 
 /* Loading & Error States */
 .loading,
-.error {
+.error-course {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -290,13 +290,13 @@
     padding: 40px;
 }
 
-.error p {
+.error-course p {
     color: #e74c3c;
     font-size: 18px;
     margin-bottom: 20px;
 }
 
-.error .back-btn {
+.error-course .back-btn {
     padding: 12px 24px;
     background: #3498db;
     color: white;
@@ -307,7 +307,7 @@
     transition: background 0.3s;
 }
 
-.error .back-btn:hover {
+.error-course .back-btn:hover {
     background: #2980b9;
 }
 
