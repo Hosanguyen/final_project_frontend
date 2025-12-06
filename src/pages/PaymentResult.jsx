@@ -32,7 +32,7 @@ const PaymentResult = () => {
       // Nếu thanh toán thành công, tự động chuyển hướng sau 3 giây
       if (orderData.status === 'completed') {
         setTimeout(() => {
-          navigate(`/courses/${orderData.course}/learn`);
+          navigate(`/courses/${orderData.course_slug}/learn`);
         }, 3000);
       }
     } catch (err) {
