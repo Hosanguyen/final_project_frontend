@@ -25,14 +25,10 @@ const QuizResult = ({ submissionId, onBack, onViewHistory }) => {
     };
 
     const getAnswerStatus = (question, userAnswers) => {
-        const correctOptions = question.options
-            .filter((opt) => opt.is_correct)
-            .map((opt) => opt.option_id || opt.id);
-        
+        const correctOptions = question.options.filter((opt) => opt.is_correct).map((opt) => opt.option_id || opt.id);
+
         // Backend trả về selected_option là ID (integer), không phải object
-        const selectedOptions = userAnswers
-            .map((ans) => ans.selected_option || ans.selected_option_id)
-            .filter(Boolean);
+        const selectedOptions = userAnswers.map((ans) => ans.selected_option || ans.selected_option_id).filter(Boolean);
 
         const isCorrect =
             correctOptions.length === selectedOptions.length &&
@@ -50,9 +46,8 @@ const QuizResult = ({ submissionId, onBack, onViewHistory }) => {
 
         questions.forEach((question) => {
             const questionId = question.question_id || question.id;
-            const userAnswers = submission.answers?.filter(
-                (ans) => (ans.question || ans.question_id) === questionId
-            ) || [];
+            const userAnswers =
+                submission.answers?.filter((ans) => (ans.question || ans.question_id) === questionId) || [];
             const { isCorrect } = getAnswerStatus(question, userAnswers);
             if (isCorrect) correct++;
             else incorrect++;
@@ -158,9 +153,9 @@ const QuizResult = ({ submissionId, onBack, onViewHistory }) => {
                         <h3>Chi tiết câu trả lời</h3>
                         {submission.quiz_snapshot?.questions?.map((question, index) => {
                             const questionId = question.question_id || question.id;
-                            const userAnswers = submission.answers?.filter(
-                                (ans) => (ans.question || ans.question_id) === questionId
-                            ) || [];
+                            const userAnswers =
+                                submission.answers?.filter((ans) => (ans.question || ans.question_id) === questionId) ||
+                                [];
                             const { isCorrect, correctOptions, selectedOptions } = getAnswerStatus(
                                 question,
                                 userAnswers,
