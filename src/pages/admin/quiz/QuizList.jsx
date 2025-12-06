@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaSearch } from 'react-icons/fa';
 import QuizService from '../../../services/QuizService';
 import notification from '../../../utils/notification';
+import Pagination from '../../../components/Pagination';
 import './QuizList.css';
 
 const QuizList = () => {
@@ -37,15 +38,29 @@ const QuizList = () => {
             };
 
             const response = await QuizService.getAll(params);
-            setQuizzes(response || []);
-            setPagination({
-                ...pagination,
-                total: response.count || 0,
-                total_pages: Math.ceil((response.count || 0) / pagination.page_size),
-            });
+
+            // Xử lý response có thể là array hoặc object với pagination
+            if (Array.isArray(response)) {
+                // API cũ trả về array trực tiếp
+                setQuizzes(response);
+                setPagination((prev) => ({
+                    ...prev,
+                    total: response.length,
+                    total_pages: 1,
+                }));
+            } else {
+                // API mới trả về object với pagination
+                setQuizzes(response.results || []);
+                setPagination((prev) => ({
+                    ...prev,
+                    total: response.count || 0,
+                    total_pages: response.total_pages || 0,
+                }));
+            }
         } catch (error) {
             notification.error('Không thể tải danh sách quiz');
             console.error('Error loading quizzes:', error);
+            setQuizzes([]); // Set empty array on error
         } finally {
             setLoading(false);
         }
@@ -220,27 +235,16 @@ const QuizList = () => {
                 </div>
 
                 {/* Pagination */}
-                {pagination.total_pages > 1 && (
-                    <div className="quiz-list-pagination">
-                        <button
-                            className="quiz-list-btn-page"
-                            disabled={pagination.page === 1}
-                            onClick={() => setPagination({ ...pagination, page: pagination.page - 1 })}
-                        >
-                            Trước
-                        </button>
-                        <span className="quiz-list-page-info">
-                            Trang {pagination.page} / {pagination.total_pages}
-                        </span>
-                        <button
-                            className="quiz-list-btn-page"
-                            disabled={pagination.page === pagination.total_pages}
-                            onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
-                        >
-                            Sau
-                        </button>
-                    </div>
-                )}
+                <Pagination
+                    currentPage={pagination.page}
+                    totalPages={pagination.total_pages}
+                    totalItems={pagination.total}
+                    onPageChange={(newPage) => setPagination({ ...pagination, page: newPage })}
+                    itemsPerPage={pagination.page_size}
+                    showItemCount={true}
+                    showFirstLast={true}
+                    className="quiz-list-pagination"
+                />
             </div>
 
             {/* Delete Modal */}

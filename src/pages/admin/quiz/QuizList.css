@@ -271,47 +271,6 @@
 }
 
 /* ============================================================
-   PAGINATION
-   ============================================================ */
-.quiz-list-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #e5e7eb;
-}
-
-.quiz-list-btn-page {
-    padding: 8px 16px;
-    border: 1px solid #e5e7eb;
-    background: white;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
-    transition: all 0.2s;
-}
-
-.quiz-list-btn-page:hover:not(:disabled) {
-    background: #f9fafb;
-    border-color: #667eea;
-    color: #667eea;
-}
-
-.quiz-list-btn-page:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.quiz-list-page-info {
-    font-size: 14px;
-    color: #6b7280;
-}
-
-/* ============================================================
    MODAL
    ============================================================ */
 .quiz-list-modal-overlay {

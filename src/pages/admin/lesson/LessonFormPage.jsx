@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import notification from '../../../utils/notification';
 import { useNavigate, useParams } from 'react-router-dom';
-import { 
-    FaSave, FaTimes, FaBookOpen, FaInfoCircle, FaPlus, FaTrash, 
-    FaFileAlt, FaVideo, FaFilePdf, FaLink, FaFileUpload
+import {
+    FaSave,
+    FaTimes,
+    FaBookOpen,
+    FaInfoCircle,
+    FaPlus,
+    FaTrash,
+    FaFileAlt,
+    FaVideo,
+    FaFilePdf,
+    FaLink,
+    FaFileUpload,
 } from 'react-icons/fa';
 import LessonService from '../../../services/LessonService';
 import CourseService from '../../../services/CourseService';
+import LessonQuizLinker from './LessonQuizLinker';
 import './LessonFormPage.css';
 
 const LessonFormPage = () => {
@@ -19,12 +29,13 @@ const LessonFormPage = () => {
         course: courseId || '',
         title: '',
         description: '',
-        sequence: 0
+        sequence: 0,
     });
 
     const [courses, setCourses] = useState([]);
     const [resources, setResources] = useState([]);
     const [deletedResourceIds, setDeletedResourceIds] = useState([]);
+    const [quizIds, setQuizIds] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
 
@@ -43,17 +54,23 @@ const LessonFormPage = () => {
                     course: lessonData.course || courseId || '',
                     title: lessonData.title || '',
                     description: lessonData.description || '',
-                    sequence: lessonData.sequence || 0
+                    sequence: lessonData.sequence || 0,
                 });
 
                 // Load resources
                 if (lessonData.resources && lessonData.resources.length > 0) {
-                    const mappedResources = lessonData.resources.map(resource => ({
+                    const mappedResources = lessonData.resources.map((resource) => ({
                         ...resource,
                         fileName: resource.filename || '',
-                        isNew: false
+                        isNew: false,
                     }));
                     setResources(mappedResources);
+                }
+
+                // Load quiz IDs
+                if (lessonData.quizzes && lessonData.quizzes.length > 0) {
+                    const quizIdsList = lessonData.quizzes.map((q) => q.quiz);
+                    setQuizIds(quizIdsList);
                 }
             }
         } catch (error) {
@@ -64,30 +81,33 @@ const LessonFormPage = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        
-        setFormData(prev => ({
+
+        setFormData((prev) => ({
             ...prev,
-            [name]: value
+            [name]: value,
         }));
 
         if (errors[name]) {
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [name]: ''
+                [name]: '',
             }));
         }
     };
 
     const addResource = () => {
-        setResources([...resources, {
-            type: 'text',
-            title: '',
-            content: '',
-            url: '',
-            file: null,
-            sequence: resources.length,
-            isNew: true
-        }]);
+        setResources([
+            ...resources,
+            {
+                type: 'text',
+                title: '',
+                content: '',
+                url: '',
+                file: null,
+                sequence: resources.length,
+                isNew: true,
+            },
+        ]);
     };
 
     const removeResource = (index) => {
@@ -105,7 +125,7 @@ const LessonFormPage = () => {
             ...newResources[index],
             [field]: value,
             // Đánh dấu resource đã được sửa đổi nếu nó đã tồn tại
-            isModified: newResources[index].id ? true : newResources[index].isModified
+            isModified: newResources[index].id ? true : newResources[index].isModified,
         };
         setResources(newResources);
     };
@@ -116,7 +136,7 @@ const LessonFormPage = () => {
         newResources[index] = {
             ...newResources[index],
             file: file,
-            fileName: file ? file.name : ''
+            fileName: file ? file.name : '',
         };
         setResources(newResources);
     };
@@ -126,7 +146,7 @@ const LessonFormPage = () => {
 
         if (!formData.title.trim()) {
             newErrors.title = 'Tiêu đề là bắt buộc';
-        }    
+        }
 
         // Chỉ bắt buộc course nếu đang tạo từ course detail page
         if (!isStandalone && !formData.course) {
@@ -148,12 +168,18 @@ const LessonFormPage = () => {
         try {
             let lessonId = id;
 
+            // Prepare lesson data with quiz_ids
+            const lessonData = {
+                ...formData,
+                quiz_ids: quizIds,
+            };
+
             // Save lesson
             if (isEdit) {
-                await LessonService.updateLesson(id, formData);
+                await LessonService.updateLesson(id, lessonData);
                 notification.success('Cập nhật bài học thành công!');
             } else {
-                const newLesson = await LessonService.createLesson(formData);
+                const newLesson = await LessonService.createLesson(lessonData);
                 lessonId = newLesson.id;
                 notification.success('Tạo bài học thành công!');
             }
@@ -172,7 +198,7 @@ const LessonFormPage = () => {
                     console.log('Resource type:', resource.type);
                     console.log('Resource file:', resource.file);
                     console.log('Has file?', Boolean(resource.file));
-                    
+
                     const resourceFormData = new FormData();
                     resourceFormData.append('lesson', lessonId);
                     resourceFormData.append('type', resource.type);
@@ -180,7 +206,10 @@ const LessonFormPage = () => {
                     resourceFormData.append('sequence', resource.sequence);
 
                     // Handle file upload for file, video, and pdf types
-                    if ((resource.type === 'file' || resource.type === 'video' || resource.type === 'pdf') && resource.file) {
+                    if (
+                        (resource.type === 'file' || resource.type === 'video' || resource.type === 'pdf') &&
+                        resource.file
+                    ) {
                         console.log('Appending file to FormData:', resource.file.name);
                         resourceFormData.append('file', resource.file);
                     } else if (resource.type === 'link') {
@@ -196,7 +225,7 @@ const LessonFormPage = () => {
                     console.log('Resource type:', resource.type);
                     console.log('Resource file:', resource.file);
                     console.log('Has new file?', Boolean(resource.file));
-                    
+
                     const resourceFormData = new FormData();
                     resourceFormData.append('lesson', lessonId);
                     resourceFormData.append('type', resource.type);
@@ -204,7 +233,10 @@ const LessonFormPage = () => {
                     resourceFormData.append('sequence', resource.sequence);
 
                     // Handle file upload - ch? append n?u c� file M?I du?c ch?n
-                    if ((resource.type === 'file' || resource.type === 'video' || resource.type === 'pdf') && resource.file) {
+                    if (
+                        (resource.type === 'file' || resource.type === 'video' || resource.type === 'pdf') &&
+                        resource.file
+                    ) {
                         console.log('Appending new file to FormData:', resource.file.name);
                         resourceFormData.append('file', resource.file);
                     } else if (resource.type === 'link') {
@@ -239,11 +271,16 @@ const LessonFormPage = () => {
 
     const getResourceIcon = (type) => {
         switch (type) {
-            case 'video': return <FaVideo />;
-            case 'pdf': return <FaFilePdf />;
-            case 'file': return <FaFileAlt />;
-            case 'link': return <FaLink />;
-            default: return <FaFileAlt />;
+            case 'video':
+                return <FaVideo />;
+            case 'pdf':
+                return <FaFilePdf />;
+            case 'file':
+                return <FaFileAlt />;
+            case 'link':
+                return <FaLink />;
+            default:
+                return <FaFileAlt />;
         }
     };
 
@@ -254,8 +291,8 @@ const LessonFormPage = () => {
                     <FaBookOpen className="lesson-form-page-header-icon" />
                     <h1>{isEdit ? 'Chỉnh sửa bài học' : 'Tạo bài học mới'}</h1>
                 </div>
-                <button 
-                    className="lesson-form-page-btn-back" 
+                <button
+                    className="lesson-form-page-btn-back"
                     onClick={() => {
                         if (courseId) {
                             navigate(`/admin/courses/${courseId}`);
@@ -271,11 +308,9 @@ const LessonFormPage = () => {
             <form onSubmit={handleSubmit} className="lesson-form-page-form">
                 <div className="lesson-form-page-card">
                     <h2>Thông tin bài học</h2>
-                    
+
                     <div className="lesson-form-page-form-group">
-                        <label>
-                            Khóa học {!isStandalone && <span className="lesson-form-page-required">*</span>}
-                        </label>
+                        <label>Khóa học {!isStandalone && <span className="lesson-form-page-required">*</span>}</label>
                         <select
                             name="course"
                             value={formData.course}
@@ -284,7 +319,7 @@ const LessonFormPage = () => {
                             disabled={Boolean(courseId)}
                         >
                             <option value="">-- Không gắn khóa học --</option>
-                            {courses.map(course => (
+                            {courses.map((course) => (
                                 <option key={course.id} value={course.id}>
                                     {course.title}
                                 </option>
@@ -342,11 +377,7 @@ const LessonFormPage = () => {
                 <div className="lesson-form-page-card">
                     <div className="lesson-form-page-resources-header">
                         <h2>Tài nguyên bài học</h2>
-                        <button 
-                            type="button"
-                            className="lesson-form-page-btn-add-resource"
-                            onClick={addResource}
-                        >
+                        <button type="button" className="lesson-form-page-btn-add-resource" onClick={addResource}>
                             <FaPlus /> Thêm tài nguyên
                         </button>
                     </div>
@@ -361,9 +392,7 @@ const LessonFormPage = () => {
                             {resources.map((resource, index) => (
                                 <div key={index} className="lesson-form-page-resource-item">
                                     <div className="lesson-form-page-resource-header">
-                                        <div className="resource-type-icon">
-                                            {getResourceIcon(resource.type)}
-                                        </div>
+                                        <div className="resource-type-icon">{getResourceIcon(resource.type)}</div>
                                         <select
                                             value={resource.type}
                                             onChange={(e) => updateResource(index, 'type', e.target.value)}
@@ -419,7 +448,9 @@ const LessonFormPage = () => {
                                             </div>
                                         )}
 
-                                        {(resource.type === 'file' || resource.type === 'pdf' || resource.type === 'video') && (
+                                        {(resource.type === 'file' ||
+                                            resource.type === 'pdf' ||
+                                            resource.type === 'video') && (
                                             <div className="lesson-form-page-form-group">
                                                 <label>Upload File</label>
                                                 <div className="lesson-form-page-file-upload">
@@ -427,9 +458,11 @@ const LessonFormPage = () => {
                                                         type="file"
                                                         onChange={(e) => handleFileChange(index, e.target.files[0])}
                                                         accept={
-                                                            resource.type === 'pdf' ? '.pdf' :
-                                                            resource.type === 'video' ? 'video/*' :
-                                                            '*'
+                                                            resource.type === 'pdf'
+                                                                ? '.pdf'
+                                                                : resource.type === 'video'
+                                                                ? 'video/*'
+                                                                : '*'
                                                         }
                                                     />
                                                     {resource.fileName && (
@@ -452,9 +485,13 @@ const LessonFormPage = () => {
                     )}
                 </div>
 
+                <div className="lesson-form-page-card">
+                    <LessonQuizLinker selectedQuizIds={quizIds} onQuizIdsChange={setQuizIds} />
+                </div>
+
                 <div className="lesson-form-page-actions">
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         className="lesson-form-page-btn-cancel"
                         onClick={() => {
                             if (courseId) {
@@ -466,11 +503,7 @@ const LessonFormPage = () => {
                     >
                         <FaTimes /> Hủy
                     </button>
-                    <button 
-                        type="submit" 
-                        className="lesson-form-page-btn-submit"
-                        disabled={loading}
-                    >
+                    <button type="submit" className="lesson-form-page-btn-submit" disabled={loading}>
                         <FaSave /> {loading ? 'Đang lưu...' : 'Lưu bài học'}
                     </button>
                 </div>

@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaArrowLeft, FaEdit, FaTrash, FaClock, FaQuestionCircle, FaCheckCircle } from 'react-icons/fa';
+import {
+    FaArrowLeft,
+    FaEdit,
+    FaTrash,
+    FaClock,
+    FaQuestionCircle,
+    FaCheckCircle,
+    FaChevronDown,
+    FaChevronUp,
+} from 'react-icons/fa';
 import QuizService from '../../../services/QuizService';
 import notification from '../../../utils/notification';
 import './QuizDetail.css';
@@ -11,6 +20,7 @@ const QuizDetail = () => {
     const [quiz, setQuiz] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [expandedQuestions, setExpandedQuestions] = useState(new Set());
 
     useEffect(() => {
         loadQuizDetail();
@@ -44,6 +54,16 @@ const QuizDetail = () => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         return `${minutes} phút ${remainingSeconds > 0 ? remainingSeconds + ' giây' : ''}`;
+    };
+
+    const toggleQuestion = (index) => {
+        const newExpanded = new Set(expandedQuestions);
+        if (newExpanded.has(index)) {
+            newExpanded.delete(index);
+        } else {
+            newExpanded.add(index);
+        }
+        setExpandedQuestions(newExpanded);
     };
 
     if (loading) {
@@ -162,34 +182,63 @@ const QuizDetail = () => {
                         <div className="quiz-detail-questions-list">
                             {quiz.questions.map((question, index) => (
                                 <div key={question.id} className="quiz-detail-question-item">
-                                    <div className="quiz-detail-question-header">
-                                        <h3>Câu {index + 1}</h3>
-                                        <div className="quiz-detail-question-meta">
-                                            <span className="quiz-detail-question-type">
-                                                {question.question_type === 1 ? 'Một đáp án' : 'Nhiều đáp án'}
-                                            </span>
-                                            <span className="quiz-detail-question-points">{question.points} điểm</span>
+                                    <div className="quiz-detail-question-header" onClick={() => toggleQuestion(index)}>
+                                        <h3>
+                                            Câu {index + 1}
+                                            {question.content && (
+                                                <span className="quiz-detail-question-preview">
+                                                    {' '}
+                                                    - {question.content.substring(0, 50)}
+                                                    {question.content.length > 50 ? '...' : ''}
+                                                </span>
+                                            )}
+                                        </h3>
+                                        <div className="quiz-detail-question-header-right">
+                                            <div className="quiz-detail-question-meta">
+                                                <span className="quiz-detail-question-type">
+                                                    {question.question_type === 1 ? 'Một đáp án' : 'Nhiều đáp án'}
+                                                </span>
+                                                <span className="quiz-detail-question-points">
+                                                    {question.points} điểm
+                                                </span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                className="quiz-detail-btn-toggle-question"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleQuestion(index);
+                                                }}
+                                            >
+                                                {expandedQuestions.has(index) ? <FaChevronUp /> : <FaChevronDown />}
+                                            </button>
                                         </div>
                                     </div>
-                                    <p className="quiz-detail-question-content">{question.content}</p>
-                                    <div className="quiz-detail-options-list">
-                                        {question.options?.map((option, oIndex) => (
-                                            <div
-                                                key={option.id}
-                                                className={`quiz-detail-option-item ${
-                                                    option.is_correct ? 'quiz-detail-option-correct' : ''
-                                                }`}
-                                            >
-                                                <span className="quiz-detail-option-label">
-                                                    {String.fromCharCode(65 + oIndex)}.
-                                                </span>
-                                                <span className="quiz-detail-option-content">{option.option_text}</span>
-                                                {option.is_correct && (
-                                                    <FaCheckCircle className="quiz-detail-correct-icon" />
-                                                )}
+                                    {expandedQuestions.has(index) && (
+                                        <div className="quiz-detail-question-body">
+                                            <p className="quiz-detail-question-content">{question.content}</p>
+                                            <div className="quiz-detail-options-list">
+                                                {question.options?.map((option, oIndex) => (
+                                                    <div
+                                                        key={option.id}
+                                                        className={`quiz-detail-option-item ${
+                                                            option.is_correct ? 'quiz-detail-option-correct' : ''
+                                                        }`}
+                                                    >
+                                                        <span className="quiz-detail-option-label">
+                                                            {String.fromCharCode(65 + oIndex)}.
+                                                        </span>
+                                                        <span className="quiz-detail-option-content">
+                                                            {option.option_text}
+                                                        </span>
+                                                        {option.is_correct && (
+                                                            <FaCheckCircle className="quiz-detail-correct-icon" />
+                                                        )}
+                                                    </div>
+                                                ))}
                                             </div>
-                                        ))}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>

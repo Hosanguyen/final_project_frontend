@@ -7,7 +7,7 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .back-btn {
@@ -64,6 +64,49 @@
     position: sticky;
     top: 0;
     z-index: 10;
+}
+
+.sidebar-tabs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.sidebar-tab {
+    flex: 1;
+    background: white;
+    border: 2px solid #e0e0e0;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.sidebar-tab:hover {
+    background: #f8f9fa;
+    border-color: #667eea;
+}
+
+.sidebar-tab.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.sidebar-tab svg {
+    font-size: 1rem;
+}
+
+.quiz-history-wrapper {
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 300px);
 }
 
 .sidebar-header h3 {
@@ -135,6 +178,20 @@
 .resources-list {
     padding-left: 1rem;
     background: #fafafa;
+}
+
+.resource-section-label {
+    padding: 0.75rem 1.5rem 0.5rem 1.5rem;
+    background: #f5f5f5;
+    border-top: 1px solid #e0e0e0;
+}
+
+.resource-section-label span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #667eea;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .no-lessons,
@@ -227,7 +284,7 @@
     height: 0;
     overflow: hidden;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .video-wrapper iframe,
@@ -246,7 +303,7 @@
     height: 800px;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .pdf-wrapper iframe,
@@ -276,8 +333,14 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .pdf-info h3 {
