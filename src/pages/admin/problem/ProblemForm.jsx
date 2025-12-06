@@ -126,8 +126,10 @@ const ProblemForm = () => {
 
         if (!formData.slug.trim()) {
             newErrors.slug = 'Slug là bắt buộc';
-        } else if (!/^[a-z0-9-]+$/.test(formData.slug)) {
-            newErrors.slug = 'Slug chỉ được chứa chữ thường, số và dấu gạch ngang';
+        } else if (formData.slug.length > 10) {
+            newErrors.slug = 'Slug không được quá 10 ký tự';
+        } else if (!/^[a-z0-9]+$/.test(formData.slug)) {
+            newErrors.slug = 'Slug chỉ được chứa chữ thường và số, không có dấu cách hoặc ký tự đặc biệt';
         }
 
         if (!formData.title.trim()) {
@@ -277,10 +279,23 @@ const ProblemForm = () => {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
+
+        let processedValue = type === 'checkbox' ? checked : value;
+
+        // Xử lý đặc biệt cho slug
+        if (name === 'slug') {
+            // Chỉ cho phép chữ thường, số, loại bỏ tất cả ký tự khác
+            processedValue = value
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, '') // Loại bỏ tất cả ký tự không phải chữ thường và số
+                .slice(0, 10); // Giới hạn 10 ký tự
+        }
+
         setFormData((prev) => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value,
+            [name]: processedValue,
         }));
+
         if (errors[name]) {
             setErrors((prev) => ({
                 ...prev,
@@ -364,7 +379,7 @@ const ProblemForm = () => {
                         <div className="problem-form-row">
                             <div className="problem-form-group">
                                 <label htmlFor="slug">
-                                    Slug <span className="problem-form-required">*</span>
+                                    Mã bài <span className="problem-form-required">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -373,12 +388,13 @@ const ProblemForm = () => {
                                     value={formData.slug}
                                     onChange={handleChange}
                                     className={errors.slug ? 'problem-form-error' : ''}
-                                    placeholder="two-sum"
+                                    placeholder="twosum"
+                                    maxLength={10}
                                     disabled={isEditMode}
                                 />
                                 {errors.slug && <span className="problem-form-error-message">{errors.slug}</span>}
                                 <span className="problem-form-input-hint">
-                                    Chỉ sử dụng chữ thường, số và dấu gạch ngang (-)
+                                    Tối đa 10 ký tự, chỉ chữ thường và số (a-z, 0-9) - Ví dụ: twosum, dp01
                                 </span>
                             </div>
 

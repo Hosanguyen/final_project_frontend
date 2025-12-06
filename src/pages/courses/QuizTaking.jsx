@@ -10,7 +10,7 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
     const [timeLeft, setTimeLeft] = useState(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    
+
     const handleSubmitQuizRef = useRef(null);
 
     // Key để lưu thời gian trong localStorage
@@ -78,29 +78,29 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
                 // Có submission đang làm dở - tiếp tục
                 response = submissionsResponse.results[0];
                 isResuming = true;
-                
+
                 // Load lại submission chi tiết để có answers
                 const detailResponse = await QuizService.getSubmissionById(response.id);
                 response = detailResponse;
-                
+
                 // Load lại các câu trả lời đã lưu
                 const savedAnswers = {};
                 if (response.answers && response.answers.length > 0) {
                     response.answers.forEach((answer) => {
                         // API trả về: question (id), selected_option (single id)
                         const questionId = answer.question || answer.question_id;
-                        const selectedOptions = answer.selected_option_ids || 
-                                              (answer.selected_option ? [answer.selected_option] : []);
-                        
+                        const selectedOptions =
+                            answer.selected_option_ids || (answer.selected_option ? [answer.selected_option] : []);
+
                         if (questionId && selectedOptions.length > 0) {
                             savedAnswers[questionId] = selectedOptions;
                         }
                     });
                 }
-                
+
                 console.log('Loaded saved answers:', savedAnswers); // Debug
                 setAnswers(savedAnswers);
-                
+
                 notification.info('Tiếp tục làm bài quiz từ lần trước');
             } else {
                 // Tạo submission mới
@@ -113,7 +113,7 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
             // Tính toán thời gian còn lại
             // Lấy time_limit từ quiz hoặc quiz_snapshot
             const timeLimit = quiz.time_limit_seconds || response.quiz_snapshot?.time_limit_seconds;
-            
+
             console.log('Quiz time limit:', timeLimit); // Debug
 
             if (timeLimit && timeLimit > 0) {
@@ -141,7 +141,7 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
                     // Lần đầu làm bài - khởi tạo thời gian
                     setTimeLeft(timeLimit);
                     localStorage.setItem(storageKey, timeLimit.toString());
-                    
+
                     const mins = Math.floor(timeLimit / 60);
                     const secs = timeLimit % 60;
                     notification.success(`Thời gian làm bài: ${mins} phút ${secs} giây`);
@@ -192,7 +192,7 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
         } catch (error) {
             console.error('Error submitting answer:', error);
             notification.error('Không thể lưu câu trả lời. Vui lòng thử lại!');
-            
+
             // Rollback về trạng thái cũ nếu lưu thất bại
             setAnswers(answers);
         }
@@ -275,7 +275,10 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
 
     // Debug: Log để kiểm tra
     console.log('Current answers state:', answers);
-    console.log('Questions:', questions.map(q => ({ id: q.question_id, options: q.options.map(o => o.option_id) })));
+    console.log(
+        'Questions:',
+        questions.map((q) => ({ id: q.question_id, options: q.options.map((o) => o.option_id) })),
+    );
 
     return (
         <div className="quiz-taking-container">
@@ -312,7 +315,7 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
                     questions.map((question, index) => {
                         // Flexible question ID mapping
                         const questionId = question.question_id || question.id;
-                        
+
                         return (
                             <div key={questionId} className="quiz-question-card">
                                 <div className="quiz-question-header">
@@ -330,7 +333,7 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
                                         // Flexible option ID mapping
                                         const optionId = option.option_id || option.id;
                                         const isSelected = answers[questionId]?.includes(optionId);
-                                        
+
                                         return (
                                             <label
                                                 key={optionId}
@@ -341,11 +344,7 @@ const QuizTaking = ({ quiz, lessonId, onBack, onComplete }) => {
                                                     name={`question-${questionId}`}
                                                     checked={isSelected}
                                                     onChange={() =>
-                                                        handleAnswerChange(
-                                                            questionId,
-                                                            optionId,
-                                                            question.question_type,
-                                                        )
+                                                        handleAnswerChange(questionId, optionId, question.question_type)
                                                     }
                                                 />
                                                 <span className="quiz-option-text">{option.option_text}</span>
