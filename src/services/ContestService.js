@@ -273,6 +273,33 @@ const ContestService = {
         } catch (error) {
             throw error.response?.data || error.message;
         }
+    },
+
+    /**
+     * Get contest statistics for admin dashboard
+     * @returns {Promise} Contest statistics data
+     */
+    getStatistics: async () => {
+        try {
+            const response = await api.get('/api/contests/statistics/');
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    /**
+     * Get detailed statistics for a specific contest
+     * @param {number} contestId - Contest ID
+     * @returns {Promise} Contest detailed statistics
+     */
+    getContestDetailStatistics: async (contestId) => {
+        try {
+            const response = await api.get(`/api/contests/${contestId}/statistics/`);
+            return response.data;
+        } catch (error) {
+            throw error.response?.data || error.message;
+        }
     }
 };
 

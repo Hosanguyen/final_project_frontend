@@ -3,6 +3,7 @@ import { FaCode, FaPaperPlane, FaSpinner, FaCheckCircle, FaTimesCircle, FaSun, F
 import CodeEditor from '../../../components/CodeEditor';
 import SubmissionService from '../../../services/SubmissionService';
 import { getTemplate } from '../../../utils/codeTemplates';
+import notification from '../../../utils/notification';
 import './ProblemSubmission.css';
 
 const ProblemSubmission = ({ contestProblem, problem, onSubmitSuccess }) => {
@@ -12,7 +13,6 @@ const ProblemSubmission = ({ contestProblem, problem, onSubmitSuccess }) => {
     );
     const [code, setCode] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submissionResult, setSubmissionResult] = useState(null);
     const [error, setError] = useState(null);
     const [theme, setTheme] = useState('vs'); // 'vs-dark' or 'vs'
     const [inputMode, setInputMode] = useState('editor'); // 'editor' or 'file'
@@ -77,7 +77,6 @@ const ProblemSubmission = ({ contestProblem, problem, onSubmitSuccess }) => {
 
         setIsSubmitting(true);
         setError(null);
-        setSubmissionResult(null);
 
         try {
             debugger;
@@ -87,7 +86,12 @@ const ProblemSubmission = ({ contestProblem, problem, onSubmitSuccess }) => {
                 contest_id: contestProblem ? contestProblem.contest.id : null,
             });
 
-            setSubmissionResult(result);
+            // Show success notification
+            notification.success(
+                `Submission ID: ${result.submission?.id} đang được chấm. Vui lòng chờ kết quả.`,
+                'Nộp bài thành công!'
+            );
+
             setError(null);
             
             // Notify parent to refresh submission history
@@ -96,7 +100,9 @@ const ProblemSubmission = ({ contestProblem, problem, onSubmitSuccess }) => {
             }
         } catch (err) {
             console.error('Submit failed:', err);
-            setError(err.response?.data?.error || 'Gửi bài thất bại. Vui lòng thử lại.');
+            const errorMessage = err.response?.data?.error || 'Gửi bài thất bại. Vui lòng thử lại.';
+            notification.error(errorMessage);
+            setError(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -253,36 +259,6 @@ const ProblemSubmission = ({ contestProblem, problem, onSubmitSuccess }) => {
                                 </div>
                             </div>
                         )}
-                    </div>
-                )}
-
-                {/* Error Message */}
-                {error && (
-                    <div className="problem-submission-error">
-                        <FaTimesCircle /> {error}
-                    </div>
-                )}
-
-                {/* Submission Result */}
-                {submissionResult && (
-                    <div className="problem-submission-result">
-                        <div className="problem-submission-result-header">
-                            <FaCheckCircle /> Nộp bài thành công!
-                        </div>
-                        <div className="problem-submission-result-body">
-                            <p>
-                                <strong>Submission ID:</strong> {submissionResult.submission?.id}
-                            </p>
-                            <p>
-                                <strong>Status:</strong>{' '}
-                                <span className="status-badge status-judging">
-                                    {submissionResult.submission?.status}
-                                </span>
-                            </p>
-                            <p className="problem-submission-result-note">
-                                Bài của bạn đang được chấm. Vui lòng chờ kết quả.
-                            </p>
-                        </div>
                     </div>
                 )}
 
