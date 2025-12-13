@@ -113,6 +113,21 @@
   color: #0369a1;
 }
 
+.stat-icon.contests {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.stat-icon.practice {
+  background: #ddd6fe;
+  color: #7c3aed;
+}
+
+.stat-icon.contest-users {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+
 .stat-content {
   flex: 1;
 }
