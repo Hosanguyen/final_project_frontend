@@ -402,7 +402,7 @@ const ContestStatistics = () => {
                   return (
                     <tr 
                       key={contest.id}
-                      onClick={() => navigate(`/admin/contests/${contest.id}`)}
+                      onClick={() => navigate(`/admin/contests/${contest.id}/statistics`)}
                       className="clickable-row"
                     >
                       <td>
@@ -449,7 +449,7 @@ const ContestStatistics = () => {
                 <div 
                   key={contest.id} 
                   className="popular-contest-card"
-                  onClick={() => navigate(`/admin/contests/${contest.id}`)}
+                  onClick={() => navigate(`/admin/contests/${contest.id}/statistics`)}
                 >
                   <div className="rank-badge">#{index + 1}</div>
                   <div className="popular-contest-content">
