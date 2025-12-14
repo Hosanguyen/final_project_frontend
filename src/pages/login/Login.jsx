@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { FaHome } from 'react-icons/fa';
 import { loginUser } from '../../services/AuthService';
 import { useUser } from '../../contexts/UserContext';
 import notification from '../../utils/notification';
@@ -28,7 +29,7 @@ const Login = () => {
         setErrors({});
 
         if (!username.trim()) {
-            setErrors({ username: 'Vui lòng nhập tên đăng nhập' });
+            setErrors({ username: 'Vui lòng nhập tên đăng nhập hoặc email' });
             return;
         }
 
@@ -53,13 +54,16 @@ const Login = () => {
             if (result.user) {
                 userLogin(result.user);
             }
-            notification.success(result.message);
+            notification.success('Đăng nhập thành công!', 'Chào mừng!');
             navigate('/');
         } else {
+            // Hiển thị notification lỗi
+            const errorMessage = result.message || 'Đăng nhập không thành công';
+            notification.error(errorMessage, 'Đăng nhập thất bại');
+            
+            // Nếu có lỗi chi tiết, hiển thị trong form
             if (result.errors) {
                 setErrors(result.errors);
-            } else {
-                notification.error(result.message);
             }
         }
     };
@@ -67,13 +71,23 @@ const Login = () => {
     return (
         <div className="login-container">
             <div className="login-box">
-                <h1 className="login-title">Đăng Nhập</h1>
+                <div className="login-header">
+                    <h1 className="login-title">Đăng Nhập</h1>
+                    <button 
+                        type="button" 
+                        className="home-button" 
+                        onClick={() => navigate('/')}
+                        title="Về trang chủ"
+                    >
+                        <FaHome />
+                    </button>
+                </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
                         <input
                             type="text"
-                            placeholder="Tên đăng nhập"
+                            placeholder="Tên đăng nhập hoặc Email"
                             value={username}
                             onChange={(e) => {
                                 setUsername(e.target.value);

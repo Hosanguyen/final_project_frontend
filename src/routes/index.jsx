@@ -7,6 +7,7 @@ import MainLayout from '../layouts/MainLayout';
 import AdminLayout from '../layouts/AdminLayout';
 import Register from '../pages/register/Register';
 import UserProfile from '../pages/UserProfile/UserProfile';
+import PublicProfile from '../pages/PublicProfile/PublicProfile';
 import PrivateRoute from './PrivateRoute';
 import RoleGuard from '../components/RoleGuard';
 import PermissionCategoryList from '../pages/admin/permissionCategory/PermissionCategoryList';
@@ -87,6 +88,7 @@ const AppRoutes = () => {
                     <Route path="/practice" element={<Practice />} />
                     <Route path="/practice/ranking" element={<PracticeLeaderboard />} />
                     <Route path="/global-ranking" element={<GlobalRanking />} />
+                    <Route path="/users/:userId/profile" element={<PublicProfile />} />
                     <Route path="/contests" element={<Contests />} />
                     <Route path="/contests/:id" element={<ContestDetailUser />} />
                     <Route path="/problems/:id" element={<ProblemDetailUser />} />
