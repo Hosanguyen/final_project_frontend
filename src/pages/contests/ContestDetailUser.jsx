@@ -23,10 +23,26 @@ const ContestDetailUser = () => {
         try {
             setLoading(true);
             const data = await ContestService.getContestDetailForUser(id);
+            
+            // Chặn truy cập contest practice, redirect về /practice
+            if (data.slug === 'practice') {
+                notification.warning('Contest luyện tập không thể truy cập trực tiếp. Đang chuyển hướng...');
+                navigate('/practice');
+                return;
+            }
+            
             setContest(data);
             setError(null);
         } catch (err) {
             console.error('Error fetching contest details:', err);
+            
+            // Nếu backend trả về 403 với redirect_to, redirect về trang đó
+            if (err.status === 403 && err.redirect_to) {
+                notification.warning('Contest luyện tập không thể truy cập trực tiếp. Đang chuyển hướng...');
+                navigate(err.redirect_to);
+                return;
+            }
+            
             setError('Không thể tải thông tin cuộc thi. Vui lòng thử lại sau.');
         } finally {
             setLoading(false);

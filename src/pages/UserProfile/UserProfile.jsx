@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cropper from 'react-easy-crop';
+import { FaTrophy, FaCode, FaChartLine, FaCalendar } from 'react-icons/fa';
 import './UserProfile.css';
 import api from '../../services/api';
 import { updateUserProfile } from '../../services/UserService';
@@ -13,11 +14,20 @@ const UserProfile = () => {
   const API_URL = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('courses');
+  const [activeTab, setActiveTab] = useState('overview');
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
+
+  // Statistics state
+  const [statistics, setStatistics] = useState({
+    total_submissions: 0,
+    accepted_submissions: 0,
+    problems_solved: 0,
+    contests_participated: 0,
+    acceptance_rate: 0
+  });
 
   // Enrolled courses state
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -65,6 +75,7 @@ const UserProfile = () => {
       setAvatarPreview(parsed.avatar_url ? `${API_URL}${parsed.avatar_url}` : null);
     }
     loadEnrolledCourses();
+    loadStatistics();
   }, []);
 
   useEffect(() => {
@@ -77,6 +88,23 @@ const UserProfile = () => {
       loadUserContests(1);
     }
   }, [activeTab]);
+
+  const loadStatistics = async () => {
+    try {
+      // Gọi API statistics mới từ backend - đã tính toán sẵn
+      const response = await api.get('/api/problems/user/statistics/');
+      
+      setStatistics({
+        total_submissions: response.data.total_submissions || 0,
+        accepted_submissions: response.data.accepted_submissions || 0,
+        problems_solved: response.data.problems_solved || 0,
+        contests_participated: response.data.contests_participated || 0,
+        acceptance_rate: response.data.acceptance_rate || 0
+      });
+    } catch (error) {
+      console.error('Error loading statistics:', error);
+    }
+  };
 
   const loadEnrolledCourses = async () => {
     try {
@@ -318,8 +346,123 @@ const UserProfile = () => {
   if (!user)
     return <p style={{ textAlign: 'center' }}>Không tìm thấy thông tin người dùng</p>;
 
+  const getRankColor = (rankTitle) => {
+    const colorMap = {
+      'newbie': '#808080',
+      'pupil': '#008000',
+      'specialist': '#03A89E',
+      'expert': '#0000FF',
+      'candidate_master': '#AA00AA',
+      'master': '#FF8C00',
+      'grandmaster': '#FF0000',
+    };
+    return colorMap[rankTitle] || '#808080';
+  };
+
+  const getRankDisplay = (rankTitle) => {
+    const nameMap = {
+      'newbie': 'Newbie',
+      'pupil': 'Pupil',
+      'specialist': 'Specialist',
+      'expert': 'Expert',
+      'candidate_master': 'Candidate Master',
+      'master': 'Master',
+      'grandmaster': 'Grandmaster',
+    };
+    return nameMap[rankTitle] || 'Unrated';
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
+      case 'overview':
+        return (
+          <div className="overview-section">
+            <div className="overview-grid">
+              <div className="overview-card">
+                <h3>Thông tin cá nhân</h3>
+                <div className="info-row">
+                  <span className="info-label">Username:</span>
+                  <span className="info-value">{user.username}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Email:</span>
+                  <span className="info-value">{user.email}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Họ tên:</span>
+                  <span className="info-value">{user.full_name || 'Chưa cập nhật'}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Giới tính:</span>
+                  <span className="info-value">{user.gender || 'Chưa cập nhật'}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Ngày sinh:</span>
+                  <span className="info-value">{user.dob || 'Chưa cập nhật'}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Số điện thoại:</span>
+                  <span className="info-value">{user.phone || 'Chưa cập nhật'}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Địa chỉ:</span>
+                  <span className="info-value">{user.address || 'Chưa cập nhật'}</span>
+                </div>
+              </div>
+
+              {user.current_rating !== undefined && (
+                <div className="overview-card">
+                  <h3>Rating & Thành tích</h3>
+                  <div className="info-row">
+                    <span className="info-label">Rating hiện tại:</span>
+                    <span className="info-value rating-value">{user.current_rating || 1000}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Rating cao nhất:</span>
+                    <span className="info-value">{user.max_rating || 1000}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Rank:</span>
+                    <span className="info-value">{user.rank || 'newbie'}</span>
+                  </div>
+                </div>
+              )}
+
+              <div className="overview-card">
+                <h3>Thống kê chi tiết</h3>
+                <div className="info-row">
+                  <span className="info-label">Tổng số lần nộp:</span>
+                  <span className="info-value">{statistics.total_submissions}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Số bài AC:</span>
+                  <span className="info-value">{statistics.accepted_submissions}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Bài đã giải:</span>
+                  <span className="info-value">{statistics.problems_solved}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Contest tham gia:</span>
+                  <span className="info-value">{statistics.contests_participated}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Tỷ lệ AC:</span>
+                  <span className="info-value">{statistics.acceptance_rate}%</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="overview-actions">
+              <button className="edit-btn" onClick={() => setIsEditing(true)}>
+                ✏️ Chỉnh sửa thông tin
+              </button>
+              <button className="change-password-btn" onClick={() => setShowChangePassword(true)}>
+                🔒 Đổi mật khẩu
+              </button>
+            </div>
+          </div>
+        );
       case 'courses':
         return (
           <div className="tab-content">
@@ -759,67 +902,113 @@ const UserProfile = () => {
         </div>
       )}
 
-      <div className="profile-card">
-        <div className="profile-avatar">
-          <label htmlFor="avatarInput">
-            {avatarPreview ? (
-              <img src={avatarPreview} alt="Avatar" className="avatar-editable" />
-            ) : (
-              <div className="avatar-placeholder">
-                {user.full_name
-                  ? user.full_name?.charAt(0).toUpperCase()
-                  : user.username?.charAt(0).toUpperCase()}
-              </div>
-            )}
-          </label>
-          {isEditing && (
-            <>
-              <input
-                type="file"
-                id="avatarInput"
-                accept="image/*"
-                onChange={handleAvatarChange}
-                style={{ display: 'none' }}
-              />
-              <p className="avatar-note">Nhấn vào ảnh để thay đổi</p>
-              {avatarPreview && ( 
-                <button onClick={handleDeleteAvatar} className="delete-avatar-btn">
-                   Xóa ảnh đại diện
-                </button>
-              )}
-            </>
+      {/* Profile Header */}
+      <div className="profile-header">
+        <div className="profile-avatar-section">
+          {avatarPreview ? (
+            <img src={avatarPreview} alt="Avatar" className="profile-avatar" />
+          ) : (
+            <div className="avatar-placeholder">
+              {user.full_name
+                ? user.full_name?.charAt(0).toUpperCase()
+                : user.username?.charAt(0).toUpperCase()}
+            </div>
           )}
         </div>
 
-        <div className="profile-info">
-          {isEditing ? (
-            <>
-              <input
-                type="text"
-                name="full_name"
-                value={formData.full_name || ''}
-                onChange={handleChange}
-                placeholder="Họ và tên"
-                className="edit-input"
-              />
-              <input
-                type="email"
-                name="email"
-                value={formData.email || ''}
-                onChange={handleChange}
-                placeholder="Email"
-                className="edit-input"
-              />
-              <textarea
-                name="description"
-                value={formData.description || ''}
-                onChange={handleChange}
-                placeholder="Mô tả ngắn về bạn"
-                className="edit-textarea"
-              />
-              <div className="profile-details">
-                <label>
-                  Giới tính:
+        <div className="profile-info-section">
+          <h1 className="profile-username">{user.username}</h1>
+          {user.full_name && <p className="profile-fullname">{user.full_name}</p>}
+          
+          {user.current_rating !== undefined && (
+            <div className="rating-info">
+              <span 
+                className="rank-badge" 
+                style={{ backgroundColor: getRankColor(user.rank || 'newbie') }}
+              >
+                {getRankDisplay(user.rank || 'newbie')}
+              </span>
+              <span className="rating-value">Rating: {user.current_rating || 1000}</span>
+            </div>
+          )}
+
+          {user.description && (
+            <p className="profile-bio">{user.description}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Edit Profile Modal */}
+      {isEditing && (
+        <div className="user-profile-edit-modal-overlay" onClick={() => setIsEditing(false)}>
+          <div className="user-profile-edit-modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Chỉnh sửa thông tin</h2>
+            <div className="user-profile-edit-form">
+              <div className="user-profile-edit-form-avatar-section">
+                <label htmlFor="avatarInput" style={{ cursor: 'pointer' }}>
+                  {avatarPreview ? (
+                    <img src={avatarPreview} alt="Avatar" className="user-profile-edit-form-avatar-preview" />
+                  ) : (
+                    <div className="user-profile-edit-form-avatar-placeholder">
+                      {formData.full_name
+                        ? formData.full_name?.charAt(0).toUpperCase()
+                        : formData.username?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </label>
+                <input
+                  type="file"
+                  id="avatarInput"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  style={{ display: 'none' }}
+                />
+                <p className="avatar-note">Nhấn vào ảnh để thay đổi</p>
+                {avatarPreview && (
+                  <button onClick={handleDeleteAvatar} className="delete-avatar-btn">
+                    Xóa ảnh đại diện
+                  </button>
+                )}
+              </div>
+
+              <div className="user-profile-edit-form-group">
+                <label>Họ và tên</label>
+                <input
+                  type="text"
+                  name="full_name"
+                  value={formData.full_name || ''}
+                  onChange={handleChange}
+                  placeholder="Nhập họ và tên"
+                  className="edit-input"
+                />
+              </div>
+
+              <div className="user-profile-edit-form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email || ''}
+                  onChange={handleChange}
+                  placeholder="Nhập email"
+                  className="edit-input"
+                />
+              </div>
+
+              <div className="user-profile-edit-form-group">
+                <label>Mô tả</label>
+                <textarea
+                  name="description"
+                  value={formData.description || ''}
+                  onChange={handleChange}
+                  placeholder="Mô tả ngắn về bạn"
+                  className="edit-textarea"
+                />
+              </div>
+
+              <div className="user-profile-edit-form-details-grid">
+                <div className="user-profile-edit-form-group">
+                  <label>Giới tính</label>
                   <select
                     name="gender"
                     value={formData.gender || ''}
@@ -831,9 +1020,10 @@ const UserProfile = () => {
                     <option value="Nữ">Nữ</option>
                     <option value="Khác">Khác</option>
                   </select>
-                </label>
-                <label>
-                  Ngày sinh:
+                </div>
+
+                <div className="user-profile-edit-form-group">
+                  <label>Ngày sinh</label>
                   <input
                     type="date"
                     name="dob"
@@ -841,72 +1031,99 @@ const UserProfile = () => {
                     onChange={handleChange}
                     className="edit-input"
                   />
-                </label>
-                <label>
-                  Số điện thoại:
+                </div>
+
+                <div className="user-profile-edit-form-group">
+                  <label>Số điện thoại</label>
                   <input
                     type="text"
                     name="phone"
                     value={formData.phone || ''}
                     onChange={handleChange}
+                    placeholder="Nhập số điện thoại"
                     className="edit-input"
                   />
-                </label>
-                <label>
-                  Địa chỉ:
+                </div>
+
+                <div className="user-profile-edit-form-group">
+                  <label>Địa chỉ</label>
                   <input
                     type="text"
                     name="address"
                     value={formData.address || ''}
                     onChange={handleChange}
+                    placeholder="Nhập địa chỉ"
                     className="edit-input"
                   />
-                </label>
+                </div>
               </div>
-              <div className="edit-actions">
+
+              <div className="user-profile-edit-modal-actions">
                 <button onClick={handleSave} className="save-btn">💾 Lưu thay đổi</button>
                 <button onClick={() => {
-                    setFormData(user);
-                    setAvatarPreview(user.avatar_url ? `${API_URL}${user.avatar_url}` : null);
-                    setIsEditing(false)
+                  setFormData(user);
+                  setAvatarPreview(user.avatar_url ? `${API_URL}${user.avatar_url}` : null);
+                  setIsEditing(false);
                 }} className="cancel-btn">❌ Hủy</button>
               </div>
-            </>
-          ) : (
-            <>
-              <h2 className="profile-name">{user.full_name || user.username}</h2>
-              <p className="profile-email">{user.email}</p>
-              {user.description && <p className="profile-desc">{user.description}</p>}
-              <div className="profile-details">
-                <p><strong>Giới tính:</strong> {user.gender || 'Chưa cập nhật'}</p>
-                <p><strong>Ngày sinh:</strong> {user.dob || 'Chưa cập nhật'}</p>
-                <p><strong>Số điện thoại:</strong> {user.phone || 'Chưa cập nhật'}</p>
-                <p><strong>Địa chỉ:</strong> {user.address || 'Chưa cập nhật'}</p>
-              </div>
-              <button className="edit-btn" onClick={() =>  setIsEditing(true)}>
-                ✏️ Chỉnh sửa thông tin
-              </button>
-              <button className="change-password-btn" onClick={() => setShowChangePassword(true)}>
-                🔒 Đổi mật khẩu
-              </button>
-            </>
-          )}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
+      {/* Statistics Cards */}
+      <div className="stats-grid">
+          <div className="stat-card">
+            <FaCode className="stat-icon" />
+            <div className="stat-content">
+              <div className="stat-value">{statistics.problems_solved}</div>
+              <div className="stat-label">Bài đã giải</div>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <FaTrophy className="stat-icon" />
+            <div className="stat-content">
+              <div className="stat-value">{statistics.contests_participated}</div>
+              <div className="stat-label">Contest tham gia</div>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <FaChartLine className="stat-icon" />
+            <div className="stat-content">
+              <div className="stat-value">{statistics.acceptance_rate}%</div>
+              <div className="stat-label">Tỷ lệ AC</div>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <FaCalendar className="stat-icon" />
+            <div className="stat-content">
+              <div className="stat-value">{statistics.total_submissions}</div>
+              <div className="stat-label">Lượt nộp bài</div>
+            </div>
+          </div>
+        </div>
+
+      {/* Tabs */}
       <div className="profile-tabs">
-        {['courses', 'problems', 'submissions', 'contests'].map((tab) => (
+        {['overview', 'courses', 'problems', 'submissions', 'contests'].map((tab) => (
           <button
             key={tab}
-            className={`tab-button ${activeTab === tab ? 'active' : ''}`}
+            className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
             onClick={() => setActiveTab(tab)}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {tab === 'overview' ? 'Tổng quan' : 
+             tab === 'courses' ? 'Khóa học' :
+             tab === 'problems' ? 'Bài tập' :
+             tab === 'submissions' ? 'Lịch sử nộp' :
+             'Contest'}
           </button>
         ))}
       </div>
 
-      <div className="profile-tab-content">{renderTabContent()}</div>
+      <div className="profile-content">{renderTabContent()}</div>
     </div>
   );
 };
