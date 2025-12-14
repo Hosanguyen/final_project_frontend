@@ -47,6 +47,8 @@ import QuizDetail from '../pages/admin/quiz/QuizDetail';
 import GlobalRanking from '../pages/GlobalRanking/GlobalRanking';
 import PaymentResult from '../pages/PaymentResult';
 import OrderHistory from '../pages/OrderHistory';
+import UserReports from '../pages/admin/statistic/UserReports';
+import CourseReports from '../pages/admin/statistic/CourseReports';
 
 const AppRoutes = () => {
     return (
@@ -61,22 +63,22 @@ const AppRoutes = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/courses" element={<Courses />} />
                     <Route path="/courses/:slug" element={<CourseDetail />} />
-                    <Route 
-                        path="/courses/:slug/learn" 
+                    <Route
+                        path="/courses/:slug/learn"
                         element={
                             <PrivateRoute>
                                 <CourseLearning />
                             </PrivateRoute>
-                        } 
+                        }
                     />
                     <Route path="/payment-result" element={<PaymentResult />} />
-                    <Route 
-                        path="/order-history" 
+                    <Route
+                        path="/order-history"
                         element={
                             <PrivateRoute>
                                 <OrderHistory />
                             </PrivateRoute>
-                        } 
+                        }
                     />
                     <Route path="/practice" element={<Practice />} />
                     <Route path="/practice/ranking" element={<PracticeLeaderboard />} />
@@ -97,13 +99,13 @@ const AppRoutes = () => {
 
                 {/* Routes với AdminLayout */}
                 <Route element={<AdminLayout />}>
-                    <Route 
-                        path="/admin/dashboard" 
+                    <Route
+                        path="/admin/dashboard"
                         element={
                             <RoleGuard roles="admin">
                                 <AdminDashboard />
                             </RoleGuard>
-                        } 
+                        }
                     />
                     <Route
                         path="/admin/permission-categories"
@@ -412,6 +414,24 @@ const AppRoutes = () => {
                         element={
                             <PrivateRoute>
                                 <QuizDetail />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    {/* Statistics Routes */}
+                    <Route
+                        path="/admin/statistics/user-reports"
+                        element={
+                            <PrivateRoute>
+                                <UserReports />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/statistics/course-reports"
+                        element={
+                            <PrivateRoute>
+                                <CourseReports />
                             </PrivateRoute>
                         }
                     />
