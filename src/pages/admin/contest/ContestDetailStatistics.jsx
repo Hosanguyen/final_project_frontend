@@ -90,7 +90,7 @@ const ContestDetailStatistics = () => {
             <div className="stats-header">
                 <button 
                     className="back-button"
-                    onClick={() => navigate('/admin/contest-statistics')}
+                    onClick={() => navigate('/admin/statistics/contest-reports')}
                 >
                     <ArrowLeft size={20} />
                     <span>Quay lại</span>

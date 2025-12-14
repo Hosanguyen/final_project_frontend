@@ -277,11 +277,13 @@ const ContestService = {
 
     /**
      * Get contest statistics for admin dashboard
+     * @param {string} month - Month in format YYYY-MM (optional, null for all)
      * @returns {Promise} Contest statistics data
      */
-    getStatistics: async () => {
+    getStatistics: async (month = null) => {
         try {
-            const response = await api.get('/api/contests/statistics/');
+            const params = month ? { month } : {};
+            const response = await api.get('/api/contests/statistics/', { params });
             return response.data;
         } catch (error) {
             throw error.response?.data || error.message;

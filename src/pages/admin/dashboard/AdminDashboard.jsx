@@ -275,7 +275,7 @@ const AdminDashboard = () => {
               </div>
             </a>
             
-            <a href="/admin/contest-statistics" className="action-card">
+            <a href="/admin/statistics/contest-reports" className="action-card">
               <TrendingUp className="action-icon" />
               <div className="action-content">
                 <h3>Thống kê Contest</h3>

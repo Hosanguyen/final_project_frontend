@@ -34,7 +34,6 @@ import ProblemList from '../pages/admin/problem/ProblemList';
 import ContestManagement from '../pages/admin/contest/ContestManagement';
 import ContestForm from '../pages/admin/contest/ContestForm';
 import ContestDetail from '../pages/admin/contest/ContestDetail';
-import ContestStatistics from '../pages/admin/contest/ContestStatistics';
 import ContestDetailStatistics from '../pages/admin/contest/ContestDetailStatistics';
 import Practice from '../pages/practice/Practice';
 import PracticeLeaderboard from '../pages/contests/PracticeLeaderboard';
@@ -51,6 +50,7 @@ import PaymentResult from '../pages/PaymentResult';
 import OrderHistory from '../pages/OrderHistory';
 import UserReports from '../pages/admin/statistic/UserReports';
 import CourseReports from '../pages/admin/statistic/CourseReports';
+import ContestStatistics from '../pages/admin/statistic/ContestStatistics';
 
 const AppRoutes = () => {
     return (
@@ -361,14 +361,7 @@ const AppRoutes = () => {
                             </PrivateRoute>
                         }
                     />
-                    <Route
-                        path="/admin/contest-statistics"
-                        element={
-                            <PrivateRoute>
-                                <ContestStatistics />
-                            </PrivateRoute>
-                        }
-                    />
+
                     <Route
                         path="/admin/contests/:id/statistics"
                         element={
@@ -450,6 +443,22 @@ const AppRoutes = () => {
                         element={
                             <PrivateRoute>
                                 <CourseReports />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/statistics/contest-reports"
+                        element={
+                            <PrivateRoute>
+                                <ContestStatistics />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/statistics/contest-reports"
+                        element={
+                            <PrivateRoute>
+                                <ContestStatistics />
                             </PrivateRoute>
                         }
                     />

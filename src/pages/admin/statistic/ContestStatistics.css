@@ -1,0 +1,502 @@
+/* Contest Reports - Light Theme matching User/Course Reports */
+.contest-reports {
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #f8fafc, #e2e8f0, #f1f5f9);
+    padding: 1.5rem;
+}
+
+.contest-reports-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header */
+.contest-reports-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.contest-reports-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+}
+
+.contest-reports-title .title-icon {
+    width: 2rem;
+    height: 2rem;
+    color: #f59e0b;
+}
+
+.contest-reports-subtitle {
+    color: #64748b;
+    margin: 0.5rem 0 0 0;
+    font-size: 1rem;
+}
+
+.contest-reports-header .time-range-select {
+    background-color: #ffffff;
+    color: #1e293b;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #cbd5e1;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.contest-reports-header .time-range-select:hover {
+    border-color: #f59e0b;
+}
+
+.contest-reports-header .time-range-select:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Section Title */
+.contest-reports .section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1e293b;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem 0;
+}
+
+/* Stats Grid */
+.contest-reports .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.contest-reports .stat-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.75rem;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.contest-reports .stat-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+    transform: translateY(-2px);
+}
+
+.contest-reports .stat-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.contest-reports .stat-info {
+    flex: 1;
+}
+
+.contest-reports .stat-label {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin: 0 0 0.75rem 0;
+    font-weight: 600;
+}
+
+.contest-reports .stat-value {
+    color: #1e293b;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    line-height: 1;
+}
+
+.contest-reports .stat-change {
+    color: #22c55e;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0.75rem 0 0 0;
+    font-weight: 600;
+}
+
+.contest-reports .change-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.contest-reports .stat-sublabel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.contest-reports .sublabel-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.contest-reports .stat-icon {
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+.contest-reports .stat-icon .icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: white;
+}
+
+.contest-reports .stat-icon.bg-blue-500 {
+    background-color: #3b82f6;
+}
+
+.contest-reports .stat-icon.bg-green-500 {
+    background-color: #22c55e;
+}
+
+.contest-reports .stat-icon.bg-purple-500 {
+    background-color: #8b5cf6;
+}
+
+.contest-reports .stat-icon.bg-orange-500 {
+    background-color: #f59e0b;
+}
+
+/* Charts Row */
+.contest-reports .charts-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.contest-reports .chart-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.contest-reports .chart-title {
+    color: #1e293b;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+}
+
+.contest-reports .chart-container {
+    height: 300px;
+    position: relative;
+}
+
+/* Table Card */
+.contest-reports .table-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.contest-reports .table-header {
+    margin-bottom: 1.5rem;
+}
+
+.contest-reports .search-filter-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.contest-reports .search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.625rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.contest-reports .search-input:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.contest-reports .filter-select {
+    padding: 0.625rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: #ffffff;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.contest-reports .filter-select:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Table */
+.contest-reports .table-wrapper {
+    overflow-x: auto;
+}
+
+.contest-reports .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.contest-reports .data-table thead {
+    background-color: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.contest-reports .data-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #475569;
+    white-space: nowrap;
+}
+
+.contest-reports .data-table tbody tr {
+    border-bottom: 1px solid #e2e8f0;
+    transition: all 0.2s;
+}
+
+.contest-reports .data-table tbody tr.clickable-row {
+    cursor: pointer;
+}
+
+.contest-reports .data-table tbody tr.clickable-row:hover {
+    background-color: #f8fafc;
+}
+
+.contest-reports .data-table td {
+    padding: 1rem;
+    color: #334155;
+}
+
+.contest-reports .contest-title-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+.contest-reports .center-cell {
+    text-align: center;
+}
+
+.contest-reports .date-cell {
+    font-size: 0.8125rem;
+}
+
+.contest-reports .date-end {
+    color: #64748b;
+    margin-top: 0.25rem;
+}
+
+/* Badges */
+.contest-reports .badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.contest-reports .status-upcoming {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.contest-reports .status-ongoing {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.contest-reports .status-ended {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.contest-reports .mode-icpc {
+    background-color: #ddd6fe;
+    color: #5b21b6;
+}
+
+.contest-reports .mode-oi {
+    background-color: #fce7f3;
+    color: #9f1239;
+}
+
+/* Top Performers */
+.contest-reports .top-performers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.contest-reports .performer-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+}
+
+.contest-reports .performer-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.contest-reports .performer-rank {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f59e0b;
+    min-width: 3rem;
+    text-align: center;
+}
+
+.contest-reports .performer-info {
+    flex: 1;
+}
+
+.contest-reports .performer-info h4 {
+    margin: 0 0 0.25rem 0;
+    color: #1e293b;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.contest-reports .performer-username {
+    margin: 0 0 0.75rem 0;
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.contest-reports .performer-stats {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8125rem;
+    color: #475569;
+}
+
+.contest-reports .performer-stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Pagination */
+.contest-reports .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.contest-reports .pagination-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    color: #475569;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.contest-reports .pagination-btn:hover:not(:disabled) {
+    border-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.contest-reports .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.contest-reports .pagination-info {
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Loading */
+.contest-reports .loading-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: #64748b;
+    font-size: 1.125rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .contest-reports {
+        padding: 1rem;
+    }
+
+    .contest-reports-title {
+        font-size: 1.5rem;
+    }
+
+    .contest-reports .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contest-reports .charts-row {
+        grid-template-columns: 1fr;
+    }
+
+    .contest-reports .search-filter-row {
+        flex-direction: column;
+    }
+
+    .contest-reports .search-input {
+        width: 100%;
+    }
+
+    .contest-reports .top-performers-grid {
+        grid-template-columns: 1fr;
+    }
+}
