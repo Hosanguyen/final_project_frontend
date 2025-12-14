@@ -5,6 +5,8 @@ import './UserProfile.css';
 import api from '../../services/api';
 import { updateUserProfile } from '../../services/UserService';
 import CourseService from '../../services/CourseService';
+import SubmissionService from '../../services/SubmissionService';
+import ContestService from '../../services/ContestService';
 import notification from '../../utils/notification';
 
 const UserProfile = () => {
@@ -20,6 +22,24 @@ const UserProfile = () => {
   // Enrolled courses state
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [loadingCourses, setLoadingCourses] = useState(false);
+
+  // Problems state (từ submissions)
+  const [problems, setProblems] = useState([]);
+  const [loadingProblems, setLoadingProblems] = useState(false);
+  const [problemsPage, setProblemsPage] = useState(1);
+  const [problemsTotalPages, setProblemsTotalPages] = useState(1);
+
+  // Submissions state
+  const [submissions, setSubmissions] = useState([]);
+  const [loadingSubmissions, setLoadingSubmissions] = useState(false);
+  const [submissionsPage, setSubmissionsPage] = useState(1);
+  const [submissionsTotalPages, setSubmissionsTotalPages] = useState(1);
+
+  // Contests state (đã đăng ký)
+  const [userContests, setUserContests] = useState([]);
+  const [loadingContests, setLoadingContests] = useState(false);
+  const [contestsPage, setContestsPage] = useState(1);
+  const [contestsTotalPages, setContestsTotalPages] = useState(1);
 
   // Cropper states
   const [cropMode, setCropMode] = useState(false);
@@ -47,6 +67,17 @@ const UserProfile = () => {
     loadEnrolledCourses();
   }, []);
 
+  useEffect(() => {
+    // Load data based on active tab
+    if (activeTab === 'problems' && problems.length === 0) {
+      loadProblems(1);
+    } else if (activeTab === 'submissions' && submissions.length === 0) {
+      loadSubmissions(1);
+    } else if (activeTab === 'contests' && userContests.length === 0) {
+      loadUserContests(1);
+    }
+  }, [activeTab]);
+
   const loadEnrolledCourses = async () => {
     try {
       setLoadingCourses(true);
@@ -60,6 +91,66 @@ const UserProfile = () => {
       setEnrolledCourses([]);
     } finally {
       setLoadingCourses(false);
+    }
+  };
+
+  const loadProblems = async (page = 1) => {
+    try {
+      setLoadingProblems(true);
+      const pageSize = 20;
+      // Gọi API mới cho user problems
+      const response = await api.get('/api/problems/user/problems/', {
+        params: { page, page_size: pageSize }
+      });
+      
+      setProblems(response.data.problems || []);
+      setProblemsPage(page);
+      setProblemsTotalPages(response.data.total_pages || 1);
+    } catch (error) {
+      console.error('Error loading problems:', error);
+      setProblems([]);
+    } finally {
+      setLoadingProblems(false);
+    }
+  };
+
+  const loadSubmissions = async (page = 1) => {
+    try {
+      setLoadingSubmissions(true);
+      const pageSize = 20;
+      // Gọi API mới cho user submissions
+      const response = await api.get('/api/problems/user/submissions/', {
+        params: { page, page_size: pageSize }
+      });
+      
+      setSubmissions(response.data.submissions || []);
+      setSubmissionsPage(page);
+      setSubmissionsTotalPages(response.data.total_pages || 1);
+    } catch (error) {
+      console.error('Error loading submissions:', error);
+      setSubmissions([]);
+    } finally {
+      setLoadingSubmissions(false);
+    }
+  };
+
+  const loadUserContests = async (page = 1) => {
+    try {
+      setLoadingContests(true);
+      const pageSize = 20;
+      // Gọi API mới cho user contests
+      const response = await api.get('/api/problems/user/contests/', {
+        params: { page, page_size: pageSize }
+      });
+      
+      setUserContests(response.data.contests || []);
+      setContestsPage(page);
+      setContestsTotalPages(response.data.total_pages || 1);
+    } catch (error) {
+      console.error('Error loading user contests:', error);
+      setUserContests([]);
+    } finally {
+      setLoadingContests(false);
     }
   };
 
@@ -316,11 +407,246 @@ const UserProfile = () => {
           </div>
         );
       case 'problems':
-        return <div className="tab-content">Các bài tập đã giải</div>;
+        return (
+          <div className="profile-tab-content">
+            {loadingProblems ? (
+              <div className="profile-loading-message">Đang tải danh sách bài tập...</div>
+            ) : problems.length === 0 ? (
+              <div className="profile-empty-message">
+                <p>Bạn chưa nộp bài nào</p>
+                <button 
+                  className="profile-browse-btn"
+                  onClick={() => navigate('/practice')}
+                >
+                  Bắt đầu luyện tập
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="profile-table-container">
+                  <table className="profile-table">
+                    <thead>
+                      <tr>
+                        <th>STT</th>
+                        <th>Tên bài</th>
+                        <th>Số lần nộp</th>
+                        <th>Trạng thái tốt nhất</th>
+                        <th>Nộp lần cuối</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {problems.map((problem, index) => (
+                        <tr key={problem.problem_id}>
+                          <td>{(problemsPage - 1) * 20 + index + 1}</td>
+                          <td className="profile-problem-cell">
+                            <div className="profile-problem-title">{problem.problem_title}</div>
+                          </td>
+                          <td>{problem.submission_count}</td>
+                          <td>
+                            <span className={`profile-status-badge profile-status-${problem.best_status?.toLowerCase()}`}>
+                              {problem.best_status}
+                            </span>
+                          </td>
+                          <td>{new Date(problem.last_submitted).toLocaleString('vi-VN')}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {problemsTotalPages > 1 && (
+                  <div className="profile-pagination">
+                    <button
+                      className="profile-page-btn"
+                      disabled={problemsPage === 1}
+                      onClick={() => loadProblems(problemsPage - 1)}
+                    >
+                      ← Trước
+                    </button>
+                    <span className="profile-page-info">
+                      Trang {problemsPage} / {problemsTotalPages}
+                    </span>
+                    <button
+                      className="profile-page-btn"
+                      disabled={problemsPage === problemsTotalPages}
+                      onClick={() => loadProblems(problemsPage + 1)}
+                    >
+                      Sau →
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        );
       case 'submissions':
-        return <div className="tab-content">Lịch sử nộp bài</div>;
+        return (
+          <div className="profile-tab-content">
+            {loadingSubmissions ? (
+              <div className="profile-loading-message">Đang tải lịch sử nộp bài...</div>
+            ) : submissions.length === 0 ? (
+              <div className="profile-empty-message">
+                <p>Bạn chưa nộp bài nào</p>
+                <button 
+                  className="profile-browse-btn"
+                  onClick={() => navigate('/practice')}
+                >
+                  Bắt đầu luyện tập
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="profile-table-container">
+                  <table className="profile-table">
+                    <thead>
+                      <tr>
+                        <th>STT</th>
+                        <th>Bài tập</th>
+                        <th>Ngôn ngữ</th>
+                        <th>Kết quả</th>
+                        <th>Thời gian nộp</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {submissions.map((submission, index) => (
+                        <tr key={submission.id}>
+                          <td>{(submissionsPage - 1) * 20 + index + 1}</td>
+                          <td className="profile-problem-cell">
+                            <div className="profile-problem-title">{submission.problem_title}</div>
+                          </td>
+                          <td>{submission.language_name}</td>
+                          <td>
+                            <span className={`profile-status-badge profile-status-${submission.status?.toLowerCase()}`}>
+                              {submission.status}
+                            </span>
+                          </td>
+                          <td>{new Date(submission.submitted_at).toLocaleString('vi-VN')}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {submissionsTotalPages > 1 && (
+                  <div className="profile-pagination">
+                    <button
+                      className="profile-page-btn"
+                      disabled={submissionsPage === 1}
+                      onClick={() => loadSubmissions(submissionsPage - 1)}
+                    >
+                      ← Trước
+                    </button>
+                    <span className="profile-page-info">
+                      Trang {submissionsPage} / {submissionsTotalPages}
+                    </span>
+                    <button
+                      className="profile-page-btn"
+                      disabled={submissionsPage === submissionsTotalPages}
+                      onClick={() => loadSubmissions(submissionsPage + 1)}
+                    >
+                      Sau →
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        );
       case 'contests':
-        return <div className="tab-content">Các cuộc thi đã tham gia</div>;
+        return (
+          <div className="profile-tab-content">
+            {loadingContests ? (
+              <div className="profile-loading-message">Đang tải danh sách contest...</div>
+            ) : userContests.length === 0 ? (
+              <div className="profile-empty-message">
+                <p>Bạn chưa tham gia contest nào</p>
+                <button 
+                  className="profile-browse-btn"
+                  onClick={() => navigate('/contests')}
+                >
+                  Xem các contest
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="profile-table-container">
+                  <table className="profile-table">
+                    <thead>
+                      <tr>
+                        <th>STT</th>
+                        <th>Tên contest</th>
+                        <th>Thời gian bắt đầu</th>
+                        <th>Thời gian kết thúc</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userContests.map((contest, index) => {
+                        const now = new Date();
+                        const startTime = new Date(contest.start_at);
+                        const endTime = new Date(contest.end_at);
+                        let contestStatus = 'upcoming';
+                        let statusText = 'Sắp diễn ra';
+                        
+                        if (now >= startTime && now <= endTime) {
+                          contestStatus = 'running';
+                          statusText = 'Đang diễn ra';
+                        } else if (now > endTime) {
+                          contestStatus = 'finished';
+                          statusText = 'Đã kết thúc';
+                        }
+                        
+                        return (
+                          <tr key={contest.id}>
+                            <td>{index + 1}</td>
+                            <td className="profile-contest-cell">
+                              <div className="profile-contest-title">{contest.title}</div>
+                            </td>
+                            <td>{startTime.toLocaleString('vi-VN')}</td>
+                            <td>{endTime.toLocaleString('vi-VN')}</td>
+                            <td>
+                              <span className={`profile-contest-badge profile-contest-${contestStatus}`}>
+                                {statusText}
+                              </span>
+                            </td>
+                            <td>
+                              <button
+                                className="profile-action-btn"
+                                onClick={() => navigate(`/contests/${contest.id}`)}
+                              >
+                                Xem chi tiết
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                {contestsTotalPages > 1 && (
+                  <div className="profile-pagination">
+                    <button
+                      className="profile-page-btn"
+                      disabled={contestsPage === 1}
+                      onClick={() => loadUserContests(contestsPage - 1)}
+                    >
+                      ← Trước
+                    </button>
+                    <span className="profile-page-info">
+                      Trang {contestsPage} / {contestsTotalPages}
+                    </span>
+                    <button
+                      className="profile-page-btn"
+                      disabled={contestsPage === contestsTotalPages}
+                      onClick={() => loadUserContests(contestsPage + 1)}
+                    >
+                      Sau →
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        );
       default:
         return null;
     }
