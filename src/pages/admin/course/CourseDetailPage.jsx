@@ -148,6 +148,16 @@ const CourseDetailPage = () => {
                     <h1>{course.title}</h1>
                 </div>
 
+                {/* Banner Display */}
+                {course.banner_url && (
+                    <div className="course-detail-banner">
+                        <img 
+                            src={course.banner_url.startsWith('http') ? course.banner_url : `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}${course.banner_url}`} 
+                            alt={course.title} 
+                        />
+                    </div>
+                )}
+
                 <div className="course-detail-info-grid">
                     <div className="course-detail-info-item">
                         <label>Slug:</label>
