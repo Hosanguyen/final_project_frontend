@@ -94,6 +94,11 @@ const Sidebar = ({ isOpen }) => {
             title: 'Thống kê',
             icon: <MdBarChart />,
             path: '/admin/statistics',
+            subMenu: [
+                { title: 'Báo cáo người dùng', path: '/admin/statistics/user-reports' },
+                { title: 'Báo cáo khóa học', path: '/admin/statistics/course-reports' },
+                { title: 'Báo cáo bài tập', path: '/admin/statistics/problem-reports' },
+            ],
         },
         {
             title: 'Cài đặt',

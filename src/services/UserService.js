@@ -125,6 +125,113 @@ const UserService = {
             throw error;
         }
     },
+
+    /**
+     * ============= USER REPORTS APIs =============
+     */
+
+    /**
+     * Lấy thống kê tổng quan
+     * GET /api/users/reports/stats/?month=YYYY-MM
+     */
+    getReportsStats: async (month) => {
+        try {
+            const params = month ? { month } : {};
+            const response = await api.get('/api/users/reports/stats/', { params });
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching reports stats:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Lấy dữ liệu biểu đồ tăng trưởng
+     * GET /api/users/reports/growth-chart/?month=YYYY-MM
+     */
+    getReportsGrowthChart: async (month) => {
+        try {
+            const params = month ? { month } : {};
+            const response = await api.get('/api/users/reports/growth-chart/', { params });
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching growth chart:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Lấy phân bổ cấp độ người dùng
+     * GET /api/users/reports/level-distribution/?month=YYYY-MM
+     */
+    getReportsLevelDistribution: async (month) => {
+        try {
+            const params = month ? { month } : {};
+            const response = await api.get('/api/users/reports/level-distribution/', { params });
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching level distribution:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Lấy thống kê khóa học phổ biến
+     * GET /api/users/reports/course-enrollments/?month=YYYY-MM
+     */
+    getReportsCourseEnrollments: async (month) => {
+        try {
+            const params = month ? { month } : {};
+            const response = await api.get('/api/users/reports/course-enrollments/', { params });
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching course enrollments:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Lấy thống kê contest
+     * GET /api/users/reports/contest-stats/?month=YYYY-MM
+     */
+    getReportsContestStats: async (month) => {
+        try {
+            const params = month ? { month } : {};
+            const response = await api.get('/api/users/reports/contest-stats/', { params });
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching contest stats:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Lấy top 5 users xuất sắc
+     * GET /api/users/reports/top-users/
+     */
+    getReportsTopUsers: async () => {
+        try {
+            const response = await api.get('/api/users/reports/top-users/');
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching top users:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Lấy danh sách tất cả users với pagination
+     * GET /api/users/reports/all-users/?page=1&page_size=10&search=&level=
+     */
+    getReportsAllUsers: async (params = {}) => {
+        try {
+            const response = await api.get('/api/users/reports/all-users/', { params });
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching all users:', error);
+            throw error;
+        }
+    },
 };
 
 export default UserService;

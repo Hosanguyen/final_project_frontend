@@ -1,0 +1,1276 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Users, TrendingUp, Award, Code, BookOpen, Trophy, UserPlus, Activity } from 'lucide-react';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    BarElement,
+    ArcElement,
+    LineController,
+    BarController,
+    DoughnutController,
+    Title,
+    Tooltip,
+    Legend,
+    Filler,
+} from 'chart.js';
+import UserService from '../../../services/UserService';
+import './UserReports.css';
+
+// Register Chart.js components
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    BarElement,
+    ArcElement,
+    LineController,
+    BarController,
+    DoughnutController,
+    Title,
+    Tooltip,
+    Legend,
+    Filler,
+);
+
+const UserReports = () => {
+    const [selectedMonthYear, setSelectedMonthYear] = useState('2024-12'); // Format: YYYY-MM
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterLevel, setFilterLevel] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const usersPerPage = 10;
+
+    // Data states
+    const [statsData, setStatsData] = useState(null);
+    const [growthChartData, setGrowthChartData] = useState(null);
+    const [levelDistributionData, setLevelDistributionData] = useState(null);
+    const [courseEnrollmentsData, setCourseEnrollmentsData] = useState(null);
+    const [contestStatsData, setContestStatsData] = useState(null);
+    const [topUsers, setTopUsers] = useState([]);
+    const [allUsersData, setAllUsersData] = useState({ data: [], total_count: 0, total_pages: 0 });
+    const [loading, setLoading] = useState(true);
+
+    const lineChartRef = useRef(null);
+    const doughnutChartRef = useRef(null);
+    const barChartRef = useRef(null);
+    const contestChartRef = useRef(null);
+
+    const lineChartInstance = useRef(null);
+    const doughnutChartInstance = useRef(null);
+    const barChartInstance = useRef(null);
+    const contestChartInstance = useRef(null);
+
+    // Hàm lấy số ngày trong tháng
+    const getDaysInMonth = (year, month) => {
+        return new Date(year, month, 0).getDate();
+    };
+
+    // Hàm lấy dữ liệu stats theo tháng được chọn
+    const getStatsDataByMonth = (monthYear) => {
+        const month = monthYear.split('-')[1]; // Lấy phần tháng từ YYYY-MM
+        const statsData = {
+            1: {
+                totalUsers: '1,024',
+                totalChange: '+5.2%',
+                newUsers: '45',
+                newChange: '+15.8%',
+                activeUsers: '720',
+                activeChange: '+6.5%',
+                coursesSold: '2,340',
+                coursesChange: '+12.3%',
+            },
+            2: {
+                totalUsers: '1,056',
+                totalChange: '+3.1%',
+                newUsers: '32',
+                newChange: '-28.9%',
+                activeUsers: '735',
+                activeChange: '+2.1%',
+                coursesSold: '2,487',
+                coursesChange: '+6.3%',
+            },
+            3: {
+                totalUsers: '1,089',
+                totalChange: '+3.1%',
+                newUsers: '33',
+                newChange: '+3.1%',
+                activeUsers: '748',
+                activeChange: '+1.8%',
+                coursesSold: '2,634',
+                coursesChange: '+5.9%',
+            },
+            4: {
+                totalUsers: '1,123',
+                totalChange: '+3.1%',
+                newUsers: '34',
+                newChange: '+3.0%',
+                activeUsers: '762',
+                activeChange: '+1.9%',
+                coursesSold: '2,789',
+                coursesChange: '+5.9%',
+            },
+            5: {
+                totalUsers: '1,145',
+                totalChange: '+2.0%',
+                newUsers: '22',
+                newChange: '-35.3%',
+                activeUsers: '775',
+                activeChange: '+1.7%',
+                coursesSold: '2,891',
+                coursesChange: '+3.7%',
+            },
+            6: {
+                totalUsers: '1,168',
+                totalChange: '+2.0%',
+                newUsers: '23',
+                newChange: '+4.5%',
+                activeUsers: '788',
+                activeChange: '+1.7%',
+                coursesSold: '2,998',
+                coursesChange: '+3.7%',
+            },
+            7: {
+                totalUsers: '1,182',
+                totalChange: '+1.2%',
+                newUsers: '14',
+                newChange: '-39.1%',
+                activeUsers: '795',
+                activeChange: '+0.9%',
+                coursesSold: '3,045',
+                coursesChange: '+1.6%',
+            },
+            8: {
+                totalUsers: '1,196',
+                totalChange: '+1.2%',
+                newUsers: '14',
+                newChange: '+0.0%',
+                activeUsers: '803',
+                activeChange: '+1.0%',
+                coursesSold: '3,123',
+                coursesChange: '+2.6%',
+            },
+            9: {
+                totalUsers: '1,208',
+                totalChange: '+1.0%',
+                newUsers: '12',
+                newChange: '-14.3%',
+                activeUsers: '815',
+                activeChange: '+1.5%',
+                coursesSold: '3,234',
+                coursesChange: '+3.6%',
+            },
+            10: {
+                totalUsers: '1,220',
+                totalChange: '+1.0%',
+                newUsers: '12',
+                newChange: '+0.0%',
+                activeUsers: '828',
+                activeChange: '+1.6%',
+                coursesSold: '3,321',
+                coursesChange: '+2.7%',
+            },
+            11: {
+                totalUsers: '1,235',
+                totalChange: '+1.2%',
+                newUsers: '15',
+                newChange: '+25.0%',
+                activeUsers: '842',
+                activeChange: '+1.7%',
+                coursesSold: '3,398',
+                coursesChange: '+2.3%',
+            },
+            12: {
+                totalUsers: '1,247',
+                totalChange: '+1.0%',
+                newUsers: '12',
+                newChange: '-20.0%',
+                activeUsers: '856',
+                activeChange: '+1.7%',
+                coursesSold: '3,456',
+                coursesChange: '+1.7%',
+            },
+        };
+        return statsData[month];
+    };
+
+    const currentStats = getStatsDataByMonth(selectedMonthYear);
+
+    // Stats dựa trên User model fields
+    const stats = [
+        {
+            label: 'Tổng Người Dùng',
+            value: currentStats.totalUsers,
+            change: currentStats.totalChange,
+            icon: Users,
+            color: 'bg-blue-500',
+        },
+        {
+            label: 'Người Dùng Mới',
+            value: currentStats.newUsers,
+            change: currentStats.newChange,
+            icon: UserPlus,
+            color: 'bg-green-500',
+        },
+        {
+            label: 'Người Dùng Hoạt Động',
+            value: currentStats.activeUsers,
+            change: currentStats.activeChange,
+            icon: Activity,
+            color: 'bg-purple-500',
+        },
+        {
+            label: 'Khóa Học Đã Bán',
+            value: currentStats.coursesSold,
+            change: currentStats.coursesChange,
+            icon: BookOpen,
+            color: 'bg-orange-500',
+        },
+    ];
+
+    // Top users dựa trên User model (username, full_name, current_rating, rank)
+    const topUsers = [
+        { name: 'Nguyễn Văn A', username: 'coder_master', rating: 2456, contests: 127, courses: 12, badge: 'master' },
+        {
+            name: 'Trần Thị B',
+            username: 'algo_expert',
+            rating: 2380,
+            contests: 115,
+            courses: 15,
+            badge: 'candidate_master',
+        },
+        {
+            name: 'Lê Văn C',
+            username: 'code_ninja',
+            rating: 2290,
+            contests: 98,
+            courses: 10,
+            badge: 'candidate_master',
+        },
+        { name: 'Phạm Thị D', username: 'dev_prodigy', rating: 2210, contests: 89, courses: 18, badge: 'expert' },
+        { name: 'Hoàng Văn E', username: 'tech_wizard', rating: 2180, contests: 82, courses: 14, badge: 'expert' },
+    ];
+
+    // All users list - dựa trên User model
+    const allUsers = [
+        {
+            id: 1,
+            name: 'Nguyễn Văn A',
+            username: 'coder_master',
+            email: 'nguyenvana@email.com',
+            level: 'master',
+            rating: 2456,
+            contests: 127,
+            courses: 12,
+            joinDate: '15/03/2023',
+            lastActive: '13/12/2024',
+            status: 'active',
+        },
+        {
+            id: 2,
+            name: 'Trần Thị B',
+            username: 'algo_expert',
+            email: 'tranthib@email.com',
+            level: 'candidate_master',
+            rating: 2380,
+            contests: 115,
+            courses: 15,
+            joinDate: '20/04/2023',
+            lastActive: '12/12/2024',
+            status: 'active',
+        },
+        {
+            id: 3,
+            name: 'Lê Văn C',
+            username: 'code_ninja',
+            email: 'levanc@email.com',
+            level: 'expert',
+            rating: 2290,
+            contests: 98,
+            courses: 10,
+            joinDate: '10/05/2023',
+            lastActive: '13/12/2024',
+            status: 'active',
+        },
+        {
+            id: 4,
+            name: 'Phạm Thị D',
+            username: 'dev_prodigy',
+            email: 'phamthid@email.com',
+            level: 'expert',
+            rating: 2210,
+            contests: 89,
+            courses: 18,
+            joinDate: '05/06/2023',
+            lastActive: '11/12/2024',
+            status: 'active',
+        },
+        {
+            id: 5,
+            name: 'Hoàng Văn E',
+            username: 'tech_wizard',
+            email: 'hoangvane@email.com',
+            level: 'specialist',
+            rating: 2180,
+            contests: 82,
+            courses: 14,
+            joinDate: '18/06/2023',
+            lastActive: '13/12/2024',
+            status: 'active',
+        },
+        {
+            id: 6,
+            name: 'Võ Thị F',
+            username: 'pythonista',
+            email: 'vothif@email.com',
+            level: 'specialist',
+            rating: 1890,
+            contests: 67,
+            courses: 9,
+            joinDate: '22/07/2023',
+            lastActive: '10/12/2024',
+            status: 'active',
+        },
+        {
+            id: 7,
+            name: 'Đặng Văn G',
+            username: 'javascripter',
+            email: 'dangvang@email.com',
+            level: 'pupil',
+            rating: 1820,
+            contests: 54,
+            courses: 8,
+            joinDate: '30/07/2023',
+            lastActive: '12/12/2024',
+            status: 'active',
+        },
+        {
+            id: 8,
+            name: 'Bùi Thị H',
+            username: 'reactdev',
+            email: 'buithih@email.com',
+            level: 'pupil',
+            rating: 1750,
+            contests: 48,
+            courses: 11,
+            joinDate: '12/08/2023',
+            lastActive: '09/12/2024',
+            status: 'active',
+        },
+        {
+            id: 9,
+            name: 'Dương Văn I',
+            username: 'backend_pro',
+            email: 'duongvani@email.com',
+            level: 'newbie',
+            rating: 1420,
+            contests: 32,
+            courses: 7,
+            joinDate: '25/08/2023',
+            lastActive: '13/12/2024',
+            status: 'active',
+        },
+        {
+            id: 10,
+            name: 'Cao Thị K',
+            username: 'frontend_ninja',
+            email: 'caothik@email.com',
+            level: 'newbie',
+            rating: 1380,
+            contests: 28,
+            courses: 6,
+            joinDate: '05/09/2023',
+            lastActive: '11/12/2024',
+            status: 'active',
+        },
+        {
+            id: 11,
+            name: 'Lý Văn L',
+            username: 'data_analyst',
+            email: 'lyvanl@email.com',
+            level: 'newbie',
+            rating: 1290,
+            contests: 24,
+            courses: 5,
+            joinDate: '18/09/2023',
+            lastActive: '08/12/2024',
+            status: 'inactive',
+        },
+        {
+            id: 12,
+            name: 'Trương Thị M',
+            username: 'fullstack_dev',
+            email: 'truongthim@email.com',
+            level: 'expert',
+            rating: 2340,
+            contests: 103,
+            courses: 13,
+            joinDate: '02/10/2023',
+            lastActive: '13/12/2024',
+            status: 'active',
+        },
+        {
+            id: 13,
+            name: 'Phan Văn N',
+            username: 'ai_engineer',
+            email: 'phanvann@email.com',
+            level: 'specialist',
+            rating: 2150,
+            contests: 78,
+            courses: 10,
+            joinDate: '15/10/2023',
+            lastActive: '12/12/2024',
+            status: 'active',
+        },
+        {
+            id: 14,
+            name: 'Đinh Thị O',
+            username: 'mobile_dev',
+            email: 'dinhthio@email.com',
+            level: 'pupil',
+            rating: 1680,
+            contests: 42,
+            courses: 8,
+            joinDate: '28/10/2023',
+            lastActive: '10/12/2024',
+            status: 'active',
+        },
+        {
+            id: 15,
+            name: 'Hồ Văn P',
+            username: 'game_dev',
+            email: 'hovanp@email.com',
+            level: 'newbie',
+            rating: 1190,
+            contests: 18,
+            courses: 4,
+            joinDate: '10/11/2023',
+            lastActive: '05/12/2024',
+            status: 'inactive',
+        },
+    ];
+
+    // Lọc và tìm kiếm
+    const filteredUsers = allUsers.filter((user) => {
+        const matchSearch =
+            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.username.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchLevel = filterLevel === 'all' || user.level === filterLevel;
+        return matchSearch && matchLevel;
+    });
+
+    // Phân trang
+    const indexOfLastUser = currentPage * usersPerPage;
+    const indexOfFirstUser = indexOfLastUser - usersPerPage;
+    const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+    const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+    const getRankLabel = (rank) => {
+        const labels = {
+            newbie: 'Newbie',
+            pupil: 'Pupil',
+            specialist: 'Specialist',
+            expert: 'Expert',
+            candidate_master: 'Candidate Master',
+            master: 'Master',
+        };
+        return labels[rank] || rank;
+    };
+
+    const getRankColor = (rank) => {
+        const colors = {
+            newbie: 'bg-blue-500',
+            pupil: 'bg-green-500',
+            specialist: 'bg-purple-500',
+            expert: 'bg-orange-500',
+            candidate_master: 'bg-yellow-500',
+            master: 'bg-red-500',
+        };
+        return colors[rank] || 'bg-gray-500';
+    };
+
+    // Hàm lấy dữ liệu biểu đồ theo tháng được chọn
+    const getChartDataByMonth = (monthYear) => {
+        const [year, month] = monthYear.split('-');
+        const daysInMonth = getDaysInMonth(parseInt(year), parseInt(month));
+
+        const baseData = {
+            '01': {
+                totalUsersStart: 980,
+                totalUsersEnd: 1024,
+                activeUsersStart: 680,
+                activeUsersEnd: 720,
+                avgNewUsersPerDay: 1.5,
+                levelDistribution: [280, 250, 220, 165, 120, 65],
+                courseEnrollments: [380, 356, 320, 295, 278],
+            },
+            '02': {
+                totalUsersStart: 1024,
+                totalUsersEnd: 1056,
+                activeUsersStart: 720,
+                activeUsersEnd: 735,
+                avgNewUsersPerDay: 1.1,
+                levelDistribution: [285, 255, 225, 168, 125, 68],
+                courseEnrollments: [390, 365, 328, 302, 285],
+            },
+            '03': {
+                totalUsersStart: 1056,
+                totalUsersEnd: 1089,
+                activeUsersStart: 735,
+                activeUsersEnd: 748,
+                avgNewUsersPerDay: 1.1,
+                levelDistribution: [290, 258, 230, 172, 128, 70],
+                courseEnrollments: [398, 372, 335, 308, 290],
+            },
+            '04': {
+                totalUsersStart: 1089,
+                totalUsersEnd: 1123,
+                activeUsersStart: 748,
+                activeUsersEnd: 762,
+                avgNewUsersPerDay: 1.1,
+                levelDistribution: [295, 262, 235, 176, 132, 71],
+                courseEnrollments: [408, 380, 343, 316, 298],
+            },
+            '05': {
+                totalUsersStart: 1123,
+                totalUsersEnd: 1145,
+                activeUsersStart: 762,
+                activeUsersEnd: 775,
+                avgNewUsersPerDay: 0.7,
+                levelDistribution: [298, 265, 238, 178, 135, 71],
+                courseEnrollments: [418, 388, 352, 324, 305],
+            },
+            '06': {
+                totalUsersStart: 1145,
+                totalUsersEnd: 1168,
+                activeUsersStart: 775,
+                activeUsersEnd: 788,
+                avgNewUsersPerDay: 0.8,
+                levelDistribution: [302, 268, 240, 180, 138, 72],
+                courseEnrollments: [428, 396, 360, 332, 312],
+            },
+            '07': {
+                totalUsersStart: 1168,
+                totalUsersEnd: 1182,
+                activeUsersStart: 788,
+                activeUsersEnd: 795,
+                avgNewUsersPerDay: 0.5,
+                levelDistribution: [305, 270, 242, 182, 140, 72],
+                courseEnrollments: [438, 405, 368, 340, 320],
+            },
+            '08': {
+                totalUsersStart: 1182,
+                totalUsersEnd: 1196,
+                activeUsersStart: 795,
+                activeUsersEnd: 803,
+                avgNewUsersPerDay: 0.5,
+                levelDistribution: [308, 272, 243, 183, 142, 72],
+                courseEnrollments: [445, 412, 375, 347, 327],
+            },
+            '09': {
+                totalUsersStart: 1196,
+                totalUsersEnd: 1208,
+                activeUsersStart: 803,
+                activeUsersEnd: 815,
+                avgNewUsersPerDay: 0.4,
+                levelDistribution: [310, 275, 245, 184, 143, 72],
+                courseEnrollments: [452, 419, 382, 353, 334],
+            },
+            10: {
+                totalUsersStart: 1208,
+                totalUsersEnd: 1220,
+                activeUsersStart: 815,
+                activeUsersEnd: 828,
+                avgNewUsersPerDay: 0.4,
+                levelDistribution: [312, 277, 246, 185, 145, 72],
+                courseEnrollments: [456, 423, 387, 354, 332],
+            },
+            11: {
+                totalUsersStart: 1220,
+                totalUsersEnd: 1235,
+                activeUsersStart: 828,
+                activeUsersEnd: 842,
+                avgNewUsersPerDay: 0.5,
+                levelDistribution: [315, 278, 245, 185, 145, 72],
+                courseEnrollments: [456, 423, 387, 354, 332],
+            },
+            12: {
+                totalUsersStart: 1235,
+                totalUsersEnd: 1247,
+                activeUsersStart: 842,
+                activeUsersEnd: 856,
+                avgNewUsersPerDay: 0.4,
+                levelDistribution: [320, 280, 245, 185, 145, 72],
+                courseEnrollments: [456, 423, 387, 354, 332],
+            },
+        };
+
+        const data = baseData[month];
+        if (!data) return null;
+
+        // Tạo labels cho tất cả các ngày trong tháng
+        const labels = [];
+        const totalUsers = [];
+        const activeUsers = [];
+        const newUsers = [];
+        const contestParticipants = [];
+        const contestCount = [];
+
+        const totalUsersDiff = data.totalUsersEnd - data.totalUsersStart;
+        const activeUsersDiff = data.activeUsersEnd - data.activeUsersStart;
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            labels.push(`${day.toString().padStart(2, '0')}/${month}`);
+
+            // Tính toán tăng trưởng tuyến tính cho tổng users và active users
+            const progress = (day - 1) / (daysInMonth - 1);
+            const totalUser = Math.round(data.totalUsersStart + totalUsersDiff * progress);
+            const activeUser = Math.round(data.activeUsersStart + activeUsersDiff * progress);
+
+            totalUsers.push(totalUser);
+            activeUsers.push(activeUser);
+
+            // Tạo số users mới ngẫu nhiên xung quanh giá trị trung bình
+            const randomFactor = 0.5 + Math.random();
+            const newUser = Math.max(0, Math.round(data.avgNewUsersPerDay * randomFactor));
+            newUsers.push(newUser);
+
+            // Tạo dữ liệu contest participants và contest count cho từng ngày
+            const baseParticipants = 10 + Math.floor(Math.random() * 30);
+            const baseContests = Math.random() > 0.7 ? 1 : 0; // 30% chance có contest
+            contestParticipants.push(baseParticipants);
+            contestCount.push(baseContests);
+        }
+
+        return {
+            labels,
+            totalUsers,
+            activeUsers,
+            newUsers,
+            levelDistribution: data.levelDistribution,
+            courseEnrollments: data.courseEnrollments,
+            contestParticipants,
+            contestCount,
+        };
+    };
+
+    useEffect(() => {
+        const currentChartData = getChartDataByMonth(selectedMonthYear);
+
+        if (!currentChartData) return;
+
+        // Line Chart - User Growth (tổng users, active users, new users)
+        if (lineChartRef.current) {
+            if (lineChartInstance.current) {
+                lineChartInstance.current.destroy();
+            }
+
+            const ctx = lineChartRef.current.getContext('2d');
+            lineChartInstance.current = new ChartJS(ctx, {
+                type: 'line',
+                data: {
+                    labels: currentChartData.labels,
+                    datasets: [
+                        {
+                            label: 'Tổng Users',
+                            data: currentChartData.totalUsers,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                        },
+                        {
+                            label: 'Hoạt Động',
+                            data: currentChartData.activeUsers,
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            pointBackgroundColor: '#8b5cf6',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                        },
+                        {
+                            label: 'Mới',
+                            data: currentChartData.newUsers,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 3,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            pointBackgroundColor: '#10b981',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#475569',
+                                font: { size: 12, weight: '500' },
+                                padding: 15,
+                                usePointStyle: true,
+                            },
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#1e293b',
+                            bodyColor: '#475569',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true,
+                            boxPadding: 6,
+                        },
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.5)',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 11 },
+                            },
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.5)',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 11 },
+                            },
+                        },
+                    },
+                },
+            });
+        }
+
+        // Doughnut Chart - User Level Distribution (dựa trên User.rank)
+        if (doughnutChartRef.current) {
+            if (doughnutChartInstance.current) {
+                doughnutChartInstance.current.destroy();
+            }
+
+            const ctx = doughnutChartRef.current.getContext('2d');
+            doughnutChartInstance.current = new ChartJS(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Newbie', 'Pupil', 'Specialist', 'Expert', 'Candidate Master', 'Master'],
+                    datasets: [
+                        {
+                            data: currentChartData.levelDistribution,
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.7)',
+                                'rgba(16, 185, 129, 0.7)',
+                                'rgba(139, 92, 246, 0.7)',
+                                'rgba(245, 158, 11, 0.7)',
+                                'rgba(234, 179, 8, 0.7)',
+                                'rgba(239, 68, 68, 0.7)',
+                            ],
+                            borderColor: '#ffffff',
+                            borderWidth: 2,
+                            hoverOffset: 10,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#475569',
+                                font: { size: 12, weight: '500' },
+                                padding: 15,
+                                usePointStyle: true,
+                            },
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#1e293b',
+                            bodyColor: '#475569',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+        }
+
+        // Bar Chart - Enrollments by Course (khóa học phổ biến)
+        if (barChartRef.current) {
+            if (barChartInstance.current) {
+                barChartInstance.current.destroy();
+            }
+
+            const ctx = barChartRef.current.getContext('2d');
+            barChartInstance.current = new ChartJS(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Python Cơ Bản', 'JavaScript ES6+', 'React & Redux', 'Algorithms & DS', 'C++ Advanced'],
+                    datasets: [
+                        {
+                            label: 'Học viên',
+                            data: currentChartData.courseEnrollments,
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.6)',
+                                'rgba(139, 92, 246, 0.6)',
+                                'rgba(16, 185, 129, 0.6)',
+                                'rgba(245, 158, 11, 0.6)',
+                                'rgba(239, 68, 68, 0.6)',
+                            ],
+                            borderColor: [
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(139, 92, 246, 0.8)',
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(245, 158, 11, 0.8)',
+                                'rgba(239, 68, 68, 0.8)',
+                            ],
+                            borderWidth: 1,
+                            borderRadius: 6,
+                            barThickness: 40,
+                        },
+                    ],
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#1e293b',
+                            bodyColor: '#475569',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 12,
+                        },
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                display: false,
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 11, weight: '500' },
+                            },
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.5)',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 11 },
+                            },
+                        },
+                    },
+                },
+            });
+        }
+
+        // Bar Chart - Contest Stats (người tham gia contest theo ngày)
+        if (contestChartRef.current) {
+            if (contestChartInstance.current) {
+                contestChartInstance.current.destroy();
+            }
+
+            const ctx = contestChartRef.current.getContext('2d');
+            contestChartInstance.current = new ChartJS(ctx, {
+                type: 'bar',
+                data: {
+                    labels: currentChartData.labels,
+                    datasets: [
+                        {
+                            label: 'Người tham gia',
+                            data: currentChartData.contestParticipants,
+                            backgroundColor: 'rgba(139, 92, 246, 0.6)',
+                            borderColor: 'rgba(139, 92, 246, 0.8)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                        },
+                        {
+                            label: 'Số cuộc thi',
+                            data: currentChartData.contestCount,
+                            backgroundColor: 'rgba(245, 158, 11, 0.6)',
+                            borderColor: 'rgba(245, 158, 11, 0.8)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#475569',
+                                font: { size: 12, weight: '500' },
+                                padding: 15,
+                                usePointStyle: true,
+                            },
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#1e293b',
+                            bodyColor: '#475569',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 12,
+                        },
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.5)',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 11 },
+                            },
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.5)',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 11 },
+                            },
+                        },
+                    },
+                },
+            });
+        }
+
+        return () => {
+            if (lineChartInstance.current) lineChartInstance.current.destroy();
+            if (doughnutChartInstance.current) doughnutChartInstance.current.destroy();
+            if (barChartInstance.current) barChartInstance.current.destroy();
+            if (contestChartInstance.current) contestChartInstance.current.destroy();
+        };
+    }, [selectedMonthYear]);
+
+    return (
+        <div className="user-reports">
+            <div className="user-reports-container">
+                {/* Header */}
+                <div className="user-reports-header">
+                    <div>
+                        <h1 className="user-reports-title">
+                            <Code className="title-icon" />
+                            Báo Cáo Người Dùng
+                        </h1>
+                        <p className="user-reports-subtitle">Tổng quan và phân tích người dùng nền tảng</p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                        <input
+                            type="month"
+                            value={selectedMonthYear}
+                            onChange={(e) => setSelectedMonthYear(e.target.value)}
+                            className="time-range-select"
+                            min="2024-01"
+                            max="2024-12"
+                            style={{
+                                cursor: 'pointer',
+                                fontFamily: 'inherit',
+                            }}
+                        />
+                    </div>
+                </div>
+
+                {/* Stats Cards */}
+                <div className="stats-grid">
+                    {stats.map((stat, idx) => (
+                        <div key={idx} className="stat-card">
+                            <div className="stat-card-content">
+                                <div className="stat-info">
+                                    <p className="stat-label">{stat.label}</p>
+                                    <p className="stat-value">{stat.value}</p>
+                                    <p className="stat-change">
+                                        <TrendingUp className="change-icon" />
+                                        {stat.change}
+                                    </p>
+                                </div>
+                                <div className={`stat-icon ${stat.color}`}>
+                                    <stat.icon className="icon" />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Charts Row 1 */}
+                <div className="charts-row">
+                    {/* User Growth Chart */}
+                    <div className="chart-card">
+                        <h3 className="chart-title">Tăng Trưởng Người Dùng</h3>
+                        <div className="chart-container">
+                            <canvas ref={lineChartRef}></canvas>
+                        </div>
+                    </div>
+
+                    {/* User Level Distribution */}
+                    <div className="chart-card">
+                        <h3 className="chart-title">Phân Bổ Cấp Độ Người Dùng</h3>
+                        <div className="chart-container">
+                            <canvas ref={doughnutChartRef}></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Charts Row 2 */}
+                <div className="charts-row">
+                    {/* Popular Courses */}
+                    <div className="chart-card">
+                        <h3 className="chart-title">Khóa Học Phổ Biến</h3>
+                        <div className="chart-container">
+                            <canvas ref={barChartRef}></canvas>
+                        </div>
+                    </div>
+
+                    {/* Contest Stats */}
+                    <div className="chart-card">
+                        <h3 className="chart-title">Thống Kê Thi Đấu</h3>
+                        <div className="chart-container">
+                            <canvas ref={contestChartRef}></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Top Users Table */}
+                <div className="table-card">
+                    <h3 className="table-title">
+                        <Trophy className="trophy-icon" />
+                        Top 5 Người Dùng Xuất Sắc
+                    </h3>
+                    <div className="table-wrapper">
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Xếp hạng</th>
+                                    <th>Username</th>
+                                    <th>Tên</th>
+                                    <th>Rating</th>
+                                    <th>Số Contest</th>
+                                    <th>Khóa Học</th>
+                                    <th>Huy Hiệu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {topUsers.map((user, idx) => (
+                                    <tr key={idx}>
+                                        <td>
+                                            <span
+                                                className={`user-report-rank-badge ${
+                                                    idx === 0
+                                                        ? 'gold'
+                                                        : idx === 1
+                                                        ? 'silver'
+                                                        : idx === 2
+                                                        ? 'bronze'
+                                                        : ''
+                                                }`}
+                                            >
+                                                {idx + 1}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <code className="username-badge">{user.username}</code>
+                                        </td>
+                                        <td className="user-name">{user.name}</td>
+                                        <td className="rating-value">{user.rating}</td>
+                                        <td>{user.contests}</td>
+                                        <td>{user.courses}</td>
+                                        <td>
+                                            <span className={`badge ${getRankColor(user.badge)}`}>
+                                                {getRankLabel(user.badge)}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {/* All Users Table */}
+                <div className="table-card">
+                    <div className="table-header">
+                        <h3 className="table-title">
+                            <Users className="users-icon" />
+                            Danh Sách Tất Cả Người Dùng ({filteredUsers.length})
+                        </h3>
+
+                        <div className="table-filters">
+                            <input
+                                type="text"
+                                placeholder="Tìm kiếm theo tên, username hoặc email..."
+                                value={searchTerm}
+                                onChange={(e) => {
+                                    setSearchTerm(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="search-input"
+                            />
+
+                            <select
+                                value={filterLevel}
+                                onChange={(e) => {
+                                    setFilterLevel(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="filter-select"
+                            >
+                                <option value="all">Tất cả cấp độ</option>
+                                <option value="newbie">Newbie</option>
+                                <option value="pupil">Pupil</option>
+                                <option value="specialist">Specialist</option>
+                                <option value="expert">Expert</option>
+                                <option value="candidate_master">Candidate Master</option>
+                                <option value="master">Master</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="table-wrapper">
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Tên</th>
+                                    <th>Email</th>
+                                    <th>Cấp độ</th>
+                                    <th>Rating</th>
+                                    <th>Contests</th>
+                                    <th>Khóa học</th>
+                                    <th>Ngày tham gia</th>
+                                    <th>Hoạt động</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentUsers.length > 0 ? (
+                                    currentUsers.map((user) => (
+                                        <tr key={user.id}>
+                                            <td>
+                                                <span className="user-id">#{user.id}</span>
+                                            </td>
+                                            <td>
+                                                <code className="username-badge">{user.username}</code>
+                                            </td>
+                                            <td className="user-name">{user.name}</td>
+                                            <td className="user-email">{user.email}</td>
+                                            <td>
+                                                <span className={`badge ${getRankColor(user.level)}`}>
+                                                    {getRankLabel(user.level)}
+                                                </span>
+                                            </td>
+                                            <td className="rating-value">{user.rating}</td>
+                                            <td>{user.contests}</td>
+                                            <td>{user.courses}</td>
+                                            <td className="date-text">{user.joinDate}</td>
+                                            <td className="date-text">{user.lastActive}</td>
+                                            <td>
+                                                <span
+                                                    className={`status-badge ${
+                                                        user.status === 'active' ? 'active' : 'inactive'
+                                                    }`}
+                                                >
+                                                    {user.status === 'active' ? 'Hoạt động' : 'Không hoạt động'}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="11" className="no-data">
+                                            Không tìm thấy người dùng nào
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                        <div className="pagination">
+                            <button
+                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                                className="pagination-btn"
+                            >
+                                Trước
+                            </button>
+
+                            <div className="pagination-pages">
+                                {[...Array(totalPages)].map((_, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setCurrentPage(idx + 1)}
+                                        className={`pagination-page ${currentPage === idx + 1 ? 'active' : ''}`}
+                                    >
+                                        {idx + 1}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <button
+                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                                className="pagination-btn"
+                            >
+                                Sau
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default UserReports;
