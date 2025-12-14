@@ -98,6 +98,8 @@ const Sidebar = ({ isOpen }) => {
                 { title: 'Báo cáo người dùng', path: '/admin/statistics/user-reports' },
                 { title: 'Báo cáo khóa học', path: '/admin/statistics/course-reports' },
                 { title: 'Báo cáo bài tập', path: '/admin/statistics/problem-reports' },
+                { title: 'Báo cáo Contest', path: '/admin/statistics/contest-reports' },
+                { title: 'Báo cáo Doanh thu', path: '/admin/statistics/revenue-reports' },
             ],
         },
         {

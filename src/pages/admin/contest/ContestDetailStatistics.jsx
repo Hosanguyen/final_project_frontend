@@ -90,7 +90,7 @@ const ContestDetailStatistics = () => {
             <div className="stats-header">
                 <button 
                     className="back-button"
-                    onClick={() => navigate('/admin/contest-statistics')}
+                    onClick={() => navigate('/admin/statistics/contest-reports')}
                 >
                     <ArrowLeft size={20} />
                     <span>Quay lại</span>
@@ -300,7 +300,12 @@ const ContestDetailStatistics = () => {
                 </h2>
                 <div className="problems-grid">
                     {statistics.problems.by_problem.map((problem, index) => (
-                        <div key={index} className="problem-card">
+                        <div 
+                            key={index} 
+                            className="problem-card clickable-card"
+                            onClick={() => navigate(`/admin/statistics/problem/${problem.problem_id}?contest_id=${id}`)}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <div className="problem-header">
                                 <span className="problem-alias">{problem.alias}</span>
                                 <span className="problem-point">{problem.point} điểm</span>
