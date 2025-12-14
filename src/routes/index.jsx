@@ -52,6 +52,7 @@ import UserReports from '../pages/admin/statistic/UserReports';
 import CourseReports from '../pages/admin/statistic/CourseReports';
 import ContestStatistics from '../pages/admin/statistic/ContestStatistics';
 import ProblemStatistics from '../pages/admin/statistic/ProblemStatistics';
+import RevenueStatistics from '../pages/admin/statistic/RevenueStatistics';
 
 const AppRoutes = () => {
     return (
@@ -460,6 +461,14 @@ const AppRoutes = () => {
                         element={
                             <PrivateRoute>
                                 <ProblemStatistics />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/statistics/revenue-reports"
+                        element={
+                            <PrivateRoute>
+                                <RevenueStatistics />
                             </PrivateRoute>
                         }
                     />
