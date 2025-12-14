@@ -20,7 +20,12 @@ const GlobalRanking = () => {
 
     useEffect(() => {
         fetchGlobalRanking();
-        fetchMyRating();
+        
+        // Only fetch my rating if user is logged in
+        const accessToken = localStorage.getItem('accessToken');
+        if (accessToken) {
+            fetchMyRating();
+        }
     }, [pagination.page]);
 
     const fetchMyRating = async () => {

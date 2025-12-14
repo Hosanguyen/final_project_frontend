@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cropper from 'react-easy-crop';
 import './UserProfile.css';
+import api from '../../services/api';
 import { updateUserProfile } from '../../services/UserService';
 import CourseService from '../../services/CourseService';
 import notification from '../../utils/notification';
@@ -25,6 +26,15 @@ const UserProfile = () => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
+  // Change password state
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    current_password: '',
+    new_password: '',
+    confirm_password: ''
+  });
+  const [passwordErrors, setPasswordErrors] = useState({});
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -132,6 +142,64 @@ const UserProfile = () => {
     } catch (error) {
       console.error(error);
       notification.error('Cập nhật thất bại hoặc lỗi kết nối máy chủ.');
+    }
+  };
+
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordData({
+      ...passwordData,
+      [name]: value
+    });
+    // Clear error when user types
+    if (passwordErrors[name]) {
+      setPasswordErrors({
+        ...passwordErrors,
+        [name]: ''
+      });
+    }
+  };
+
+  const handleChangePassword = async () => {
+    // Validate
+    const errors = {};
+    if (!passwordData.current_password) {
+      errors.current_password = 'Vui lòng nhập mật khẩu hiện tại';
+    }
+    if (!passwordData.new_password) {
+      errors.new_password = 'Vui lòng nhập mật khẩu mới';
+    } else if (passwordData.new_password.length < 6) {
+      errors.new_password = 'Mật khẩu mới phải có ít nhất 6 ký tự';
+    }
+    if (!passwordData.confirm_password) {
+      errors.confirm_password = 'Vui lòng xác nhận mật khẩu mới';
+    } else if (passwordData.new_password !== passwordData.confirm_password) {
+      errors.confirm_password = 'Mật khẩu xác nhận không khớp';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setPasswordErrors(errors);
+      return;
+    }
+
+    try {
+      const response = await api.put('/api/users/profile/reset-password/', {
+        current_password: passwordData.current_password,
+        new_password: passwordData.new_password
+      });
+
+      notification.success('Đổi mật khẩu thành công!');
+      setShowChangePassword(false);
+      setPasswordData({
+        current_password: '',
+        new_password: '',
+        confirm_password: ''
+      });
+      setPasswordErrors({});
+    } catch (error) {
+      console.error(error);
+      const errorMessage = error.response?.data?.error || 'Đổi mật khẩu thất bại';
+      notification.error(errorMessage);
     }
   };
 
@@ -260,6 +328,78 @@ const UserProfile = () => {
 
   return (
     <div className="user-profile">
+      {/* Modal đổi mật khẩu */}
+      {showChangePassword && (
+        <div className="modal-overlay" onClick={() => setShowChangePassword(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Đổi mật khẩu</h2>
+            <div className="password-form">
+              <div className="form-group">
+                <label>Mật khẩu hiện tại *</label>
+                <input
+                  type="password"
+                  name="current_password"
+                  value={passwordData.current_password}
+                  onChange={handlePasswordChange}
+                  className={passwordErrors.current_password ? 'error' : ''}
+                  placeholder="Nhập mật khẩu hiện tại"
+                />
+                {passwordErrors.current_password && (
+                  <span className="error-text">{passwordErrors.current_password}</span>
+                )}
+              </div>
+              <div className="form-group">
+                <label>Mật khẩu mới *</label>
+                <input
+                  type="password"
+                  name="new_password"
+                  value={passwordData.new_password}
+                  onChange={handlePasswordChange}
+                  className={passwordErrors.new_password ? 'error' : ''}
+                  placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)"
+                />
+                {passwordErrors.new_password && (
+                  <span className="error-text">{passwordErrors.new_password}</span>
+                )}
+              </div>
+              <div className="form-group">
+                <label>Xác nhận mật khẩu mới *</label>
+                <input
+                  type="password"
+                  name="confirm_password"
+                  value={passwordData.confirm_password}
+                  onChange={handlePasswordChange}
+                  className={passwordErrors.confirm_password ? 'error' : ''}
+                  placeholder="Nhập lại mật khẩu mới"
+                />
+                {passwordErrors.confirm_password && (
+                  <span className="error-text">{passwordErrors.confirm_password}</span>
+                )}
+              </div>
+              <div className="modal-actions">
+                <button onClick={handleChangePassword} className="save-btn">
+                  Lưu thay đổi
+                </button>
+                <button 
+                  onClick={() => {
+                    setShowChangePassword(false);
+                    setPasswordData({
+                      current_password: '',
+                      new_password: '',
+                      confirm_password: ''
+                    });
+                    setPasswordErrors({});
+                  }} 
+                  className="cancel-btn"
+                >
+                  Hủy
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Nếu đang crop ảnh */}
       {cropMode && (
         <div className="crop-modal">
@@ -419,6 +559,9 @@ const UserProfile = () => {
               </div>
               <button className="edit-btn" onClick={() =>  setIsEditing(true)}>
                 ✏️ Chỉnh sửa thông tin
+              </button>
+              <button className="change-password-btn" onClick={() => setShowChangePassword(true)}>
+                🔒 Đổi mật khẩu
               </button>
             </>
           )}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Register.css';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { FaHome } from 'react-icons/fa';
 import { registerUser } from '../../services/AuthService';
 import notification from '../../utils/notification';
 
@@ -93,13 +94,16 @@ const Register = () => {
         setLoading(false);
 
         if (result.success) {
-            notification.success(result.message);
+            notification.success('Đăng ký thành công! Vui lòng đăng nhập.', 'Thành công!');
             navigate('/login');
         } else {
+            // Hiển thị notification lỗi
+            const errorMessage = result.message || 'Đăng ký không thành công';
+            notification.error(errorMessage, 'Đăng ký thất bại');
+            
+            // Nếu có lỗi chi tiết, hiển thị trong form
             if (result.errors) {
                 setErrors(result.errors);
-            } else {
-                notification.error(result.message);
             }
         }
     };
@@ -107,7 +111,17 @@ const Register = () => {
     return (
         <div className="register-container">
             <div className="register-box">
-                <h1 className="register-title">Đăng Ký</h1>
+                <div className="register-header">
+                    <h1 className="register-title">Đăng Ký</h1>
+                    <button 
+                        type="button" 
+                        className="home-button" 
+                        onClick={() => navigate('/')}
+                        title="Về trang chủ"
+                    >
+                        <FaHome />
+                    </button>
+                </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">

@@ -16,12 +16,47 @@
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
+.register-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
 .register-title {
+    flex: 1;
     text-align: center;
     color: #0066ff;
     font-size: 32px;
     font-weight: 700;
-    margin-bottom: 30px;
+    margin: 0;
+}
+
+.home-button {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: 2px solid #0066ff;
+    color: #0066ff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s;
+    padding: 0;
+}
+
+.home-button:hover {
+    background: #0066ff;
+    color: white;
+    transform: translateY(-50%) scale(1.1);
 }
 
 .input-group {
