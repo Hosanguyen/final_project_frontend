@@ -1,7 +1,7 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import notification from '../../../utils/notification';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaSave, FaTimes, FaBook, FaInfoCircle } from 'react-icons/fa';
+import { FaSave, FaTimes, FaBook, FaInfoCircle, FaImage, FaTrash } from 'react-icons/fa';
 import CourseService from '../../../services/CourseService';
 import './CourseFormPage.css';
 
@@ -19,13 +19,18 @@ const CourseFormPage = () => {
         price: 0,
         is_published: false,
         language_ids: [],
-        tag_ids: []
+        tag_ids: [],
+        banner: null
     });
 
     const [languages, setLanguages] = useState([]);
     const [tags, setTags] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
+    const [bannerFile, setBannerFile] = useState(null);
+    const [bannerPreview, setBannerPreview] = useState(null);
+    const fileInputRef = useRef(null);
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
     useEffect(() => {
         loadData();
@@ -52,8 +57,18 @@ const CourseFormPage = () => {
                     price: courseData.price || 0,
                     is_published: courseData.is_published || false,
                     language_ids: courseData.languages ? courseData.languages.map(lang => lang.id) : [],
-                    tag_ids: courseData.tags ? courseData.tags.map(tag => tag.id) : []
+                    tag_ids: courseData.tags ? courseData.tags.map(tag => tag.id) : [],
+                    banner: courseData.banner || null
                 });
+                
+                // Set existing banner preview if available
+                if (courseData.banner_url) {
+                    // Handle both relative and absolute URLs
+                    const bannerUrl = courseData.banner_url.startsWith('http') 
+                        ? courseData.banner_url 
+                        : `${API_URL}${courseData.banner_url}`;
+                    setBannerPreview(bannerUrl);
+                }
             }
         } catch (error) {
             console.error('Error loading data:', error);
@@ -116,6 +131,41 @@ const CourseFormPage = () => {
         }));
     };
 
+    const handleBannerChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                notification.error('Vui lòng chọn file ảnh', 'Lỗi file');
+                return;
+            }
+            
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                notification.error('Kích thước file không được vượt quá 5MB', 'Lỗi file');
+                return;
+            }
+            
+            setBannerFile(file);
+            
+            // Create preview URL
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setBannerPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleRemoveBanner = () => {
+        setBannerFile(null);
+        setBannerPreview(null);
+        setFormData(prev => ({ ...prev, banner: null }));
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
     const validate = () => {
         const newErrors = {};
 
@@ -150,11 +200,36 @@ const CourseFormPage = () => {
 
         setLoading(true);
         try {
+            // Create FormData if there's a banner file to upload
+            let dataToSubmit;
+            
+            if (bannerFile) {
+                const formDataToSend = new FormData();
+                
+                // Add all form fields
+                Object.keys(formData).forEach(key => {
+                    if (key === 'language_ids' || key === 'tag_ids') {
+                        formData[key].forEach(id => {
+                            formDataToSend.append(key, id);
+                        });
+                    } else if (key !== 'banner') {
+                        formDataToSend.append(key, formData[key]);
+                    }
+                });
+                
+                // Add banner file
+                formDataToSend.append('banner_file', bannerFile);
+                
+                dataToSubmit = formDataToSend;
+            } else {
+                dataToSubmit = formData;
+            }
+            
             if (isEdit) {
-                await CourseService.updateCourse(id, formData);
+                await CourseService.updateCourse(id, dataToSubmit);
                 notification.success('Cập nhật khóa học thành công!');
             } else {
-                await CourseService.createCourse(formData);
+                await CourseService.createCourse(dataToSubmit);
                 notification.success('Tạo khóa học thành công!');
             }
             navigate('/admin/courses');
@@ -188,6 +263,42 @@ const CourseFormPage = () => {
             <form onSubmit={handleSubmit} className="course-form-page-form">
                 <div className="course-form-page-card">
                     <h2>Thông tin cơ bản</h2>
+                    
+                    {/* Banner Upload Section */}
+                    <div className="course-form-page-form-group">
+                        <label>Banner khóa học</label>
+                        <div className="banner-upload-container">
+                            {bannerPreview ? (
+                                <div className="banner-preview">
+                                    <img src={bannerPreview} alt="Banner preview" />
+                                    <button
+                                        type="button"
+                                        className="remove-banner-btn"
+                                        onClick={handleRemoveBanner}
+                                    >
+                                        <FaTrash /> Xóa banner
+                                    </button>
+                                </div>
+                            ) : (
+                                <div 
+                                    className="banner-upload-placeholder" 
+                                    onClick={() => fileInputRef.current?.click()}
+                                >
+                                    <FaImage className="upload-icon" />
+                                    <p>Nhấp để tải lên banner</p>
+                                    <span className="upload-hint">JPG, PNG (tối đa 5MB)</span>
+                                </div>
+                            )}
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                id="banner"
+                                accept="image/*"
+                                onChange={handleBannerChange}
+                                style={{ display: 'none' }}
+                            />
+                        </div>
+                    </div>
                     
                     <div className="course-form-page-form-group">
                         <label>

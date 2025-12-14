@@ -5,7 +5,8 @@ import "./CourseCard.css";
 const CourseCard = ({ course }) => {
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
-  const bannerUrl = `${API_URL}/media/files/uploads/banner_default.jpg`;
+  const defaultBannerUrl = `${API_URL}/media/files/uploads/banner_default.jpg`;
+  const bannerUrl = course.banner_url ? `${API_URL}/${course.banner_url}` : defaultBannerUrl;
 
   const handleClick = () => {
     navigate(`/courses/${course.slug}`);

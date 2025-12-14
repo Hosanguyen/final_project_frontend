@@ -95,6 +95,20 @@
     border-bottom: 2px solid #f3f4f6;
 }
 
+.course-detail-banner {
+    margin-bottom: 24px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.course-detail-banner img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+}
+
 .course-detail-icon {
     font-size: 32px;
     color: #667eea;

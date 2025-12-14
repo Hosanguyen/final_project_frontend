@@ -1,6 +1,6 @@
 // src/pages/admin/course/CourseForm.jsx
-import React, { useState, useEffect } from 'react';
-import { X, Save, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Save, AlertCircle, Upload, Image as ImageIcon } from 'lucide-react';
 import './CourseForm.css';
 import notification from '../../../utils/notification';
 
@@ -14,10 +14,15 @@ const CourseForm = ({ course, languages, tags, onSubmit, onClose }) => {
     price: 0,
     is_published: false,
     language_ids: [],
-    tag_ids: []
+    tag_ids: [],
+    banner: null
   });
+  const [bannerFile, setBannerFile] = useState(null);
+  const [bannerPreview, setBannerPreview] = useState(null);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef(null);
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
   useEffect(() => {
     if (course) {
@@ -30,8 +35,18 @@ const CourseForm = ({ course, languages, tags, onSubmit, onClose }) => {
         price: course.price || 0,
         is_published: course.is_published || false,
         language_ids: course.languages ? course.languages.map(lang => lang.id) : [],
-        tag_ids: course.tags ? course.tags.map(tag => tag.id) : []
+        tag_ids: course.tags ? course.tags.map(tag => tag.id) : [],
+        banner: course.banner || null
       });
+      
+      // Set existing banner preview if available
+      if (course.banner_url) {
+        // Handle both relative and absolute URLs
+        const bannerUrl = course.banner_url.startsWith('http') 
+          ? course.banner_url 
+          : `${API_URL}${course.banner_url}`;
+        setBannerPreview(bannerUrl);
+      }
     }
   }, [course]);
 
@@ -78,6 +93,41 @@ const CourseForm = ({ course, languages, tags, onSubmit, onClose }) => {
     }));
   };
 
+  const handleBannerChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        notification.error('Vui lòng chọn file ảnh', 'Lỗi file');
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        notification.error('Kích thước file không được vượt quá 5MB', 'Lỗi file');
+        return;
+      }
+      
+      setBannerFile(file);
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBannerPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveBanner = () => {
+    setBannerFile(null);
+    setBannerPreview(null);
+    setFormData(prev => ({ ...prev, banner: null }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const validateForm = () => {
     const newErrors = {};
 
@@ -112,10 +162,35 @@ const CourseForm = ({ course, languages, tags, onSubmit, onClose }) => {
 
     setLoading(true);
     try {
-      if (course) {
-        await onSubmit(course.id, formData);
+      // Create FormData if there's a banner file to upload
+      let dataToSubmit;
+      
+      if (bannerFile) {
+        const formDataToSend = new FormData();
+        
+        // Add all form fields
+        Object.keys(formData).forEach(key => {
+          if (key === 'language_ids' || key === 'tag_ids') {
+            formData[key].forEach(id => {
+              formDataToSend.append(key, id);
+            });
+          } else if (key !== 'banner') {
+            formDataToSend.append(key, formData[key]);
+          }
+        });
+        
+        // Add banner file
+        formDataToSend.append('banner_file', bannerFile);
+        
+        dataToSubmit = formDataToSend;
       } else {
-        await onSubmit(formData);
+        dataToSubmit = formData;
+      }
+      
+      if (course) {
+        await onSubmit(course.id, dataToSubmit);
+      } else {
+        await onSubmit(dataToSubmit);
       }
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -142,6 +217,42 @@ const CourseForm = ({ course, languages, tags, onSubmit, onClose }) => {
 
         <form onSubmit={handleSubmit} className="course-form">
           <div className="form-grid">
+            {/* Banner Upload Section */}
+            <div className="form-group full-width">
+              <label htmlFor="banner" className="form-label">
+                Banner khóa học
+              </label>
+              <div className="banner-upload-container">
+                {bannerPreview ? (
+                  <div className="banner-preview">
+                    <img src={bannerPreview} alt="Banner preview" />
+                    <button
+                      type="button"
+                      className="remove-banner-btn"
+                      onClick={handleRemoveBanner}
+                    >
+                      <X size={16} />
+                      Xóa banner
+                    </button>
+                  </div>
+                ) : (
+                  <div className="banner-upload-placeholder" onClick={() => fileInputRef.current?.click()}>
+                    <ImageIcon size={48} className="upload-icon" />
+                    <p>Nhấp để tải lên banner</p>
+                    <span className="upload-hint">JPG, PNG (tối đa 5MB)</span>
+                  </div>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  id="banner"
+                  accept="image/*"
+                  onChange={handleBannerChange}
+                  style={{ display: 'none' }}
+                />
+              </div>
+            </div>
+
             <div className="form-group full-width">
               <label htmlFor="title" className="form-label">
                 Tiêu đề khóa học *
