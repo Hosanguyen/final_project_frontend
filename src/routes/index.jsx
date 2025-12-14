@@ -51,6 +51,7 @@ import OrderHistory from '../pages/OrderHistory';
 import UserReports from '../pages/admin/statistic/UserReports';
 import CourseReports from '../pages/admin/statistic/CourseReports';
 import ContestStatistics from '../pages/admin/statistic/ContestStatistics';
+import ProblemStatistics from '../pages/admin/statistic/ProblemStatistics';
 
 const AppRoutes = () => {
     return (
@@ -455,10 +456,10 @@ const AppRoutes = () => {
                         }
                     />
                     <Route
-                        path="/admin/statistics/contest-reports"
+                        path="/admin/statistics/problem/:id"
                         element={
                             <PrivateRoute>
-                                <ContestStatistics />
+                                <ProblemStatistics />
                             </PrivateRoute>
                         }
                     />
