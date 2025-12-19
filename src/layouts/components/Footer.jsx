@@ -39,7 +39,6 @@ const Footer = () => {
             <li><Link to="/practice">Thực hành code</Link></li>
             <li><Link to="/contests">Thi đấu lập trình</Link></li>
             <li><Link to="/leaderboard">Bảng xếp hạng</Link></li>
-            <li><Link to="/forum">Diễn đàn</Link></li>
             <li><Link to="/ai-tutor">AI Chatbot hỗ trợ</Link></li>
           </ul>
         </div>

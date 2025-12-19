@@ -319,6 +319,7 @@
     text-align: left;
     cursor: pointer;
     transition: background 0.3s;
+    box-sizing: border-box;
 }
 
 .dropdown-item:hover {

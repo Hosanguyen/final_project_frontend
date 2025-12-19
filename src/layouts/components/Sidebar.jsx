@@ -86,26 +86,15 @@ const Sidebar = ({ isOpen }) => {
             path: '/admin/tags',
         },
         {
-            title: 'Diễn đàn',
-            icon: <MdForum />,
-            path: '/admin/forum',
-        },
-        {
             title: 'Thống kê',
             icon: <MdBarChart />,
             path: '/admin/statistics',
             subMenu: [
                 { title: 'Báo cáo người dùng', path: '/admin/statistics/user-reports' },
                 { title: 'Báo cáo khóa học', path: '/admin/statistics/course-reports' },
-                { title: 'Báo cáo bài tập', path: '/admin/statistics/problem-reports' },
                 { title: 'Báo cáo Contest', path: '/admin/statistics/contest-reports' },
                 { title: 'Báo cáo Doanh thu', path: '/admin/statistics/revenue-reports' },
             ],
-        },
-        {
-            title: 'Cài đặt',
-            icon: <MdSettings />,
-            path: '/admin/settings',
         },
     ];
 

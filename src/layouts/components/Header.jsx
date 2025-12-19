@@ -63,21 +63,14 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
                     <Link to="/global-ranking" className="nav-link">
                         Bảng xếp hạng
                     </Link>
-                    <Link to="/forum" className="nav-link">
-                        Diễn đàn
-                    </Link>
                 </nav>
             )}
 
             <div className="header-right">
-                <div className="search-box">
-                    <FaSearch className="search-icon" />
-                    <input type="text" placeholder="Tìm kiếm khóa học, bài tập..."/>
-                </div>
 
                 {isAuthenticated ? (
                     <>
-                        <div className="notification-wrapper dropdown">
+                        {/* <div className="notification-wrapper dropdown">
                             <button className="icon-button dropdown-toggle">
                                 <FaBell />
                                 <span className="badge notification">3</span>
@@ -99,7 +92,7 @@ const Header = ({ toggleSidebar, isAdmin = false }) => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="user-menu-wrapper dropdown">
                             <button className="user-button dropdown-toggle">
