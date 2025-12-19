@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle, FaClock, FaFire, FaStar } from 'react-icons/fa';
 import ContestService from '../../services/ContestService';
+import RecommendedProblems from '../../components/RecommendedProblems';
 import './Practice.css';
 
 const Practice = () => {
@@ -200,6 +201,9 @@ const Practice = () => {
                     <div className="stat-label">Tiến độ</div>
                 </div>
             </div>
+
+            {/* Recommended Problems Section */}
+            <RecommendedProblems />
 
             <div className="practice-filters">
                 <div className="filter-group">
