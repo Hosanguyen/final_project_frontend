@@ -23,6 +23,8 @@ const ProblemForm = () => {
         time_limit_ms: 1000,
         memory_limit_kb: 262144,
         source: '',
+        validation_type: 'default',
+        custom_validator: '',
         is_public: true,
         editorial_text: '',
         tag_ids: [],
@@ -94,6 +96,8 @@ const ProblemForm = () => {
                 time_limit_ms: data.time_limit_ms,
                 memory_limit_kb: data.memory_limit_kb,
                 source: data.source || '',
+                validation_type: data.validation_type || 'default',
+                custom_validator: data.custom_validator || '',
                 is_public: data.is_public,
                 editorial_text: data.editorial_text || '',
                 tag_ids: data.tags.map((tag) => tag.id),
@@ -207,6 +211,10 @@ const ProblemForm = () => {
         if (formData.input_format) submitFormData.append('input_format', formData.input_format);
         if (formData.output_format) submitFormData.append('output_format', formData.output_format);
         if (formData.source) submitFormData.append('source', formData.source);
+        if (formData.validation_type) submitFormData.append('validation_type', formData.validation_type);
+        if (formData.validation_type === 'custom' && formData.custom_validator) {
+            submitFormData.append('custom_validator', formData.custom_validator);
+        }
         if (formData.editorial_text) submitFormData.append('editorial_text', formData.editorial_text);
 
         // Tags & Languages (gửi dưới dạng JSON array)
@@ -453,7 +461,7 @@ const ProblemForm = () => {
                                 name="source"
                                 value={formData.source}
                                 onChange={handleChange}
-                                placeholder="LeetCode, Codeforces..."
+                                placeholder="ICPC 2023, LeetCode..."
                             />
                         </div>
                     </div>
@@ -538,6 +546,82 @@ const ProblemForm = () => {
                                 <span className="problem-form-input-hint">1MB - 2GB</span>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Validation */}
+                    <div className="problem-form-section">
+                        <h3 className="problem-form-section-title">Phương thức chấm bài</h3>
+
+                        <div className="problem-form-group">
+                            <label htmlFor="validation_type">Loại validation</label>
+                            <select
+                                id="validation_type"
+                                name="validation_type"
+                                value={formData.validation_type}
+                                onChange={handleChange}
+                            >
+                                <option value="default">Default (So sánh chính xác)</option>
+                                <option value="custom">Custom Validator (Nhiều output đúng)</option>
+                            </select>
+                            <span className="problem-form-input-hint">
+                                Chọn "Custom Validator" cho bài toán có nhiều đáp án đúng (ví dụ: tìm 2 số có tổng = 10)
+                            </span>
+                        </div>
+
+                        {formData.validation_type === 'custom' && (
+                            <div className="problem-form-group">
+                                <label htmlFor="custom_validator">
+                                    Custom Validator Script (Python 3)
+                                </label>
+                                <textarea
+                                    id="custom_validator"
+                                    name="custom_validator"
+                                    value={formData.custom_validator}
+                                    onChange={handleChange}
+                                    rows="15"
+                                    placeholder={`#!/usr/bin/env python3
+import sys
+
+def main():
+    if len(sys.argv) < 4:
+        sys.exit(1)
+    
+    input_file = sys.argv[1]
+    answer_file = sys.argv[2]
+    feedback_dir = sys.argv[3]
+    
+    with open(input_file, 'r') as f:
+        input_data = f.read()
+    
+    with open(answer_file, 'r') as f:
+        judge_answer = f.read()
+    
+    team_output = sys.stdin.read()
+    
+    # TODO: Implement validation logic
+    # Exit code 42 = Accepted
+    # Exit code 43 = Wrong Answer
+    
+    sys.exit(42)
+
+if __name__ == '__main__':
+    main()`}
+                                    className="problem-form-code-textarea"
+                                    style={{ fontFamily: 'monospace', fontSize: '13px' }}
+                                />
+                                <span className="problem-form-input-hint">
+                                    Script Python để validate output. Exit code: 42 (AC), 43 (WA). 
+                                    {/* <a 
+                                        href="/CUSTOM_VALIDATOR_GUIDE.md" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        style={{ marginLeft: '5px', color: '#0066cc' }}
+                                    >
+                                        Xem hướng dẫn chi tiết
+                                    </a> */}
+                                </span>
+                            </div>
+                        )}
                     </div>
 
                     {/* ============================================================
