@@ -159,7 +159,22 @@ const ProblemDetail = () => {
                             <span>{problem.source}</span>
                         </div>
                     )}
+
+                    <div className="problem-detail-info-item">
+                        <span className="problem-detail-info-label">Validation:</span>
+                        <span className={`problem-detail-validation-badge ${problem.validation_type === 'custom' ? 'custom' : 'default'}`}>
+                            {problem.validation_type === 'custom' ? 'Custom Validator' : 'Default'}
+                        </span>
+                    </div>
                 </div>
+
+                {/* Custom Validator */}
+                {problem.validation_type === 'custom' && problem.custom_validator && (
+                    <div className="problem-detail-info-card">
+                        <h3 className="problem-detail-card-title">Custom Validator</h3>
+                        <pre className="problem-detail-code-block">{problem.custom_validator}</pre>
+                    </div>
+                )}
 
                 {/* Constraints */}
                 <div className="problem-detail-info-card">

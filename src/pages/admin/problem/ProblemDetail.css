@@ -224,6 +224,37 @@
     color: #92400e;
 }
 
+.problem-detail-validation-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.problem-detail-validation-badge.default {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.problem-detail-validation-badge.custom {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.problem-detail-code-block {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0;
+}
+
 /* ============================================================
    CONSTRAINTS
    ============================================================ */
