@@ -22,7 +22,7 @@ const CourseForm = ({ course, languages, tags, onSubmit, onClose }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     if (course) {
