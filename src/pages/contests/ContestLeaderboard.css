@@ -1,0 +1,374 @@
+/* Leaderboard Container */
+.leaderboard-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Leaderboard Header */
+.leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.leaderboard-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 24px;
+    color: #2c3e50;
+}
+
+.leaderboard-header .trophy-icon {
+    color: #ffd700;
+    font-size: 28px;
+}
+
+.leaderboard-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.participant-count {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.refresh-btn:hover:not(:disabled) {
+    background: #0056b3;
+}
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.refresh-btn.refreshing svg {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+/* Leaderboard Table */
+.leaderboard-table-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.leaderboard-table thead {
+    background: #f8f9fa;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.leaderboard-table th {
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+}
+
+.leaderboard-table td {
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* Column Widths */
+.col-rank {
+    width: 80px;
+}
+
+.col-participant {
+    min-width: 200px;
+    text-align: left !important;
+}
+
+.col-solved {
+    width: 80px;
+}
+
+.col-penalty,
+.col-score {
+    width: 100px;
+}
+
+.col-problem {
+    width: 80px;
+    min-width: 80px;
+}
+
+/* Rank Cell */
+.rank-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.rank-icon {
+    font-size: 18px;
+}
+
+.rank-icon.gold {
+    color: #ffd700;
+}
+
+.rank-icon.silver {
+    color: #c0c0c0;
+}
+
+.rank-icon.bronze {
+    color: #cd7f32;
+}
+
+.rank-number {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Top 3 Row Highlights */
+.leaderboard-row.rank-1 {
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.leaderboard-row.rank-2 {
+    background: rgba(192, 192, 192, 0.1);
+}
+
+.leaderboard-row.rank-3 {
+    background: rgba(205, 127, 50, 0.1);
+}
+
+.leaderboard-row:hover {
+    background: rgba(0, 123, 255, 0.05);
+}
+
+/* Participant Info */
+.participant-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.participant-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.participant-details {
+    text-align: left;
+}
+
+.participant-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 2px;
+}
+
+.participant-username {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* Solved Count */
+.solved-count {
+    font-weight: 700;
+    font-size: 18px;
+    color: #28a745;
+}
+
+/* Penalty Time */
+.penalty-time {
+    font-weight: 600;
+    color: #dc3545;
+}
+
+/* Total Score */
+.total-score {
+    font-weight: 700;
+    font-size: 16px;
+    color: #007bff;
+}
+
+/* Problem Cell */
+.problem-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 4px;
+}
+
+.problem-cell.not-attempted {
+    background: #f8f9fa;
+    color: #adb5bd;
+}
+
+.problem-cell.accepted {
+    background: #d4edda;
+    color: #155724;
+}
+
+.problem-cell.wrong-answer {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.problem-cell.pending {
+    background: #cfe2ff;
+    color: #084298;
+}
+
+.problem-time {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.problem-attempts {
+    font-size: 11px;
+    color: #dc3545;
+    margin-top: 2px;
+}
+
+.problem-attempts .frozen-indicator {
+    color: #fd7e14;
+    font-weight: 600;
+    opacity: 0.85;
+}
+
+.problem-score {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.problem-tests {
+    font-size: 10px;
+    margin-top: 2px;
+    color: #6c757d;
+}
+
+/* Loading State */
+.leaderboard-loading,
+.leaderboard-error,
+.leaderboard-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.leaderboard-loading .spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+.leaderboard-error p,
+.leaderboard-empty p {
+    color: #6c757d;
+    margin-bottom: 15px;
+}
+
+.retry-btn {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.retry-btn:hover {
+    background: #0056b3;
+}
+
+.empty-icon {
+    font-size: 64px;
+    color: #dee2e6;
+    margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .leaderboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .leaderboard-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .participant-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .participant-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .col-problem {
+        width: 60px;
+        min-width: 60px;
+    }
+
+    .problem-cell {
+        font-size: 11px;
+        min-height: 40px;
+    }
+}

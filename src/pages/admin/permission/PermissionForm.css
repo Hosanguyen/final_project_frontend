@@ -104,7 +104,7 @@
     font-style: italic;
 }
 
-.error-message {
+.permission-error-message {
     display: block;
     margin-top: 6px;
     font-size: 13px;

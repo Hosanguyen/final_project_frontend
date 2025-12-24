@@ -1,0 +1,516 @@
+.contest-detail-loading,
+.contest-detail-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 16px;
+}
+
+.contest-detail-loading .spinner {
+    font-size: 48px;
+    color: #3b82f6;
+    animation: spin 1s linear infinite;
+}
+
+.contest-detail-error h2 {
+    color: #ef4444;
+}
+
+.contest-detail {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contest-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.contest-btn-back {
+    padding: 10px 16px;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.contest-btn-back:hover {
+    background: #e5e7eb;
+}
+
+.contest-detail-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.contest-btn-edit,
+.contest-btn-delete {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Recalculate rankings button */
+.contest-btn-recalc {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #10b981;
+    color: #fff;
+}
+
+.contest-btn-recalc:hover {
+    background: #059669;
+}
+
+.contest-btn-recalc:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+/* Update ratings button */
+.contest-btn-rating {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f59e0b;
+    color: #fff;
+}
+
+.contest-btn-rating:hover:not(:disabled) {
+    background: #d97706;
+}
+
+.contest-btn-rating:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #9ca3af;
+}
+
+.contest-btn-rating .spinner {
+    animation: spin 1s linear infinite;
+}
+
+.contest-btn-edit {
+    background: #3b82f6;
+    color: #fff;
+}
+
+.contest-btn-edit:hover {
+    background: #2563eb;
+}
+
+.contest-btn-delete {
+    background: #ef4444;
+    color: #fff;
+}
+
+.contest-btn-delete:hover {
+    background: #dc2626;
+}
+
+.contest-detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.contest-detail-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.contest-detail-title svg {
+    font-size: 32px;
+    color: #f59e0b;
+}
+
+.contest-detail-title h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+    flex: 1;
+}
+
+.status-badge {
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-upcoming {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-running {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-finished {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+.contest-detail-slug {
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 4px solid #3b82f6;
+}
+
+.contest-detail-slug code {
+    font-family: monospace;
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.contest-detail-description {
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.contest-detail-description h3 {
+    margin: 0 0 12px;
+    color: #374151;
+}
+
+.contest-detail-description p {
+    margin: 0;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+.contest-detail-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.info-card {
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 8px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    transition: all 0.2s;
+}
+
+.info-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.info-icon {
+    width: 48px;
+    height: 48px;
+    background: #fff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.info-icon svg {
+    font-size: 24px;
+    color: #3b82f6;
+}
+
+.info-content h4 {
+    margin: 0 0 8px;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.info-content p {
+    margin: 0;
+    color: #1f2937;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.visibility-public {
+    color: #15803d !important;
+}
+
+.visibility-private {
+    color: #dc2626 !important;
+}
+
+.contest-detail-settings {
+    padding: 24px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.contest-detail-settings h3 {
+    margin: 0 0 20px;
+    color: #374151;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.setting-item {
+    padding: 16px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.setting-item strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.setting-item span {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.contest-detail-problems {
+    padding: 24px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.contest-detail-problems h3 {
+    margin: 0 0 20px;
+    color: #374151;
+}
+
+.problems-table {
+    width: 100%;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    border-collapse: collapse;
+}
+
+.problems-table thead {
+    background: #f3f4f6;
+}
+
+.problems-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+}
+
+.problems-table td {
+    padding: 12px 16px;
+    border-top: 1px solid #e5e7eb;
+    color: #1f2937;
+}
+
+.problems-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.problems-table code {
+    font-family: monospace;
+    font-size: 13px;
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.contest-detail-meta {
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.meta-item strong {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+/* Modal */
+.contest-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.contest-modal {
+    background: #fff;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.contest-modal-header {
+    padding: 20px 24px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.contest-modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #1f2937;
+}
+
+.contest-modal-body {
+    padding: 24px;
+}
+
+.contest-modal-body p {
+    margin: 0 0 12px;
+    color: #374151;
+    line-height: 1.6;
+}
+
+.contest-warning-text {
+    color: #dc2626;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.contest-modal-actions {
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.contest-btn-cancel {
+    padding: 10px 24px;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.contest-btn-cancel:hover {
+    background: #e5e7eb;
+}
+
+.contest-btn-confirm-delete {
+    padding: 10px 24px;
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.contest-btn-confirm-delete:hover {
+    background: #dc2626;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .contest-detail {
+        padding: 16px;
+    }
+
+    .contest-detail-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .contest-detail-actions {
+        flex-direction: column;
+    }
+
+    .contest-detail-title {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .contest-detail-title h1 {
+        font-size: 24px;
+    }
+
+    .contest-detail-info-grid,
+    .settings-grid,
+    .contest-detail-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .problems-table {
+        font-size: 14px;
+    }
+}

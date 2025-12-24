@@ -1,0 +1,301 @@
+.contest-form {
+    padding: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+.contest-form-page-header {
+    margin-bottom: 24px;
+}
+
+.contest-form-header-left h1 {
+    margin: 0 0 4px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.contest-form-subtitle {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/* ============================================================
+   LOADING STATE
+   ============================================================ */
+.contest-form-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 16px;
+}
+
+.contest-form-loading .spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.contest-form-loading p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* ============================================================
+   FORM CONTAINER
+   ============================================================ */
+.contest-form-container {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 32px;
+}
+
+.contest-form-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ============================================================
+   FORM GROUP & ROW
+   ============================================================ */
+.contest-form-group {
+    margin-bottom: 20px;
+}
+
+.contest-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.contest-form-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+}
+
+.contest-form-group label .required {
+    color: #ef4444;
+}
+
+.contest-form-group input[type='text'],
+.contest-form-group input[type='number'],
+.contest-form-group input[type='datetime-local'],
+.contest-form-group select,
+.contest-form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.contest-form-group input[type='text']:focus,
+.contest-form-group input[type='number']:focus,
+.contest-form-group input[type='datetime-local']:focus,
+.contest-form-group select:focus,
+.contest-form-group textarea:focus {
+    border-color: #667eea;
+}
+
+.contest-form-group input:disabled {
+    background: #f3f4f6;
+    cursor: not-allowed;
+    color: #6b7280;
+}
+
+.contest-form-group input.error,
+.contest-form-group select.error,
+.contest-form-group textarea.error {
+    border-color: #ef4444 !important;
+}
+
+.contest-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.contest-form-group small {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.contest-error-message {
+    display: block;
+    margin-top: 6px;
+    color: #ef4444;
+    font-size: 13px;
+}
+
+.contest-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* ============================================================
+   MESSAGES
+   ============================================================ */
+.contest-form-message {
+    padding: 12px 16px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.contest-form-message.success {
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    color: #16a34a;
+}
+
+.contest-form-message.error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+.contest-form-message svg {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   FORM ACTIONS
+   ============================================================ */
+.contest-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 32px;
+}
+
+.contest-btn-cancel,
+.contest-btn-submit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.contest-btn-cancel {
+    background: white;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+.contest-btn-cancel:hover:not(:disabled) {
+    background: #f9fafb;
+}
+
+.contest-btn-submit {
+    background: #667eea;
+    color: white;
+}
+
+.contest-btn-submit:hover:not(:disabled) {
+    background: #5568d3;
+}
+
+.contest-btn-cancel:disabled,
+.contest-btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.contest-btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: white;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.contest-btn-back:hover {
+    background: #f9fafb;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .contest-form-container {
+        padding: 20px;
+    }
+
+    .contest-form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .contest-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .contest-btn-cancel,
+    .contest-btn-submit {
+        width: 100%;
+        justify-content: center;
+    }
+}

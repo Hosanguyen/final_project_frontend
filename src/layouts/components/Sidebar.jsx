@@ -11,6 +11,7 @@ import {
     MdSettings,
     MdCode,
     MdLanguage,
+    MdLocalOffer,
 } from 'react-icons/md';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import './Sidebar.css';
@@ -31,8 +32,7 @@ const Sidebar = ({ isOpen }) => {
             path: '/admin/courses',
             subMenu: [
                 { title: 'Danh sách khóa học', path: '/admin/courses' },
-                { title: 'Thêm khóa học mới', path: '/admin/courses/create' },
-                { title: 'Danh mục', path: '/admin/categories' },
+                { title: 'Quản lý bài học', path: '/admin/lessons' },
             ],
         },
         {
@@ -81,19 +81,20 @@ const Sidebar = ({ isOpen }) => {
             path: '/admin/languages',
         },
         {
-            title: 'Diễn đàn',
-            icon: <MdForum />,
-            path: '/admin/forum',
+            title: 'Quản lý thẻ',
+            icon: <MdLocalOffer />,
+            path: '/admin/tags',
         },
         {
             title: 'Thống kê',
             icon: <MdBarChart />,
             path: '/admin/statistics',
-        },
-        {
-            title: 'Cài đặt',
-            icon: <MdSettings />,
-            path: '/admin/settings',
+            subMenu: [
+                { title: 'Báo cáo người dùng', path: '/admin/statistics/user-reports' },
+                { title: 'Báo cáo khóa học', path: '/admin/statistics/course-reports' },
+                { title: 'Báo cáo Contest', path: '/admin/statistics/contest-reports' },
+                { title: 'Báo cáo Doanh thu', path: '/admin/statistics/revenue-reports' },
+            ],
         },
     ];
 

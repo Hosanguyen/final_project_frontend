@@ -1,0 +1,555 @@
+.contest-management {
+    padding: 0;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+.contest-management-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.contest-management-header-left h1 {
+    margin: 0 0 4px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.contest-management-subtitle {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.contest-btn-create {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.contest-btn-create:hover {
+    background: #5568d3;
+}
+
+/* ============================================================
+   CONTENT CARD
+   ============================================================ */
+.contest-content-card {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.contest-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* ============================================================
+   SEARCH & FILTERS
+   ============================================================ */
+.contest-search-box {
+    position: relative;
+    width: 350px;
+}
+
+.contest-search-box input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.contest-search-box input:focus {
+    border-color: #667eea;
+}
+
+.contest-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.contest-clear-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    cursor: pointer;
+    transition: color 0.2s;
+    font-size: 16px;
+}
+
+.contest-clear-icon:hover {
+    color: #374151;
+}
+
+.contest-filters {
+    display: flex;
+    gap: 12px;
+}
+
+.contest-filter-select {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    background: white;
+}
+
+.contest-filter-select:focus {
+    border-color: #667eea;
+}
+
+/* ============================================================
+   LOADING & EMPTY STATES
+   ============================================================ */
+.contest-loading-container,
+.contest-empty {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.contest-loading-container svg,
+.contest-empty svg {
+    color: #9ca3af;
+    margin-bottom: 16px;
+}
+
+.contest-loading-container .spinner {
+    animation: spin 1s linear infinite;
+    font-size: 48px;
+}
+
+.contest-empty h3 {
+    font-size: 18px;
+    color: #374151;
+    margin: 16px 0 8px;
+}
+
+.contest-empty p {
+    color: #6b7280;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+.contest-table-container {
+    overflow-x: auto;
+}
+
+.contest-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.contest-table thead {
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.contest-table th {
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.contest-table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+    transition: all 0.2s;
+}
+
+.contest-table thead {
+    background: #f9fafb;
+}
+
+.contest-table th {
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.contest-table tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.15s;
+}
+
+.contest-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.contest-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.contest-table td {
+    padding: 14px 20px;
+    font-size: 14px;
+    color: #1f2937;
+    vertical-align: middle;
+}
+
+/* ============================================================
+   TABLE CONTENT
+   ============================================================ */
+.contest-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.contest-title {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 14px;
+}
+
+.contest-slug {
+    font-size: 12px;
+    color: #6b7280;
+    font-family: 'Courier New', monospace;
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.contest-time {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+}
+
+.time-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #6b7280;
+}
+
+.time-row svg {
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.problem-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.penalty-time {
+    font-weight: 500;
+    color: #6b7280;
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+.status-badge,
+.visibility-badge {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.status-upcoming {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-running {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-finished {
+    background: #e5e7eb;
+    color: #6b7280;
+}
+
+.visibility-badge {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+.contest-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.contest-btn-icon {
+    padding: 6px 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.contest-btn-view {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.contest-btn-view:hover {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.contest-btn-edit {
+    background: #dbeafe;
+    color: #3b82f6;
+}
+
+.contest-btn-edit:hover {
+    background: #bfdbfe;
+    color: #2563eb;
+}
+
+.contest-btn-delete {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.contest-btn-delete:hover {
+    background: #fecaca;
+    color: #dc2626;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.contest-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s;
+}
+
+.contest-modal {
+    background: white;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s;
+}
+
+.contest-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.contest-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.contest-modal-body {
+    padding: 24px;
+}
+
+.contest-modal-body p {
+    margin: 0 0 12px;
+    color: #6b7280;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.contest-warning-text {
+    color: #dc2626;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.contest-modal-actions {
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.contest-btn-cancel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: white;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.contest-btn-cancel:hover {
+    background: #f9fafb;
+}
+
+.contest-btn-confirm-delete {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.contest-btn-confirm-delete:hover {
+    background: #dc2626;
+}
+
+/* Animations */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .contest-management-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .contest-btn-create {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .contest-card-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .contest-search-box {
+        width: 100%;
+    }
+
+    .contest-filters {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .contest-filter-select {
+        width: 100%;
+    }
+
+    .contest-table-container {
+        overflow-x: auto;
+    }
+
+    .contest-table {
+        min-width: 800px;
+        font-size: 13px;
+    }
+
+    .contest-table th,
+    .contest-table td {
+        padding: 10px 12px;
+    }
+}

@@ -4,6 +4,7 @@ import { FaSave, FaTimes } from 'react-icons/fa';
 import PermissionService from '../../../services/PermissionService';
 import PermissionCategoryService from '../../../services/PermissionCategoryService';
 import './PermissionForm.css';
+import notification from '../../../utils/notification';
 
 const PermissionForm = () => {
     const navigate = useNavigate();
@@ -46,7 +47,7 @@ const PermissionForm = () => {
             });
         } catch (error) {
             console.error('Failed to load permission:', error);
-            alert('Không thể tải thông tin phân quyền');
+            notification.error('Không thể tải thông tin phân quyền');
             navigate('/admin/permissions');
         } finally {
             setLoading(false);
@@ -63,7 +64,12 @@ const PermissionForm = () => {
         }
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const errorKeys = Object.keys(newErrors);
+        if (errorKeys.length > 0) {
+            const firstError = newErrors[errorKeys[0]];
+            notification.error(firstError, 'Lỗi validation');
+        }
+        return errorKeys.length === 0;
     };
 
     const handleSubmit = async (e) => {
@@ -90,7 +96,7 @@ const PermissionForm = () => {
                 response = await PermissionService.create(submitData);
             }
 
-            alert(response.detail);
+            notification.success(response.detail);
             navigate('/admin/permissions');
         } catch (error) {
             console.error('Error saving permission:', error);
@@ -100,12 +106,12 @@ const PermissionForm = () => {
                 if (typeof serverErrors === 'object' && !serverErrors.detail) {
                     setErrors(serverErrors);
                 } else if (serverErrors.detail) {
-                    alert(serverErrors.detail);
+                    notification.error(serverErrors.detail);
                 } else {
-                    alert('Lưu phân quyền thất bại');
+                    notification.error('Lưu phân quyền thất bại');
                 }
             } else {
-                alert('Lưu phân quyền thất bại');
+                notification.error('Lưu phân quyền thất bại');
             }
         } finally {
             setLoading(false);
@@ -161,7 +167,7 @@ const PermissionForm = () => {
                             className={errors.code ? 'error' : ''}
                             placeholder="Ví dụ: user.create, course.update..."
                         />
-                        {errors.code && <span className="error-message">{errors.code}</span>}
+                        {errors.code && <span className="permission-error-message">{errors.code}</span>}
                         <span className="input-hint">Chỉ sử dụng chữ thường, số, dấu chấm (.) và gạch dưới (_)</span>
                     </div>
 
@@ -175,7 +181,7 @@ const PermissionForm = () => {
                             rows="4"
                             placeholder="Mô tả chi tiết về phân quyền này..."
                         />
-                        {errors.description && <span className="error-message">{errors.description}</span>}
+                        {errors.description && <span className="permission-error-message">{errors.description}</span>}
                     </div>
 
                     <div className="form-group">
@@ -194,7 +200,7 @@ const PermissionForm = () => {
                                 </option>
                             ))}
                         </select>
-                        {errors.category_id && <span className="error-message">{errors.category_id}</span>}
+                        {errors.category_id && <span className="permission-error-message">{errors.category_id}</span>}
                     </div>
 
                     <div className="form-actions">

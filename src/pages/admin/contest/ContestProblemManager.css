@@ -1,0 +1,495 @@
+.contest-problem-manager {
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.problem-manager-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.problem-manager-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.contest-btn-add-problem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.contest-btn-add-problem:hover:not(:disabled) {
+    background: #059669;
+}
+
+.contest-btn-add-problem:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   MESSAGES
+   ============================================================ */
+.problem-manager-message {
+    padding: 12px 16px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.problem-manager-message.success {
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    color: #16a34a;
+}
+
+.problem-manager-message.error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+/* ============================================================
+   ADD PROBLEM FORM
+   ============================================================ */
+.add-problem-form {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.add-problem-form h4 {
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.add-problem-form .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.add-problem-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.add-problem-form label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+}
+
+.add-problem-form .required {
+    color: #ef4444;
+}
+
+.add-problem-form input,
+.add-problem-form select {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.add-problem-form input:focus,
+.add-problem-form select:focus {
+    border-color: #667eea;
+}
+
+/* Color Picker Combo */
+.color-picker-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.color-picker-input {
+    width: 60px;
+    height: 42px;
+    padding: 4px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+    background: white;
+    transition: border-color 0.2s;
+}
+
+.color-picker-input:hover:not(:disabled) {
+    border-color: #667eea;
+}
+
+.color-picker-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.color-text-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+}
+
+/* Autocomplete Wrapper */
+.autocomplete-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.autocomplete-input {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.autocomplete-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.autocomplete-input::placeholder {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+/* Autocomplete Dropdown */
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.autocomplete-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover {
+    background: #f9fafb;
+}
+
+.autocomplete-item.selected {
+    background: #eff6ff;
+    border-left: 3px solid #667eea;
+}
+
+.problem-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.problem-title {
+    font-weight: 500;
+    color: #1f2937;
+    flex: 1;
+}
+
+.problem-slug-badge {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.autocomplete-footer {
+    padding: 8px 16px;
+    text-align: center;
+    font-size: 12px;
+    color: #6b7280;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+.autocomplete-empty {
+    padding: 16px;
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+}
+
+/* Scrollbar for dropdown */
+.autocomplete-dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 4px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+.add-problem-form .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.contest-btn-cancel,
+.contest-btn-submit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.contest-btn-cancel {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.contest-btn-cancel:hover:not(:disabled) {
+    background: #e5e7eb;
+}
+
+.contest-btn-submit {
+    background: #667eea;
+    color: white;
+}
+
+.contest-btn-submit:hover:not(:disabled) {
+    background: #5568d3;
+}
+
+.contest-btn-cancel:disabled,
+.contest-btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.contest-btn-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.contest-btn-remove:hover:not(:disabled) {
+    background: #fecaca;
+    border-color: #fca5a5;
+}
+
+.contest-btn-remove:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   PROBLEMS LIST
+   ============================================================ */
+.problems-list {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.empty-problems {
+    padding: 40px 20px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.problems-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.problems-table thead {
+    background: #f9fafb;
+}
+
+.problems-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.problems-table tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.15s;
+}
+
+.problems-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.problems-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.problems-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #1f2937;
+    vertical-align: middle;
+}
+
+.problem-label {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #667eea;
+    color: white;
+    font-weight: 600;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.problem-slug {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.problem-title-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.problem-title-link:hover {
+    color: #5568d3;
+    text-decoration: underline;
+}
+
+.problem-title-link svg {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.problem-title-link:hover svg {
+    opacity: 1;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .problem-manager-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .contest-btn-add-problem {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .add-problem-form .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .add-problem-form .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .add-problem-form .form-actions button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .problems-table {
+        font-size: 13px;
+    }
+
+    .problems-table th,
+    .problems-table td {
+        padding: 10px 12px;
+    }
+}

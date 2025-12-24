@@ -4,6 +4,7 @@ import { FaSave, FaTimes } from 'react-icons/fa';
 import RoleService from '../../../services/RoleService';
 import PermissionService from '../../../services/PermissionService';
 import './RoleForm.css';
+import notification from '../../../utils/notification';
 
 const RoleForm = () => {
     const navigate = useNavigate();
@@ -32,7 +33,7 @@ const RoleForm = () => {
             setPermissionsByCategory(data);
         } catch (error) {
             console.error('Failed to load permissions:', error);
-            alert('Không thể tải danh sách phân quyền');
+            notification.error('Không thể tải danh sách phân quyền');
         }
     };
 
@@ -48,7 +49,7 @@ const RoleForm = () => {
             setSelectedPermissions(permissionIds);
         } catch (error) {
             console.error('Failed to load role:', error);
-            alert('Không thể tải thông tin vai trò');
+            notification.error('Không thể tải thông tin vai trò');
             navigate('/admin/roles');
         } finally {
             setLoading(false);
@@ -65,7 +66,12 @@ const RoleForm = () => {
         }
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const errorKeys = Object.keys(newErrors);
+        if (errorKeys.length > 0) {
+            const firstError = newErrors[errorKeys[0]];
+            notification.error(firstError, 'Lỗi validation');
+        }
+        return errorKeys.length === 0;
     };
 
     const handleSubmit = async (e) => {
@@ -91,7 +97,7 @@ const RoleForm = () => {
                 response = await RoleService.create(submitData);
             }
 
-            alert(response.detail);
+            notification.success(response.detail);
             navigate('/admin/roles');
         } catch (error) {
             console.error('Error saving role:', error);
@@ -101,12 +107,12 @@ const RoleForm = () => {
                 if (typeof serverErrors === 'object' && !serverErrors.detail) {
                     setErrors(serverErrors);
                 } else if (serverErrors.detail) {
-                    alert(serverErrors.detail);
+                    notification.error(serverErrors.detail);
                 } else {
-                    alert('Lưu vai trò thất bại');
+                    notification.error('Lưu vai trò thất bại');
                 }
             } else {
-                alert('Lưu vai trò thất bại');
+                notification.error('Lưu vai trò thất bại');
             }
         } finally {
             setLoading(false);
@@ -199,7 +205,7 @@ const RoleForm = () => {
                                 className={errors.name ? 'error' : ''}
                                 placeholder="Ví dụ: Admin, Teacher, Student..."
                             />
-                            {errors.name && <span className="error-message">{errors.name}</span>}
+                            {errors.name && <span className="role-error-message">{errors.name}</span>}
                         </div>
 
                         <div className="form-group">
@@ -212,7 +218,7 @@ const RoleForm = () => {
                                 rows="3"
                                 placeholder="Mô tả chi tiết về vai trò này..."
                             />
-                            {errors.description && <span className="error-message">{errors.description}</span>}
+                            {errors.description && <span className="role-error-message">{errors.description}</span>}
                         </div>
                     </div>
 

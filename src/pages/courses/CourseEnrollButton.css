@@ -1,0 +1,100 @@
+.enroll-btn {
+  width: 100%;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.enroll-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.enroll-btn .icon {
+  font-size: 18px;
+}
+
+/* Free course button */
+.enroll-btn.free {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.enroll-btn.free:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5568d3 0%, #653a8c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Paid course button */
+.enroll-btn.paid {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.enroll-btn.paid:hover:not(:disabled) {
+  background: linear-gradient(135deg, #e782ea 0%, #e4465b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+}
+
+/* Enrolled button */
+.enroll-btn.enrolled {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+}
+
+.enroll-btn.enrolled:hover {
+  background: linear-gradient(135deg, #0f8778 0%, #2dd865 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 239, 125, 0.4);
+}
+
+/* Loading state */
+.enroll-btn.loading {
+  background: #e0e0e0;
+  color: #666;
+  cursor: wait;
+}
+
+/* Spinner animation */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* SweetAlert2 custom styles */
+.payment-popup .payment-amount {
+  font-size: 24px;
+  color: #667eea;
+  margin-top: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .enroll-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  .enroll-btn .icon {
+    font-size: 16px;
+  }
+}

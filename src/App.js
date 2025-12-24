@@ -1,10 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
 import AppRoutes from './routes';
+import { UserProvider } from './contexts/UserContext';
 
 function App() {
   return (
-    <AppRoutes/>
+    <UserProvider>
+      <AppRoutes/>
+    </UserProvider>
   );
 }
 

@@ -33,6 +33,7 @@ export const loginUser = async (credentials) => {
         return {
             success: true,
             data: response.data,
+            user: response.data.user, // Trả về user data
             message: 'Đăng nhập thành công!',
         };
     } catch (error) {
@@ -44,7 +45,36 @@ export const loginUser = async (credentials) => {
     }
 };
 
-export const logoutUser = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+// đăng xuất
+export const logoutUser = async () => {
+    try {
+        const refreshToken = localStorage.getItem('refreshToken');
+        
+        if (refreshToken) {
+            // Gọi API logout để revoke token
+            await axios.post(`${API_URL}/api/users/logout/`, {
+                refresh: refreshToken
+            });
+        }
+        
+        // Xóa dữ liệu local
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        
+        return {
+            success: true,
+            message: 'Đăng xuất thành công!'
+        };
+    } catch (error) {
+        // Vẫn xóa local storage ngay cả khi API fail
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        
+        return {
+            success: true, // Vẫn trả success vì đã xóa local
+            message: 'Đăng xuất thành công!'
+        };
+    }
 };
