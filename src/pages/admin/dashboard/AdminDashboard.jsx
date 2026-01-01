@@ -72,8 +72,8 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="dashboard-loading">
-        <div className="loading-spinner"></div>
+      <div className="admin-dashboard-loading-wrapper">
+        <div className="admin-dashboard-spinner"></div>
         <p>Đang tải dữ liệu...</p>
       </div>
     );
