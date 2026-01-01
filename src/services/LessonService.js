@@ -188,7 +188,21 @@ const LessonService = {
     } catch (error) {
       throw error;
     }
-  }
+  },
+
+  getVideoStreamUrl: (resourceId) => {
+      const baseURL = api.defaults.baseURL || '';
+      return `${baseURL}/api/video/stream/${resourceId}/`;
+  },
+
+  getVideoInfo: async (resourceId) => {
+      try {
+          const response = await api.get(`/api/video/info/${resourceId}/`);
+          return response.data;
+      } catch (error) {
+          throw error;
+      }
+  },
 };
 
 export default LessonService;

@@ -29,7 +29,7 @@ const CourseService = {
             // Nếu là FormData (có file upload), không set Content-Type để browser tự set
             if (courseData instanceof FormData) {
                 config.headers = {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
                 };
             }
             const response = await api.post('/api/courses/', courseData, config);
@@ -46,7 +46,7 @@ const CourseService = {
             // Nếu là FormData (có file upload), không set Content-Type để browser tự set
             if (courseData instanceof FormData) {
                 config.headers = {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
                 };
             }
             const response = await api.put(`/api/courses/${id}/`, courseData, config);

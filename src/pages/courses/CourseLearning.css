@@ -300,7 +300,7 @@
     margin-bottom: 1.5rem;
 }
 
-/* Video Wrapper */
+/* Video Wrapper - Keep for PDF and other embeds */
 .video-wrapper {
     position: relative;
     width: 100%;
@@ -310,8 +310,7 @@
     overflow: hidden;
 }
 
-.video-wrapper iframe,
-.video-wrapper video {
+.video-wrapper iframe {
     position: absolute;
     top: 0;
     left: 0;
