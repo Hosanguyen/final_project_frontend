@@ -61,7 +61,6 @@ const Sidebar = ({ isOpen }) => {
             subMenu: [
                 { title: 'Danh sách Contest', path: '/admin/contests' },
                 { title: 'Tạo Contest mới', path: '/admin/contests/create' },
-                { title: 'Bảng xếp hạng', path: '/admin/leaderboard' },
             ],
         },
         {
