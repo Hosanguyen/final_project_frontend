@@ -32,12 +32,15 @@ const AdminDashboard = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const [courses, lessons, tags, contestStats] = await Promise.all([
-        CourseService.getCourses(),
+      const [coursesResponse, lessons, tags, contestStats] = await Promise.all([
+        CourseService.getCourses({ page_size: 100 }),
         LessonService.getLessons(),
         TagService.getTags(),
         ContestService.getStatistics().catch(() => null) // Catch contest stats errors
       ]);
+      
+      // Handle pagination response
+      const courses = coursesResponse.results || coursesResponse;
 
       const publishedCourses = courses.filter(course => course.is_published);
       const totalEnrollments = courses.reduce((sum, course) => sum + course.enrollments_count, 0);

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch, FaEye, FaCheck, FaTimes } from 'react-icons/fa';
 import ProblemService from '../../../services/ProblemService';
+import Pagination from '../../../components/Pagination';
 import './ProblemList.css';
 import notification from '../../../utils/notification';
 
@@ -61,6 +62,10 @@ const ProblemList = () => {
     const handleFilterChange = (key, value) => {
         setFilters({ ...filters, [key]: value });
         setPagination({ ...pagination, page: 1 });
+    };
+    
+    const handlePageChange = (page) => {
+        setPagination({ ...pagination, page });
     };
 
     const handleDelete = async () => {
@@ -267,27 +272,13 @@ const ProblemList = () => {
                 </div>
 
                 {/* Pagination */}
-                {pagination.total_pages > 1 && (
-                    <div className="problem-list-pagination">
-                        <button
-                            className="problem-list-pagination-btn"
-                            onClick={() => setPagination({ ...pagination, page: pagination.page - 1 })}
-                            disabled={pagination.page === 1}
-                        >
-                            Trước
-                        </button>
-                        <span className="problem-list-pagination-info">
-                            Trang {pagination.page} / {pagination.total_pages}
-                        </span>
-                        <button
-                            className="problem-list-pagination-btn"
-                            onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
-                            disabled={pagination.page === pagination.total_pages}
-                        >
-                            Sau
-                        </button>
-                    </div>
-                )}
+                <Pagination
+                    currentPage={pagination.page}
+                    totalPages={pagination.total_pages}
+                    totalItems={pagination.total}
+                    onPageChange={handlePageChange}
+                    itemsPerPage={pagination.page_size}
+                />
             </div>
 
             {/* Delete Confirmation Modal */}

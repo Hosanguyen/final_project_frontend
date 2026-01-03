@@ -45,8 +45,9 @@ const LessonFormPage = () => {
 
     const loadData = async () => {
         try {
-            const coursesData = await CourseService.getCourses();
-            setCourses(coursesData);
+            const coursesResponse = await CourseService.getCourses({ page_size: 100 });
+            // Handle pagination response
+            setCourses(coursesResponse.results || coursesResponse);
 
             if (isEdit) {
                 const lessonData = await LessonService.getLesson(id);

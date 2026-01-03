@@ -24,12 +24,13 @@ const LessonManagement = () => {
     const loadData = async () => {
         setLoading(true);
         try {
-            const [lessonsData, coursesData] = await Promise.all([
+            const [lessonsData, coursesResponse] = await Promise.all([
                 LessonService.getLessons(),
-                CourseService.getCourses()
+                CourseService.getCourses({ page_size: 100 }) // Get courses (max 100)
             ]);
             setLessons(lessonsData);
-            setCourses(coursesData);
+            // Handle pagination response structure
+            setCourses(coursesResponse.results || coursesResponse);
         } catch (error) {
             console.error('Error loading data:', error);
             notification.error('Không thể tải dữ liệu');
