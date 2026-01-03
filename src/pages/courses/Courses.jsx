@@ -1,9 +1,10 @@
 // src/pages/courses/Courses.jsx
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Star, Clock, Users, BookOpen, Play } from 'lucide-react';
+import { Search, Filter, BookOpen } from 'lucide-react';
 import CourseService from '../../services/CourseService';
 import CourseCard from './CourseCard';
 import CourseFilters from './CourseFilters';
+import Pagination from '../../components/Pagination';
 import './Courses.css';
 
 const Courses = () => {
@@ -20,6 +21,12 @@ const Courses = () => {
     ordering: '-created_at'
   });
   const [showFilters, setShowFilters] = useState(false);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [pageSize] = useState(12);
 
   useEffect(() => {
     loadData();
@@ -27,18 +34,21 @@ const Courses = () => {
 
   useEffect(() => {
     loadCourses();
-  }, [filters]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, currentPage]);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const [coursesData, languagesData, tagsData] = await Promise.all([
-        CourseService.getCoursesByFilter({ ...filters, is_published: 'true' }),
+      const [coursesResponse, languagesData, tagsData] = await Promise.all([
+        CourseService.getCoursesByFilter({ ...filters, is_published: 'true', page: 1, page_size: pageSize }),
         CourseService.getLanguages(),
         CourseService.getTags()
       ]);
       
-      setCourses(coursesData);
+      setCourses(coursesResponse.results || []);
+      setTotalItems(coursesResponse.total || 0);
+      setTotalPages(coursesResponse.total_pages || 1);
       setLanguages(languagesData);
       setTags(tagsData);
     } catch (err) {
@@ -51,8 +61,15 @@ const Courses = () => {
 
   const loadCourses = async () => {
     try {
-      const coursesData = await CourseService.getCoursesByFilter({ ...filters, is_published: 'true' });
-      setCourses(coursesData);
+      const response = await CourseService.getCoursesByFilter({ 
+        ...filters, 
+        is_published: 'true',
+        page: currentPage,
+        page_size: pageSize 
+      });
+      setCourses(response.results || []);
+      setTotalItems(response.total || 0);
+      setTotalPages(response.total_pages || 1);
     } catch (err) {
       setError('Không thể tải danh sách khóa học');
       console.error('Error loading courses:', err);
@@ -60,11 +77,17 @@ const Courses = () => {
   };
 
   const handleFilterChange = (newFilters) => {
+    setCurrentPage(1);
     setFilters({ ...filters, ...newFilters });
   };
 
   const handleSearch = (searchTerm) => {
+    setCurrentPage(1);
     setFilters({ ...filters, search: searchTerm });
+  };
+  
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   const getLevelBadgeColor = (level) => {
@@ -159,6 +182,15 @@ const Courses = () => {
             ))
           )}
         </div>
+        
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          onPageChange={handlePageChange}
+          itemsPerPage={pageSize}
+        />
       </div>
     </div>
   );

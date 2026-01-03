@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fa';
 import './ContestManagement.css';
 import ContestService from '../../../services/ContestService';
+import Pagination from '../../../components/Pagination';
 
 const ContestManagement = () => {
     const navigate = useNavigate();
@@ -19,20 +20,31 @@ const ContestManagement = () => {
     });
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedContest, setSelectedContest] = useState(null);
+    
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const [pageSize] = useState(10);
 
     useEffect(() => {
         loadContests();
-    }, [filters]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filters, currentPage]);
 
     const loadContests = async () => {
         setLoading(true);
         try {
             const params = {
                 search: searchTerm,
+                page: currentPage,
+                page_size: pageSize,
                 ...filters
             };
             const response = await ContestService.getAll(params);
             setContests(response.contests || []);
+            setTotalItems(response.total || 0);
+            setTotalPages(response.total_pages || 1);
         } catch (error) {
             console.error('Error loading contests:', error);
             notification.error('Không thể tải danh sách contest');
@@ -42,14 +54,20 @@ const ContestManagement = () => {
     };
 
     const handleSearch = () => {
+        setCurrentPage(1);
         loadContests();
     };
 
     const handleFilterChange = (key, value) => {
+        setCurrentPage(1);
         setFilters(prev => ({
             ...prev,
             [key]: value
         }));
+    };
+    
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
     };
 
     const handleCreate = () => {
@@ -264,6 +282,15 @@ const ContestManagement = () => {
                     </table>
                 </div>
             )}
+            
+            {/* Pagination */}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                onPageChange={handlePageChange}
+                itemsPerPage={pageSize}
+            />
             </div>
 
             {/* Delete Confirmation Modal */}
