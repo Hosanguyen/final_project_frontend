@@ -173,9 +173,9 @@ const ProblemService = {
      * Lấy danh sách problems được gợi ý cho user
      * GET /api/problems/recommendations/
      */
-    getRecommendations: async (limit = 10, mode = 'similar') => {
+    getRecommendations: async (limit = 10) => {
         try {
-            const response = await api.get('/api/problems/recommendations/?' + new URLSearchParams({ limit, mode }));
+            const response = await api.get('/api/problems/recommendations/?' + new URLSearchParams({ limit }));
             return response.data;
         } catch (error) {
             console.error('Error fetching recommended problems:', error);
