@@ -25,7 +25,7 @@ export const loginUser = async (credentials) => {
     try {
         const response = await axios.post(`${API_URL}/api/users/login/`, credentials);
         if (response.data.tokens?.access) {
-            console.log(response.data.tokens.access)
+            console.log(response.data.tokens.access);
             localStorage.setItem('accessToken', response.data.tokens.access);
             localStorage.setItem('refreshToken', response.data.tokens.refresh);
             localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -49,32 +49,107 @@ export const loginUser = async (credentials) => {
 export const logoutUser = async () => {
     try {
         const refreshToken = localStorage.getItem('refreshToken');
-        
+
         if (refreshToken) {
-            // Gọi API logout để revoke token
             await axios.post(`${API_URL}/api/users/logout/`, {
-                refresh: refreshToken
+                refresh: refreshToken,
             });
         }
-        
-        // Xóa dữ liệu local
+
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
-        
+
         return {
             success: true,
-            message: 'Đăng xuất thành công!'
+            message: 'Đăng xuất thành công!',
         };
     } catch (error) {
-        // Vẫn xóa local storage ngay cả khi API fail
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
-        
+
         return {
-            success: true, // Vẫn trả success vì đã xóa local
-            message: 'Đăng xuất thành công!'
+            success: true,
+            message: 'Đăng xuất thành công!',
+        };
+    }
+};
+
+export const sendVerificationOTP = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/users/otp/send-verification/`, { email });
+        return {
+            success: true,
+            data: response.data,
+            message: response.data.message || 'Mã OTP đã được gửi đến email của bạn',
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.response?.data?.detail || 'Không thể gửi OTP. Vui lòng thử lại!',
+            errors: error.response?.data,
+        };
+    }
+};
+
+export const verifyEmail = async (email, otpCode) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/users/otp/verify-email/`, {
+            email,
+            otp_code: otpCode,
+        });
+
+        return {
+            success: true,
+            data: response.data,
+            user: response.data.user,
+            message: response.data.message || 'Xác thực email thành công!',
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.response?.data?.detail || 'Xác thực thất bại. Vui lòng thử lại!',
+            errors: error.response?.data,
+        };
+    }
+};
+
+export const forgotPassword = async (email) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/users/otp/forgot-password/`, { email });
+        return {
+            success: true,
+            data: response.data,
+            message: response.data.message || 'Mã OTP đã được gửi đến email của bạn',
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.response?.data?.detail || 'Không thể gửi OTP. Vui lòng thử lại!',
+            errors: error.response?.data,
+        };
+    }
+};
+
+export const resetPasswordWithOTP = async (email, otpCode, newPassword, confirmPassword) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/users/otp/reset-password/`, {
+            email,
+            otp_code: otpCode,
+            new_password: newPassword,
+            confirm_password: confirmPassword,
+        });
+        return {
+            success: true,
+            data: response.data,
+            message: response.data.message || 'Đặt lại mật khẩu thành công!',
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.response?.data?.detail || 'Đặt lại mật khẩu thất bại. Vui lòng thử lại!',
+            errors: error.response?.data,
         };
     }
 };

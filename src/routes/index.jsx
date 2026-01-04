@@ -6,6 +6,9 @@ import NotFound from '../pages/notFound/NotFound';
 import MainLayout from '../layouts/MainLayout';
 import AdminLayout from '../layouts/AdminLayout';
 import Register from '../pages/register/Register';
+import VerifyEmail from '../pages/verifyEmail/VerifyEmail';
+import ForgotPassword from '../pages/forgotPassword/ForgotPassword';
+import ResetPassword from '../pages/resetPassword/ResetPassword';
 import UserProfile from '../pages/UserProfile/UserProfile';
 import PublicProfile from '../pages/PublicProfile/PublicProfile';
 import PrivateRoute from './PrivateRoute';
@@ -59,11 +62,12 @@ const AppRoutes = () => {
     return (
         <Router>
             <Routes>
-                {/* Public Routes - Không có Layout */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
 
-                {/* Routes với MainLayout */}
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<Home />} />
                     <Route path="/courses" element={<Courses />} />
