@@ -1,9 +1,19 @@
 ﻿import React, { useState, useEffect } from 'react';
 import notification from '../../../utils/notification';
 import { useNavigate } from 'react-router-dom';
-import { 
-    FaTrophy, FaPlus, FaCalendarAlt, FaClock, FaEye, FaEyeSlash,
-    FaEdit, FaTrash, FaUsers, FaSpinner, FaSearch, FaTimes
+import {
+    FaTrophy,
+    FaPlus,
+    FaCalendarAlt,
+    FaClock,
+    FaEye,
+    FaEyeSlash,
+    FaEdit,
+    FaTrash,
+    FaUsers,
+    FaSpinner,
+    FaSearch,
+    FaTimes,
 } from 'react-icons/fa';
 import './ContestManagement.css';
 import ContestService from '../../../services/ContestService';
@@ -16,11 +26,11 @@ const ContestManagement = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filters, setFilters] = useState({
         status: '',
-        visibility: ''
+        visibility: '',
     });
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedContest, setSelectedContest] = useState(null);
-    
+
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -29,7 +39,7 @@ const ContestManagement = () => {
 
     useEffect(() => {
         loadContests();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters, currentPage]);
 
     const loadContests = async () => {
@@ -39,7 +49,7 @@ const ContestManagement = () => {
                 search: searchTerm,
                 page: currentPage,
                 page_size: pageSize,
-                ...filters
+                ...filters,
             };
             const response = await ContestService.getAll(params);
             setContests(response.contests || []);
@@ -60,12 +70,12 @@ const ContestManagement = () => {
 
     const handleFilterChange = (key, value) => {
         setCurrentPage(1);
-        setFilters(prev => ({
+        setFilters((prev) => ({
             ...prev,
-            [key]: value
+            [key]: value,
         }));
     };
-    
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -104,9 +114,9 @@ const ContestManagement = () => {
 
     const getStatusBadge = (status) => {
         const statusConfig = {
-            upcoming: { label: 'Upcoming', class: 'status-upcoming' },
-            running: { label: 'Running', class: 'status-running' },
-            finished: { label: 'Finished', class: 'status-finished' }
+            upcoming: { label: 'Sắp diễn ra', class: 'status-upcoming' },
+            running: { label: 'Đang diễn ra', class: 'status-running' },
+            finished: { label: 'Đã kết thúc', class: 'status-finished' },
         };
         const config = statusConfig[status] || statusConfig.upcoming;
         return <span className={`status-badge ${config.class}`}>{config.label}</span>;
@@ -119,7 +129,7 @@ const ContestManagement = () => {
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
         });
     };
 
@@ -137,11 +147,11 @@ const ContestManagement = () => {
             {/* Page Header */}
             <div className="contest-management-page-header">
                 <div className="contest-management-header-left">
-                    <h1>Contest Management</h1>
-                    <p className="contest-management-subtitle">Manage programming contests and competitions</p>
+                    <h1>Quản lý Contest</h1>
+                    <p className="contest-management-subtitle">Quản lý các cuộc thi lập trình</p>
                 </div>
                 <button className="contest-btn-create" onClick={handleCreate}>
-                    <FaPlus /> Create Contest
+                    <FaPlus /> Tạo Contest
                 </button>
             </div>
 
@@ -153,7 +163,7 @@ const ContestManagement = () => {
                         <FaSearch className="contest-search-icon" />
                         <input
                             type="text"
-                            placeholder="Search contests..."
+                            placeholder="Tìm kiếm contest..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
@@ -175,10 +185,10 @@ const ContestManagement = () => {
                             value={filters.status}
                             onChange={(e) => handleFilterChange('status', e.target.value)}
                         >
-                            <option value="">All Status</option>
-                            <option value="upcoming">Upcoming</option>
-                            <option value="running">Running</option>
-                            <option value="finished">Finished</option>
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="upcoming">Sắp diễn ra</option>
+                            <option value="running">Đang diễn ra</option>
+                            <option value="finished">Đã kết thúc</option>
                         </select>
 
                         <select
@@ -186,111 +196,109 @@ const ContestManagement = () => {
                             value={filters.visibility}
                             onChange={(e) => handleFilterChange('visibility', e.target.value)}
                         >
-                            <option value="">All Visibility</option>
+                            <option value="">Tất cả hiển thị</option>
                             <option value="public">Public</option>
                             <option value="private">Private</option>
                         </select>
                     </div>
                 </div>
 
-            {/* Contest List */}
-            {contests.length === 0 ? (
-                <div className="contest-empty">
-                    <FaTrophy size={64} />
-                    <h3>Không tìm thấy contest</h3>
-                </div>
-            ) : (
-                <div className="contest-table-container">
-                    <table className="contest-table">
-                        <thead>
-                            <tr>
-                                <th>Contest</th>
-                                <th>Thời gian</th>
-                                <th>Trạng thái</th>
-                                <th>Hiển thị</th>
-                                <th>Bài tập</th>
-                                <th>Penalty</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {contests.map(contest => (
-                                <tr key={contest.id}>
-                                    <td>
-                                        <div className="contest-info">
-                                            <div className="contest-title">{contest.title}</div>
-                                            <div className="contest-slug">{contest.slug}</div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="contest-time">
-                                            <div className="time-row">
-                                                <FaCalendarAlt />
-                                                <span>{formatDateTime(contest.start_at)}</span>
-                                            </div>
-                                            <div className="time-row">
-                                                <FaClock />
-                                                <span>{formatDateTime(contest.end_at)}</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {getStatusBadge(contest.status)}
-                                    </td>
-                                    <td>
-                                        <span className={`visibility-badge visibility-${contest.visibility}`}>
-                                            {contest.visibility === 'public' ? <FaEye /> : <FaEyeSlash />}
-                                            {contest.visibility}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className="problem-count">
-                                            <FaUsers /> {contest.problem_count}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className="penalty-time">{contest.penalty_time} phút</span>
-                                    </td>
-                                    <td>
-                                        <div className="contest-actions">
-                                            <button
-                                                className="contest-btn-icon contest-btn-view"
-                                                onClick={() => handleView(contest.id)}
-                                                title="Xem chi tiết"
-                                            >
-                                                <FaEye />
-                                            </button>
-                                            <button
-                                                className="contest-btn-icon contest-btn-edit"
-                                                onClick={() => handleEdit(contest.id)}
-                                                title="Chỉnh sửa"
-                                            >
-                                                <FaEdit />
-                                            </button>
-                                            <button
-                                                className="contest-btn-icon contest-btn-delete"
-                                                onClick={() => openDeleteModal(contest)}
-                                                title="Xóa"
-                                            >
-                                                <FaTrash />
-                                            </button>
-                                        </div>
-                                    </td>
+                {/* Contest List */}
+                {contests.length === 0 ? (
+                    <div className="contest-empty">
+                        <FaTrophy size={64} />
+                        <h3>Không tìm thấy contest</h3>
+                    </div>
+                ) : (
+                    <div className="contest-table-container">
+                        <table className="contest-table">
+                            <thead>
+                                <tr>
+                                    <th>Contest</th>
+                                    <th>Thời gian</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hiển thị</th>
+                                    <th>Bài tập</th>
+                                    <th>Penalty</th>
+                                    <th>Hành động</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-            
-            {/* Pagination */}
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                totalItems={totalItems}
-                onPageChange={handlePageChange}
-                itemsPerPage={pageSize}
-            />
+                            </thead>
+                            <tbody>
+                                {contests.map((contest) => (
+                                    <tr key={contest.id}>
+                                        <td>
+                                            <div className="contest-info">
+                                                <div className="contest-title">{contest.title}</div>
+                                                <div className="contest-slug">{contest.slug}</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="contest-time">
+                                                <div className="time-row">
+                                                    <FaCalendarAlt />
+                                                    <span>{formatDateTime(contest.start_at)}</span>
+                                                </div>
+                                                <div className="time-row">
+                                                    <FaClock />
+                                                    <span>{formatDateTime(contest.end_at)}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{getStatusBadge(contest.status)}</td>
+                                        <td>
+                                            <span className={`visibility-badge visibility-${contest.visibility}`}>
+                                                {contest.visibility === 'public' ? <FaEye /> : <FaEyeSlash />}
+                                                {contest.visibility}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span className="problem-count">
+                                                <FaUsers /> {contest.problem_count}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span className="penalty-time">{contest.penalty_time} phút</span>
+                                        </td>
+                                        <td>
+                                            <div className="contest-actions">
+                                                <button
+                                                    className="contest-btn-icon contest-btn-view"
+                                                    onClick={() => handleView(contest.id)}
+                                                    title="Xem chi tiết"
+                                                >
+                                                    <FaEye />
+                                                </button>
+                                                <button
+                                                    className="contest-btn-icon contest-btn-edit"
+                                                    onClick={() => handleEdit(contest.id)}
+                                                    title="Chỉnh sửa"
+                                                >
+                                                    <FaEdit />
+                                                </button>
+                                                <button
+                                                    className="contest-btn-icon contest-btn-delete"
+                                                    onClick={() => openDeleteModal(contest)}
+                                                    title="Xóa"
+                                                >
+                                                    <FaTrash />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+                {/* Pagination */}
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    onPageChange={handlePageChange}
+                    itemsPerPage={pageSize}
+                />
             </div>
 
             {/* Delete Confirmation Modal */}
@@ -301,20 +309,16 @@ const ContestManagement = () => {
                             <h3>Xác nhận xóa</h3>
                         </div>
                         <div className="contest-modal-body">
-                            <p>Bạn có chắc chắn muốn xóa contest <strong>{selectedContest?.title}</strong>?</p>
+                            <p>
+                                Bạn có chắc chắn muốn xóa contest <strong>{selectedContest?.title}</strong>?
+                            </p>
                             <p className="contest-warning-text">Hành động này không thể hoàn tác!</p>
                         </div>
                         <div className="contest-modal-actions">
-                            <button
-                                className="contest-btn-cancel"
-                                onClick={() => setShowDeleteModal(false)}
-                            >
+                            <button className="contest-btn-cancel" onClick={() => setShowDeleteModal(false)}>
                                 Hủy
                             </button>
-                            <button
-                                className="contest-btn-confirm-delete"
-                                onClick={handleDelete}
-                            >
+                            <button className="contest-btn-confirm-delete" onClick={handleDelete}>
                                 Xóa
                             </button>
                         </div>

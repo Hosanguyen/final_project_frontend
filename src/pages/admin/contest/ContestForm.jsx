@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { 
-    FaTrophy, FaCalendarAlt, FaClock, FaEye, FaEyeSlash, 
-    FaSave, FaTimes, FaExclamationCircle, FaCheckCircle, FaArrowLeft 
+import {
+    FaTrophy,
+    FaCalendarAlt,
+    FaClock,
+    FaEye,
+    FaEyeSlash,
+    FaSave,
+    FaTimes,
+    FaExclamationCircle,
+    FaCheckCircle,
+    FaArrowLeft,
 } from 'react-icons/fa';
 import './ContestForm.css';
 import ContestService from '../../../services/ContestService';
@@ -24,7 +32,7 @@ const ContestForm = () => {
         is_show_result: true,
         penalty_time: 20,
         penalty_mode: 'standard',
-        freeze_rankings_at: ''
+        freeze_rankings_at: '',
     });
 
     const [errors, setErrors] = useState({});
@@ -56,7 +64,7 @@ const ContestForm = () => {
                 is_show_result: data.is_show_result !== undefined ? data.is_show_result : true,
                 penalty_time: data.penalty_time || 20,
                 penalty_mode: data.penalty_mode || 'standard',
-                freeze_rankings_at: data.freeze_rankings_at ? formatDateTimeLocal(data.freeze_rankings_at) : ''
+                freeze_rankings_at: data.freeze_rankings_at ? formatDateTimeLocal(data.freeze_rankings_at) : '',
             });
         } catch (error) {
             console.error('Error loading contest:', error);
@@ -78,15 +86,15 @@ const ContestForm = () => {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: type === 'checkbox' ? checked : value,
         }));
         // Clear error for this field
         if (errors[name]) {
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [name]: ''
+                [name]: '',
             }));
         }
     };
@@ -95,28 +103,28 @@ const ContestForm = () => {
         const newErrors = {};
 
         if (!formData.slug.trim()) {
-            newErrors.slug = 'Slug is required';
+            newErrors.slug = 'Slug là bắt buộc';
         } else if (!/^[a-z0-9-_]+$/.test(formData.slug)) {
-            newErrors.slug = 'Slug can only contain lowercase letters, numbers, hyphens, and underscores';
+            newErrors.slug = 'Slug chỉ được chứa chữ thường, số, gạch ngang và gạch dưới';
         }
 
         if (!formData.title.trim()) {
-            newErrors.title = 'Title is required';
+            newErrors.title = 'Tiêu đề là bắt buộc';
         }
 
         if (!formData.start_at) {
-            newErrors.start_at = 'Start time is required';
+            newErrors.start_at = 'Thời gian bắt đầu là bắt buộc';
         }
 
         if (!formData.end_at) {
-            newErrors.end_at = 'End time is required';
+            newErrors.end_at = 'Thời gian kết thúc là bắt buộc';
         }
 
         if (formData.start_at && formData.end_at) {
             const startDate = new Date(formData.start_at);
             const endDate = new Date(formData.end_at);
             if (endDate <= startDate) {
-                newErrors.end_at = 'End time must be after start time';
+                newErrors.end_at = 'Thời gian kết thúc phải sau thời gian bắt đầu';
             }
         }
 
@@ -124,25 +132,25 @@ const ContestForm = () => {
             const freezeDate = new Date(formData.freeze_rankings_at);
             const endDate = new Date(formData.end_at);
             if (freezeDate >= endDate) {
-                newErrors.freeze_rankings_at = 'Freeze time must be before end time';
+                newErrors.freeze_rankings_at = 'Thời gian đóng băng phải trước thời gian kết thúc';
             }
         }
 
         setErrors(newErrors);
-        
+
         // Show notification for first error
         const errorKeys = Object.keys(newErrors);
         if (errorKeys.length > 0) {
             const firstError = newErrors[errorKeys[0]];
             notification.error(firstError, 'Validation Error');
         }
-        
+
         return errorKeys.length === 0;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
@@ -155,10 +163,10 @@ const ContestForm = () => {
                 ...formData,
                 start_at: new Date(formData.start_at).toISOString(),
                 end_at: new Date(formData.end_at).toISOString(),
-                freeze_rankings_at: formData.freeze_rankings_at 
-                    ? new Date(formData.freeze_rankings_at).toISOString() 
+                freeze_rankings_at: formData.freeze_rankings_at
+                    ? new Date(formData.freeze_rankings_at).toISOString()
                     : null,
-                penalty_time: parseInt(formData.penalty_time)
+                penalty_time: parseInt(formData.penalty_time),
             };
 
             let response;
@@ -173,7 +181,6 @@ const ContestForm = () => {
             setTimeout(() => {
                 navigate('/admin/contests');
             }, 1500);
-
         } catch (error) {
             console.error('Error saving contest:', error);
             notification.error(error.details || error.error || 'Failed to save contest');
@@ -195,231 +202,229 @@ const ContestForm = () => {
         <div className="contest-form">
             <div className="contest-form-page-header">
                 <div className="contest-form-header-left">
-                    <h1>{isEditMode ? 'Edit Contest' : 'Create New Contest'}</h1>
+                    <h1>{isEditMode ? 'Chỉnh sửa Contest' : 'Tạo Contest mới'}</h1>
                     <p className="contest-form-subtitle">
-                        {isEditMode ? 'Update contest information' : 'Fill in the details to create a new contest'}
+                        {isEditMode ? 'Cập nhật thông tin contest' : 'Điền thông tin để tạo contest mới'}
                     </p>
                 </div>
             </div>
 
             <div className="contest-form-container">
                 <form onSubmit={handleSubmit} className="contest-form-inner">
-                {/* Success Message */}
-                {successMessage && (
-                    <div className="contest-form-message success">
-                        <FaCheckCircle /> {successMessage}
-                    </div>
-                )}
+                    {/* Success Message */}
+                    {successMessage && (
+                        <div className="contest-form-message success">
+                            <FaCheckCircle /> {successMessage}
+                        </div>
+                    )}
 
-                {/* Error Message */}
-                {errorMessage && (
-                    <div className="contest-form-message error">
-                        <FaExclamationCircle /> {errorMessage}
-                    </div>
-                )}
+                    {/* Error Message */}
+                    {errorMessage && (
+                        <div className="contest-form-message error">
+                            <FaExclamationCircle /> {errorMessage}
+                        </div>
+                    )}
 
-                {/* Slug */}
-                <div className="contest-form-group">
-                    <label htmlFor="slug">
-                        Contest Slug <span className="required">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="slug"
-                        name="slug"
-                        value={formData.slug}
-                        onChange={handleChange}
-                        placeholder="my-contest-2025"
-                        disabled={isEditMode}
-                        className={errors.slug ? 'error' : ''}
-                    />
-                    {errors.slug && <span className="contest-error-message">{errors.slug}</span>}
-                    <small>Unique identifier (lowercase, numbers, hyphens, underscores only)</small>
-                </div>
-
-                {/* Title */}
-                <div className="contest-form-group">
-                    <label htmlFor="title">
-                        Contest Title <span className="required">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        placeholder="Programming Contest 2025"
-                        className={errors.title ? 'error' : ''}
-                    />
-                    {errors.title && <span className="contest-error-message">{errors.title}</span>}
-                </div>
-
-                {/* Description */}
-                <div className="contest-form-group">
-                    <label htmlFor="description">Description</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        rows="4"
-                        placeholder="Contest description..."
-                    />
-                </div>
-
-                {/* Date Time Row */}
-                <div className="contest-form-row">
+                    {/* Slug */}
                     <div className="contest-form-group">
-                        <label htmlFor="start_at">
-                            <FaCalendarAlt /> Start Time <span className="required">*</span>
+                        <label htmlFor="slug">
+                            Slug Contest <span className="required">*</span>
                         </label>
                         <input
-                            type="datetime-local"
-                            id="start_at"
-                            name="start_at"
-                            value={formData.start_at}
+                            type="text"
+                            id="slug"
+                            name="slug"
+                            value={formData.slug}
                             onChange={handleChange}
-                            className={errors.start_at ? 'error' : ''}
+                            placeholder="my-contest-2025"
+                            disabled={isEditMode}
+                            className={errors.slug ? 'error' : ''}
                         />
-                        {errors.start_at && <span className="contest-error-message">{errors.start_at}</span>}
+                        {errors.slug && <span className="contest-error-message">{errors.slug}</span>}
+                        <small>Định danh duy nhất (chỉ chữ thường, số, gạch ngang, gạch dưới)</small>
                     </div>
 
+                    {/* Title */}
                     <div className="contest-form-group">
-                        <label htmlFor="end_at">
-                            <FaClock /> End Time <span className="required">*</span>
+                        <label htmlFor="title">
+                            Tiêu đề Contest <span className="required">*</span>
                         </label>
                         <input
-                            type="datetime-local"
-                            id="end_at"
-                            name="end_at"
-                            value={formData.end_at}
+                            type="text"
+                            id="title"
+                            name="title"
+                            value={formData.title}
                             onChange={handleChange}
-                            className={errors.end_at ? 'error' : ''}
+                            placeholder="Cuộc thi lập trình 2025"
+                            className={errors.title ? 'error' : ''}
                         />
-                        {errors.end_at && <span className="contest-error-message">{errors.end_at}</span>}
+                        {errors.title && <span className="contest-error-message">{errors.title}</span>}
                     </div>
-                </div>
 
-                {/* Settings Row */}
-                <div className="contest-form-row">
+                    {/* Description */}
                     <div className="contest-form-group">
-                        <label htmlFor="visibility">
-                            {formData.visibility === 'public' ? <FaEye /> : <FaEyeSlash />} Visibility
-                        </label>
-                        <select
-                            id="visibility"
-                            name="visibility"
-                            value={formData.visibility}
+                        <label htmlFor="description">Mô tả</label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            value={formData.description}
                             onChange={handleChange}
-                        >
-                            <option value="private">Private</option>
-                            <option value="public">Public</option>
-                        </select>
+                            rows="4"
+                            placeholder="Mô tả contest..."
+                        />
                     </div>
 
-                    <div className="contest-form-group">
-                        <label htmlFor="contest_mode">
-                            <FaTrophy /> Contest Mode
-                        </label>
-                        <select
-                            id="contest_mode"
-                            name="contest_mode"
-                            value={formData.contest_mode}
-                            onChange={handleChange}
-                        >
-                            <option value="ICPC">ICPC Mode (AC/WA only)</option>
-                            <option value="OI">OI Mode (Show test cases passed)</option>
-                        </select>
-                        <small>ICPC: Only shows AC/WA, OI: Shows test results (e.g., 17/18)</small>
-                    </div>
-
-                    <div className="contest-form-group">
-                        <label htmlFor="is_show_result">
+                    {/* Date Time Row */}
+                    <div className="contest-form-row">
+                        <div className="contest-form-group">
+                            <label htmlFor="start_at">
+                                <FaCalendarAlt /> Thời gian bắt đầu <span className="required">*</span>
+                            </label>
                             <input
-                                type="checkbox"
-                                id="is_show_result"
-                                name="is_show_result"
-                                checked={formData.is_show_result}
+                                type="datetime-local"
+                                id="start_at"
+                                name="start_at"
+                                value={formData.start_at}
                                 onChange={handleChange}
-                                style={{ width: 'auto', marginRight: '8px' }}
+                                className={errors.start_at ? 'error' : ''}
                             />
-                            Show Detailed Results
-                        </label>
-                        <small>Allow participants to see detailed test case results and error messages</small>
-                    </div>
-                </div>
+                            {errors.start_at && <span className="contest-error-message">{errors.start_at}</span>}
+                        </div>
 
-                {/* Penalty Settings Row */}
-                <div className="contest-form-row">
-                    <div className="contest-form-group">
-                        <label htmlFor="penalty_time">Penalty Time (minutes)</label>
-                        <input
-                            type="number"
-                            id="penalty_time"
-                            name="penalty_time"
-                            value={formData.penalty_time}
-                            onChange={handleChange}
-                            min="0"
-                            step="1"
-                        />
-                        <small>Penalty added per wrong submission (ICPC: 20 min)</small>
+                        <div className="contest-form-group">
+                            <label htmlFor="end_at">
+                                <FaClock /> Thời gian kết thúc <span className="required">*</span>
+                            </label>
+                            <input
+                                type="datetime-local"
+                                id="end_at"
+                                name="end_at"
+                                value={formData.end_at}
+                                onChange={handleChange}
+                                className={errors.end_at ? 'error' : ''}
+                            />
+                            {errors.end_at && <span className="contest-error-message">{errors.end_at}</span>}
+                        </div>
                     </div>
-                </div>
 
-                {/* Advanced Settings */}
-                <div className="contest-form-row">
-                    <div className="contest-form-group">
-                        <label htmlFor="penalty_mode">Penalty Mode</label>
-                        <select
-                            id="penalty_mode"
-                            name="penalty_mode"
-                            value={formData.penalty_mode}
-                            onChange={handleChange}
+                    {/* Settings Row */}
+                    <div className="contest-form-row">
+                        <div className="contest-form-group">
+                            <label htmlFor="visibility">
+                                {formData.visibility === 'public' ? <FaEye /> : <FaEyeSlash />} Hiển thị
+                            </label>
+                            <select
+                                id="visibility"
+                                name="visibility"
+                                value={formData.visibility}
+                                onChange={handleChange}
+                            >
+                                <option value="private">Private</option>
+                                <option value="public">Public</option>
+                            </select>
+                        </div>
+
+                        <div className="contest-form-group">
+                            <label htmlFor="contest_mode">
+                                <FaTrophy /> Chế độ Contest
+                            </label>
+                            <select
+                                id="contest_mode"
+                                name="contest_mode"
+                                value={formData.contest_mode}
+                                onChange={handleChange}
+                            >
+                                <option value="ICPC">ICPC Mode (chỉ AC/WA)</option>
+                                <option value="OI">OI Mode (hiển thị test cases đạt)</option>
+                            </select>
+                            <small>ICPC: Chỉ hiện AC/WA, OI: Hiện kết quả test (VD: 17/18)</small>
+                        </div>
+
+                        <div className="contest-form-group">
+                            <label htmlFor="is_show_result">
+                                <input
+                                    type="checkbox"
+                                    id="is_show_result"
+                                    name="is_show_result"
+                                    checked={formData.is_show_result}
+                                    onChange={handleChange}
+                                    style={{ width: 'auto', marginRight: '8px' }}
+                                />
+                                Hiển thị kết quả chi tiết
+                            </label>
+                            <small>Cho phép thí sinh xem chi tiết test case và thông báo lỗi</small>
+                        </div>
+                    </div>
+
+                    {/* Penalty Settings Row */}
+                    <div className="contest-form-row">
+                        <div className="contest-form-group">
+                            <label htmlFor="penalty_time">Thời gian phạt (phút)</label>
+                            <input
+                                type="number"
+                                id="penalty_time"
+                                name="penalty_time"
+                                value={formData.penalty_time}
+                                onChange={handleChange}
+                                min="0"
+                                step="1"
+                            />
+                            <small>Phạt thêm cho mỗi lần nộp sai (ICPC: 20 phút)</small>
+                        </div>
+                    </div>
+
+                    {/* Advanced Settings */}
+                    <div className="contest-form-row">
+                        <div className="contest-form-group">
+                            <label htmlFor="penalty_mode">Chế độ phạt</label>
+                            <select
+                                id="penalty_mode"
+                                name="penalty_mode"
+                                value={formData.penalty_mode}
+                                onChange={handleChange}
+                            >
+                                <option value="none">Không phạt</option>
+                                <option value="standard">Phạt chuẩn</option>
+                            </select>
+                        </div>
+
+                        <div className="contest-form-group">
+                            <label htmlFor="freeze_rankings_at">Đóng băng xếp hạng lúc</label>
+                            <input
+                                type="datetime-local"
+                                id="freeze_rankings_at"
+                                name="freeze_rankings_at"
+                                value={formData.freeze_rankings_at}
+                                onChange={handleChange}
+                                className={errors.freeze_rankings_at ? 'error' : ''}
+                            />
+                            {errors.freeze_rankings_at && (
+                                <span className="contest-error-message">{errors.freeze_rankings_at}</span>
+                            )}
+                            <small>Tùy chọn: Thời gian đóng băng bảng xếp hạng</small>
+                        </div>
+                    </div>
+
+                    {/* Form Actions */}
+                    <div className="contest-form-actions">
+                        <button
+                            type="button"
+                            onClick={() => navigate('/admin/contests')}
+                            className="contest-btn-cancel"
+                            disabled={isSubmitting}
                         >
-                            <option value="none">No Penalty</option>
-                            <option value="standard">Standard Penalty</option>
-                        </select>
+                            <FaTimes /> Hủy
+                        </button>
+                        <button type="submit" className="contest-btn-submit" disabled={isSubmitting}>
+                            {isSubmitting ? (
+                                <>Đang xử lý...</>
+                            ) : (
+                                <>
+                                    <FaSave /> {isEditMode ? 'Cập nhật Contest' : 'Tạo Contest'}
+                                </>
+                            )}
+                        </button>
                     </div>
-
-                    <div className="contest-form-group">
-                        <label htmlFor="freeze_rankings_at">Freeze Rankings At</label>
-                        <input
-                            type="datetime-local"
-                            id="freeze_rankings_at"
-                            name="freeze_rankings_at"
-                            value={formData.freeze_rankings_at}
-                            onChange={handleChange}
-                            className={errors.freeze_rankings_at ? 'error' : ''}
-                        />
-                        {errors.freeze_rankings_at && <span className="contest-error-message">{errors.freeze_rankings_at}</span>}
-                        <small>Optional: Time to freeze the scoreboard</small>
-                    </div>
-                </div>
-
-                {/* Form Actions */}
-                <div className="contest-form-actions">
-                    <button 
-                        type="button" 
-                        onClick={() => navigate('/admin/contests')} 
-                        className="contest-btn-cancel"
-                        disabled={isSubmitting}
-                    >
-                        <FaTimes /> Hủy
-                    </button>
-                    <button 
-                        type="submit" 
-                        className="contest-btn-submit"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? (
-                            <>Đang xử lý...</>
-                        ) : (
-                            <>
-                                <FaSave /> {isEditMode ? 'Cập nhật Contest' : 'Tạo Contest'}
-                            </>
-                        )}
-                    </button>
-                </div>
                 </form>
 
                 {/* Problem Manager - Only show in edit mode */}

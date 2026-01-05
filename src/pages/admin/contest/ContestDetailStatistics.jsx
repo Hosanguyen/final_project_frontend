@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-    Users, 
-    FileText, 
-    CheckCircle, 
-    XCircle, 
+import {
+    Users,
+    FileText,
+    CheckCircle,
+    XCircle,
     Activity,
     Award,
     TrendingUp,
     AlertCircle,
-    ArrowLeft
+    ArrowLeft,
 } from 'lucide-react';
 import ContestService from '../../../services/ContestService';
 import './ContestDetailStatistics.css';
@@ -41,25 +41,25 @@ const ContestDetailStatistics = () => {
 
     const getStatusColor = (status) => {
         const colors = {
-            'AC': '#10b981',
-            'WA': '#ef4444',
-            'TLE': '#f59e0b',
-            'MLE': '#8b5cf6',
-            'RE': '#ec4899',
-            'CE': '#6366f1'
+            AC: '#10b981',
+            WA: '#ef4444',
+            TLE: '#f59e0b',
+            MLE: '#8b5cf6',
+            RE: '#ec4899',
+            CE: '#6366f1',
         };
         return colors[status] || '#6b7280';
     };
 
     const getStatusLabel = (status) => {
         const labels = {
-            'AC': 'Accepted',
-            'WA': 'Wrong Answer',
-            'TLE': 'Time Limit',
-            'MLE': 'Memory Limit',
-            'RE': 'Runtime Error',
-            'CE': 'Compile Error',
-            'PE': 'Presentation Error'
+            AC: 'Accepted',
+            WA: 'Wrong Answer',
+            TLE: 'Time Limit',
+            MLE: 'Memory Limit',
+            RE: 'Runtime Error',
+            CE: 'Compile Error',
+            PE: 'Presentation Error',
         };
         return labels[status] || status;
     };
@@ -88,22 +88,18 @@ const ContestDetailStatistics = () => {
         <div className="contest-detail-stats-container">
             {/* Header */}
             <div className="stats-header">
-                <button 
-                    className="back-button"
-                    onClick={() => navigate('/admin/statistics/contest-reports')}
-                >
+                <button className="back-button" onClick={() => navigate('/admin/statistics/contest-reports')}>
                     <ArrowLeft size={20} />
                     <span>Quay lại</span>
                 </button>
                 <div className="header-content">
                     <h1>{contest.title}</h1>
                     <div className="contest-info">
-                        <span className={`contest-badge ${contest.visibility}`}>
-                            {contest.visibility}
-                        </span>
+                        <span className={`contest-badge ${contest.visibility}`}>{contest.visibility}</span>
                         <span className="contest-mode">{contest.contest_mode} Mode</span>
                         <span className="contest-dates">
-                            {new Date(contest.start_at).toLocaleDateString('vi-VN')} - {new Date(contest.end_at).toLocaleDateString('vi-VN')}
+                            {new Date(contest.start_at).toLocaleDateString('vi-VN')} -{' '}
+                            {new Date(contest.end_at).toLocaleDateString('vi-VN')}
                         </span>
                     </div>
                 </div>
@@ -118,9 +114,7 @@ const ContestDetailStatistics = () => {
                     <div className="stat-content">
                         <h3>Người tham gia</h3>
                         <p className="stat-value">{statistics.participants.total}</p>
-                        <span className="stat-detail">
-                            {statistics.participants.active} đang hoạt động
-                        </span>
+                        <span className="stat-detail">{statistics.participants.active} đang hoạt động</span>
                     </div>
                 </div>
 
@@ -131,9 +125,7 @@ const ContestDetailStatistics = () => {
                     <div className="stat-content">
                         <h3>Tổng bài nộp</h3>
                         <p className="stat-value">{statistics.submissions.total}</p>
-                        <span className="stat-detail">
-                            {statistics.submissions.accepted} được chấp nhận
-                        </span>
+                        <span className="stat-detail">{statistics.submissions.accepted} được chấp nhận</span>
                     </div>
                 </div>
 
@@ -144,9 +136,7 @@ const ContestDetailStatistics = () => {
                     <div className="stat-content">
                         <h3>Tỷ lệ AC</h3>
                         <p className="stat-value">{statistics.submissions.acceptance_rate}%</p>
-                        <span className="stat-detail">
-                            Accepted Rate
-                        </span>
+                        <span className="stat-detail">Tỷ lệ chấp nhận</span>
                     </div>
                 </div>
 
@@ -157,9 +147,7 @@ const ContestDetailStatistics = () => {
                     <div className="stat-content">
                         <h3>Số bài tập</h3>
                         <p className="stat-value">{statistics.problems.total}</p>
-                        <span className="stat-detail">
-                            Trong contest
-                        </span>
+                        <span className="stat-detail">Trong contest</span>
                     </div>
                 </div>
             </div>
@@ -174,11 +162,11 @@ const ContestDetailStatistics = () => {
                     </h2>
                     <div className="bar-chart">
                         {charts.submissions_over_time.map((item, index) => {
-                            const maxCount = Math.max(...charts.submissions_over_time.map(i => i.count));
+                            const maxCount = Math.max(...charts.submissions_over_time.map((i) => i.count));
                             const height = (item.count / maxCount) * 100;
                             return (
                                 <div key={index} className="bar-item">
-                                    <div 
+                                    <div
                                         className="bar submissions-bar"
                                         style={{ height: `${height}%` }}
                                         title={`${item.day}: ${item.count} submissions`}
@@ -186,7 +174,10 @@ const ContestDetailStatistics = () => {
                                         <span className="bar-value">{item.count}</span>
                                     </div>
                                     <span className="bar-label">
-                                        {new Date(item.day).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}
+                                        {new Date(item.day).toLocaleDateString('vi-VN', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                        })}
                                     </span>
                                 </div>
                             );
@@ -205,7 +196,9 @@ const ContestDetailStatistics = () => {
                             <div className="test-case-summary">
                                 <div className="test-stat">
                                     <span className="test-stat-label">Tổng test case chạy</span>
-                                    <span className="test-stat-value">{statistics.test_cases.total_test_cases_run}</span>
+                                    <span className="test-stat-value">
+                                        {statistics.test_cases.total_test_cases_run}
+                                    </span>
                                 </div>
                                 <div className="test-stat passed">
                                     <span className="test-stat-label">Passed</span>
@@ -216,25 +209,33 @@ const ContestDetailStatistics = () => {
                                     <span className="test-stat-value">{statistics.test_cases.failed_test_cases}</span>
                                 </div>
                             </div>
-                            
+
                             {/* Test case pass rate bar */}
                             <div className="test-case-bar">
-                                <div 
+                                <div
                                     className="test-case-passed"
-                                    style={{ 
-                                        width: `${(statistics.test_cases.passed_test_cases / statistics.test_cases.total_test_cases_run * 100).toFixed(1)}%` 
+                                    style={{
+                                        width: `${(
+                                            (statistics.test_cases.passed_test_cases /
+                                                statistics.test_cases.total_test_cases_run) *
+                                            100
+                                        ).toFixed(1)}%`,
                                     }}
                                     title={`${statistics.test_cases.passed_test_cases} passed`}
                                 />
-                                <div 
+                                <div
                                     className="test-case-failed"
-                                    style={{ 
-                                        width: `${(statistics.test_cases.failed_test_cases / statistics.test_cases.total_test_cases_run * 100).toFixed(1)}%` 
+                                    style={{
+                                        width: `${(
+                                            (statistics.test_cases.failed_test_cases /
+                                                statistics.test_cases.total_test_cases_run) *
+                                            100
+                                        ).toFixed(1)}%`,
                                     }}
                                     title={`${statistics.test_cases.failed_test_cases} failed`}
                                 />
                             </div>
-                            
+
                             {/* Test case by verdict */}
                             {statistics.test_cases.by_verdict && statistics.test_cases.by_verdict.length > 0 && (
                                 <div className="test-case-verdicts">
@@ -243,11 +244,15 @@ const ContestDetailStatistics = () => {
                                         <div key={index} className="verdict-item">
                                             <span className="verdict-label">{item.verdict}</span>
                                             <div className="verdict-bar-container">
-                                                <div 
+                                                <div
                                                     className="verdict-bar"
-                                                    style={{ 
-                                                        width: `${(item.count / statistics.test_cases.total_test_cases_run * 100).toFixed(1)}%`,
-                                                        backgroundColor: item.verdict === 'correct' ? '#10b981' : '#ef4444'
+                                                    style={{
+                                                        width: `${(
+                                                            (item.count / statistics.test_cases.total_test_cases_run) *
+                                                            100
+                                                        ).toFixed(1)}%`,
+                                                        backgroundColor:
+                                                            item.verdict === 'correct' ? '#10b981' : '#ef4444',
                                                     }}
                                                 />
                                             </div>
@@ -270,18 +275,18 @@ const ContestDetailStatistics = () => {
                         {statistics.submissions.by_status.map((item, index) => (
                             <div key={index} className="error-item">
                                 <div className="error-info">
-                                    <span 
+                                    <span
                                         className="error-dot"
                                         style={{ backgroundColor: getStatusColor(item.status) }}
                                     />
                                     <span className="error-label">{getStatusLabel(item.status)}</span>
                                 </div>
                                 <div className="error-bar-container">
-                                    <div 
+                                    <div
                                         className="error-bar"
-                                        style={{ 
+                                        style={{
                                             width: `${(item.count / statistics.submissions.total) * 100}%`,
-                                            backgroundColor: getStatusColor(item.status)
+                                            backgroundColor: getStatusColor(item.status),
                                         }}
                                     />
                                 </div>
@@ -300,8 +305,8 @@ const ContestDetailStatistics = () => {
                 </h2>
                 <div className="problems-grid">
                     {statistics.problems.by_problem.map((problem, index) => (
-                        <div 
-                            key={index} 
+                        <div
+                            key={index}
                             className="problem-card clickable-card"
                             onClick={() => navigate(`/admin/statistics/problem/${problem.problem_id}?contest_id=${id}`)}
                             style={{ cursor: 'pointer' }}
@@ -323,10 +328,7 @@ const ContestDetailStatistics = () => {
                             </div>
                             <div className="problem-acceptance">
                                 <div className="acceptance-bar">
-                                    <div 
-                                        className="acceptance-fill"
-                                        style={{ width: `${problem.acceptance_rate}%` }}
-                                    />
+                                    <div className="acceptance-fill" style={{ width: `${problem.acceptance_rate}%` }} />
                                 </div>
                                 <span className="acceptance-rate">{problem.acceptance_rate}%</span>
                             </div>
@@ -357,9 +359,7 @@ const ContestDetailStatistics = () => {
                             {statistics.participants.top_participants.map((participant, index) => (
                                 <tr key={participant.user_id}>
                                     <td>
-                                        <span className={`rank rank-${index + 1}`}>
-                                            {index + 1}
-                                        </span>
+                                        <span className={`rank rank-${index + 1}`}>{index + 1}</span>
                                     </td>
                                     <td>
                                         <div className="participant-info">
@@ -376,9 +376,14 @@ const ContestDetailStatistics = () => {
                                     <td>{participant.total_submissions}</td>
                                     <td>
                                         <span className="ac-rate">
-                                            {participant.total_submissions > 0 
-                                                ? Math.round((participant.accepted_submissions / participant.total_submissions) * 100)
-                                                : 0}%
+                                            {participant.total_submissions > 0
+                                                ? Math.round(
+                                                      (participant.accepted_submissions /
+                                                          participant.total_submissions) *
+                                                          100,
+                                                  )
+                                                : 0}
+                                            %
                                         </span>
                                     </td>
                                 </tr>
@@ -399,10 +404,10 @@ const ContestDetailStatistics = () => {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>User</th>
-                                <th>Problem</th>
-                                <th>Status</th>
-                                <th>Language</th>
+                                <th>Người dùng</th>
+                                <th>Bài tập</th>
+                                <th>Trạng thái</th>
+                                <th>Ngôn ngữ</th>
                                 <th>Thời gian</th>
                             </tr>
                         </thead>
@@ -417,7 +422,7 @@ const ContestDetailStatistics = () => {
                                         </span>
                                     </td>
                                     <td>
-                                        <span 
+                                        <span
                                             className="status-badge"
                                             style={{ backgroundColor: getStatusColor(submission.status) }}
                                         >

@@ -2,8 +2,18 @@
 import notification from '../../../utils/notification';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-    FaTrophy, FaArrowLeft, FaEdit, FaTrash, FaCalendarAlt,
-    FaClock, FaEye, FaEyeSlash, FaUsers, FaSpinner, FaSync, FaStar
+    FaTrophy,
+    FaArrowLeft,
+    FaEdit,
+    FaTrash,
+    FaCalendarAlt,
+    FaClock,
+    FaEye,
+    FaEyeSlash,
+    FaUsers,
+    FaSpinner,
+    FaSync,
+    FaStar,
 } from 'react-icons/fa';
 import './ContestDetail.css';
 import ContestService from '../../../services/ContestService';
@@ -53,19 +63,20 @@ const ContestDetail = () => {
     };
 
     const handleRecalculate = async () => {
-        const result = await notification.confirm(
-            'Bạn có chắc muốn tính lại xếp hạng cho contest này?',
-            'Xác nhận',
-            { confirmButtonText: 'Tính lại', cancelButtonText: 'Hủy' }
-        );
+        const result = await notification.confirm('Bạn có chắc muốn tính lại xếp hạng cho contest này?', 'Xác nhận', {
+            confirmButtonText: 'Tính lại',
+            cancelButtonText: 'Hủy',
+        });
         if (!result?.isConfirmed) return;
         setRecalcLoading(true);
         try {
             const res = await ContestService.recalculateRankings(id);
-            notification.success(`${res.message || 'Đã tính lại xếp hạng'} (${res.updated_participants} người tham gia)`);
+            notification.success(
+                `${res.message || 'Đã tính lại xếp hạng'} (${res.updated_participants} người tham gia)`,
+            );
         } catch (error) {
             console.error('Recalculate failed:', error);
-            const msg = typeof error === 'string' ? error : (error.error || 'Không thể tính lại xếp hạng');
+            const msg = typeof error === 'string' ? error : error.error || 'Không thể tính lại xếp hạng';
             notification.error(msg);
         } finally {
             setRecalcLoading(false);
@@ -81,7 +92,7 @@ const ContestDetail = () => {
         const result = await notification.confirm(
             'Cập nhật rating cho tất cả người tham gia contest này?\n\nLưu ý: Nếu đã cập nhật trước đó, hệ thống sẽ rollback và tính lại từ đầu.',
             'Xác nhận cập nhật Rating',
-            { confirmButtonText: 'Cập nhật', cancelButtonText: 'Hủy' }
+            { confirmButtonText: 'Cập nhật', cancelButtonText: 'Hủy' },
         );
         if (!result?.isConfirmed) return;
 
@@ -105,7 +116,7 @@ const ContestDetail = () => {
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
         });
     };
 
@@ -113,7 +124,7 @@ const ContestDetail = () => {
         const statusConfig = {
             upcoming: { label: 'Sắp diễn ra', class: 'status-upcoming' },
             running: { label: 'Đang diễn ra', class: 'status-running' },
-            finished: { label: 'Đã kết thúc', class: 'status-finished' }
+            finished: { label: 'Đã kết thúc', class: 'status-finished' },
         };
         const config = statusConfig[status] || statusConfig.upcoming;
         return <span className={`status-badge ${config.class}`}>{config.label}</span>;
@@ -150,9 +161,9 @@ const ContestDetail = () => {
                         {recalcLoading ? <FaSpinner className="spinner" /> : <FaSync />}
                         {recalcLoading ? 'Đang tính lại...' : 'Tính lại xếp hạng'}
                     </button>
-                    <button 
-                        className="contest-btn-rating" 
-                        onClick={handleUpdateRatings} 
+                    <button
+                        className="contest-btn-rating"
+                        onClick={handleUpdateRatings}
                         disabled={ratingLoading || contest?.slug === 'practice'}
                         title={contest?.slug === 'practice' ? 'Practice không tính rating' : 'Cập nhật rating cho user'}
                     >
@@ -208,9 +219,7 @@ const ContestDetail = () => {
                     </div>
 
                     <div className="info-card">
-                        <div className="info-icon">
-                            {contest.visibility === 'public' ? <FaEye /> : <FaEyeSlash />}
-                        </div>
+                        <div className="info-icon">{contest.visibility === 'public' ? <FaEye /> : <FaEyeSlash />}</div>
                         <div className="info-content">
                             <h4>Hiển thị</h4>
                             <p className={`visibility-${contest.visibility}`}>
@@ -234,16 +243,16 @@ const ContestDetail = () => {
                     <h3>Cài đặt</h3>
                     <div className="settings-grid">
                         <div className="setting-item">
-                            <strong>Penalty Time:</strong>
+                            <strong>Thời gian phạt:</strong>
                             <span>{contest.penalty_time} phút</span>
                         </div>
                         <div className="setting-item">
-                            <strong>Penalty Mode:</strong>
-                            <span>{contest.penalty_mode === 'standard' ? 'Standard' : 'None'}</span>
+                            <strong>Chế độ phạt:</strong>
+                            <span>{contest.penalty_mode === 'standard' ? 'Chuẩn' : 'Không'}</span>
                         </div>
                         {contest.freeze_rankings_at && (
                             <div className="setting-item">
-                                <strong>Freeze Rankings:</strong>
+                                <strong>Đóng băng xếp hạng:</strong>
                                 <span>{formatDateTime(contest.freeze_rankings_at)}</span>
                             </div>
                         )}
@@ -265,10 +274,10 @@ const ContestDetail = () => {
 
                 <div className="contest-detail-meta">
                     <div className="meta-item">
-                        <strong>Tạo bởi:</strong> {contest.created_by_name || 'Unknown'}
+                        <strong>Tạo bởi:</strong> {contest.created_by_name || 'Không rõ'}
                     </div>
                     <div className="meta-item">
-                        <strong>Cập nhật bởi:</strong> {contest.updated_by_name || 'Unknown'}
+                        <strong>Cập nhật bởi:</strong> {contest.updated_by_name || 'Không rõ'}
                     </div>
                     <div className="meta-item">
                         <strong>Ngày tạo:</strong> {formatDateTime(contest.created_at)}
@@ -287,20 +296,16 @@ const ContestDetail = () => {
                             <h3>Xác nhận xóa</h3>
                         </div>
                         <div className="contest-modal-body">
-                            <p>Bạn có chắc chắn muốn xóa contest <strong>{contest.title}</strong>?</p>
+                            <p>
+                                Bạn có chắc chắn muốn xóa contest <strong>{contest.title}</strong>?
+                            </p>
                             <p className="contest-warning-text">Hành động này không thể hoàn tác!</p>
                         </div>
                         <div className="contest-modal-actions">
-                            <button
-                                className="contest-btn-cancel"
-                                onClick={() => setShowDeleteModal(false)}
-                            >
+                            <button className="contest-btn-cancel" onClick={() => setShowDeleteModal(false)}>
                                 Hủy
                             </button>
-                            <button
-                                className="contest-btn-confirm-delete"
-                                onClick={handleDelete}
-                            >
+                            <button className="contest-btn-confirm-delete" onClick={handleDelete}>
                                 Xóa
                             </button>
                         </div>

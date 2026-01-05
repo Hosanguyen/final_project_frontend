@@ -108,21 +108,6 @@ const VideoPlayer = ({ resourceId, title }) => {
                     Trình duyệt của bạn không hỗ trợ video HTML5.
                 </video>
             </div>
-
-            {/* Video Info */}
-            <div className="video-meta">
-                <div className="video-meta-hint">
-                    <span className="hint-icon">💡</span>
-                    <span>Video hỗ trợ streaming - bạn có thể tua đến bất kỳ vị trí nào</span>
-                </div>
-
-                {videoInfo && (
-                    <div className="video-meta-details">
-                        {videoInfo.size && <span className="meta-item">📦 {formatFileSize(videoInfo.size)}</span>}
-                        {videoInfo.content_type && <span className="meta-item">🎬 {videoInfo.content_type}</span>}
-                    </div>
-                )}
-            </div>
         </div>
     );
 };
