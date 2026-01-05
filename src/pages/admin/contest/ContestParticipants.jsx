@@ -1,6 +1,16 @@
 ﻿import React, { useState, useEffect } from 'react';
 import notification from '../../../utils/notification';
-import { FaUsers, FaUserCheck, FaUserTimes, FaSpinner, FaSearch, FaToggleOn, FaToggleOff, FaPlus, FaTimes } from 'react-icons/fa';
+import {
+    FaUsers,
+    FaUserCheck,
+    FaUserTimes,
+    FaSpinner,
+    FaSearch,
+    FaToggleOn,
+    FaToggleOff,
+    FaPlus,
+    FaTimes,
+} from 'react-icons/fa';
 import ContestService from '../../../services/ContestService';
 import './ContestParticipants.css';
 
@@ -45,11 +55,8 @@ const ContestParticipants = ({ contestId }) => {
             return;
         }
 
-        const result = await notification.confirm(
-            'Bạn có chắc chắn muốn deactivate người tham gia này?',
-            'Xác nhận'
-        );
-        
+        const result = await notification.confirm('Bạn có chắc chắn muốn deactivate người tham gia này?', 'Xác nhận');
+
         if (!result.isConfirmed) {
             return;
         }
@@ -74,13 +81,14 @@ const ContestParticipants = ({ contestId }) => {
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
         });
     };
 
-    const filteredParticipants = participants.filter(participant => {
+    const filteredParticipants = participants.filter((participant) => {
         const matchesSearch = participant.username.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesStatus = filterStatus === 'all' || 
+        const matchesStatus =
+            filterStatus === 'all' ||
             (filterStatus === 'active' && participant.is_active) ||
             (filterStatus === 'inactive' && !participant.is_active);
         return matchesSearch && matchesStatus;
@@ -98,7 +106,7 @@ const ContestParticipants = ({ contestId }) => {
                     q: candidateQuery.trim() || undefined,
                     page: candPage,
                     page_size: candPageSize,
-                    exclude_participating: true
+                    exclude_participating: true,
                 };
                 const data = await ContestService.getUserCandidates(contestId, params);
                 setCandidates(data?.results || []);
@@ -121,7 +129,9 @@ const ContestParticipants = ({ contestId }) => {
             fetchCandidates();
         }
 
-        return () => { if (timer) clearTimeout(timer); };
+        return () => {
+            if (timer) clearTimeout(timer);
+        };
     }, [showAddModal, candidateQuery, contestId, candPage, candPageSize]);
 
     // Reset pagination when query changes
@@ -131,9 +141,10 @@ const ContestParticipants = ({ contestId }) => {
     }, [candidateQuery]);
 
     const toggleUserSelect = (userId) => {
-        setSelectedUserIds(prev => {
+        setSelectedUserIds((prev) => {
             const next = new Set(prev);
-            if (next.has(userId)) next.delete(userId); else next.add(userId);
+            if (next.has(userId)) next.delete(userId);
+            else next.add(userId);
             return next;
         });
     };
@@ -142,7 +153,7 @@ const ContestParticipants = ({ contestId }) => {
         if (selectedUserIds.size === candidates.length) {
             setSelectedUserIds(new Set());
         } else {
-            setSelectedUserIds(new Set(candidates.map(c => c.id)));
+            setSelectedUserIds(new Set(candidates.map((c) => c.id)));
         }
     };
 
@@ -294,15 +305,17 @@ const ContestParticipants = ({ contestId }) => {
                                         {participant.is_active ? (
                                             <button
                                                 className="toggle-btn deactivate"
-                                                onClick={() => handleToggleStatus(participant.id, participant.is_active)}
+                                                onClick={() =>
+                                                    handleToggleStatus(participant.id, participant.is_active)
+                                                }
                                                 disabled={togglingId === participant.id}
-                                                title="Deactivate người tham gia"
+                                                title="Vô hiệu hóa người tham gia"
                                             >
                                                 {togglingId === participant.id ? (
                                                     <FaSpinner className="spinner-icon" />
                                                 ) : (
                                                     <>
-                                                        <FaToggleOff /> Deactivate
+                                                        <FaToggleOff /> Vô hiệu hóa
                                                     </>
                                                 )}
                                             </button>
@@ -322,7 +335,9 @@ const ContestParticipants = ({ contestId }) => {
                     <div className="modal" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
                             <h4>Thêm người tham gia</h4>
-                            <button className="icon-btn" onClick={() => setShowAddModal(false)}><FaTimes /></button>
+                            <button className="icon-btn" onClick={() => setShowAddModal(false)}>
+                                <FaTimes />
+                            </button>
                         </div>
                         <div className="modal-body">
                             <div className="candidate-search">
@@ -333,27 +348,41 @@ const ContestParticipants = ({ contestId }) => {
                                     value={candidateQuery}
                                     onChange={(e) => setCandidateQuery(e.target.value)}
                                 />
-                                <button className="btn-secondary" onClick={toggleAll} disabled={candidates.length === 0}>
-                                    {selectedUserIds.size === candidates.length && candidates.length > 0 ? 'Bỏ chọn tất cả' : 'Chọn tất cả'}
+                                <button
+                                    className="btn-secondary"
+                                    onClick={toggleAll}
+                                    disabled={candidates.length === 0}
+                                >
+                                    {selectedUserIds.size === candidates.length && candidates.length > 0
+                                        ? 'Bỏ chọn tất cả'
+                                        : 'Chọn tất cả'}
                                 </button>
                             </div>
                             <div className="candidate-list">
                                 {loadingCandidates ? (
-                                    <div className="loading-row"><FaSpinner className="spinner" /> Đang tải...</div>
+                                    <div className="loading-row">
+                                        <FaSpinner className="spinner" /> Đang tải...
+                                    </div>
                                 ) : candidates.length === 0 ? (
                                     <div className="empty-row">Không có người dùng phù hợp</div>
                                 ) : (
-                                    candidates.map(u => (
+                                    candidates.map((u) => (
                                         <label key={u.id} className="candidate-row">
                                             <input
                                                 type="checkbox"
                                                 checked={selectedUserIds.has(u.id)}
                                                 onChange={() => toggleUserSelect(u.id)}
                                             />
-                                            <img className="cand-avatar" src={u.avatar_url || 'https://via.placeholder.com/28'} alt={u.username} />
+                                            <img
+                                                className="cand-avatar"
+                                                src={u.avatar_url || 'https://via.placeholder.com/28'}
+                                                alt={u.username}
+                                            />
                                             <div className="cand-info">
                                                 <div className="cand-name">{u.full_name || u.username}</div>
-                                                <div className="cand-sub">@{u.username} · {u.email}</div>
+                                                <div className="cand-sub">
+                                                    @{u.username} · {u.email}
+                                                </div>
                                             </div>
                                         </label>
                                     ))
@@ -367,14 +396,14 @@ const ContestParticipants = ({ contestId }) => {
                                     <button
                                         className="btn-secondary"
                                         disabled={candPage <= 1 || loadingCandidates}
-                                        onClick={() => setCandPage(p => Math.max(1, p - 1))}
+                                        onClick={() => setCandPage((p) => Math.max(1, p - 1))}
                                     >
                                         Trang trước
                                     </button>
                                     <button
                                         className="btn-secondary"
                                         disabled={candPage >= candTotalPages || loadingCandidates}
-                                        onClick={() => setCandPage(p => Math.min(candTotalPages, p + 1))}
+                                        onClick={() => setCandPage((p) => Math.min(candTotalPages, p + 1))}
                                     >
                                         Trang sau
                                     </button>
@@ -382,8 +411,16 @@ const ContestParticipants = ({ contestId }) => {
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button className="btn-secondary" onClick={() => setShowAddModal(false)}>Hủy</button>
-                            <button className="btn-primary" onClick={handleBulkAdd} disabled={selectedUserIds.size === 0}>Thêm đã chọn</button>
+                            <button className="btn-secondary" onClick={() => setShowAddModal(false)}>
+                                Hủy
+                            </button>
+                            <button
+                                className="btn-primary"
+                                onClick={handleBulkAdd}
+                                disabled={selectedUserIds.size === 0}
+                            >
+                                Thêm đã chọn
+                            </button>
                         </div>
                     </div>
                 </div>
