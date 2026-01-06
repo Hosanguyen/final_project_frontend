@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch, FaUserShield, FaCheck, FaTimes } from 'react-icons/fa';
 import UserService from '../../../services/UserService';
+import Pagination from '../../../components/Pagination';
 import './UserList.css';
 import notification from '../../../utils/notification';
 
@@ -12,22 +13,44 @@ const UserList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+    
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const [pageSize] = useState(10);
 
     useEffect(() => {
         loadUsers();
-    }, []);
+    }, [currentPage]);
 
     const loadUsers = async () => {
         setLoading(true);
         try {
-            const data = await UserService.getAll();
-            setUsers(data);
+            const params = {
+                search: searchTerm,
+                page: currentPage,
+                page_size: pageSize,
+            };
+            const response = await UserService.getAll(params);
+            setUsers(response.results || []);
+            setTotalItems(response.total || 0);
+            setTotalPages(response.total_pages || 1);
         } catch (error) {
             console.error('Failed to load users:', error);
             notification.error('Không thể tải danh sách người dùng');
         } finally {
             setLoading(false);
         }
+    };
+    
+    const handleSearch = () => {
+        setCurrentPage(1);
+        loadUsers();
+    };
+    
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
     };
 
     const handleDelete = async () => {
@@ -54,14 +77,7 @@ const UserList = () => {
         setShowDeleteModal(true);
     };
 
-    const filteredUsers = users.filter(
-        (user) =>
-            user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (user.full_name && user.full_name.toLowerCase().includes(searchTerm.toLowerCase())),
-    );
-
-    if (loading) {
+    if (loading && users.length === 0) {
         return (
             <div className="user-list-loading-container">
                 <div className="user-list-spinner"></div>
@@ -91,14 +107,12 @@ const UserList = () => {
                             placeholder="Tìm kiếm theo username, email, họ tên..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                         />
                     </div>
                     <div className="user-list-stats">
                         <span className="user-list-stat-item">
-                            Tổng số: <strong>{users.length}</strong>
-                        </span>
-                        <span className="user-list-stat-item">
-                            Hoạt động: <strong>{users.filter((u) => u.active).length}</strong>
+                            Tổng số: <strong>{totalItems}</strong>
                         </span>
                     </div>
                 </div>
@@ -117,14 +131,14 @@ const UserList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredUsers.length === 0 ? (
+                            {users.length === 0 ? (
                                 <tr>
                                     <td colSpan="7" className="user-list-no-data">
                                         {searchTerm ? 'Không tìm thấy kết quả phù hợp' : 'Chưa có người dùng nào'}
                                     </td>
                                 </tr>
                             ) : (
-                                filteredUsers.map((user) => (
+                                users.map((user) => (
                                     <tr key={user.id}>
                                         <td>
                                             <span className="user-list-id-badge">{user.id}</span>
@@ -182,6 +196,15 @@ const UserList = () => {
                         </tbody>
                     </table>
                 </div>
+                
+                {/* Pagination */}
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={totalItems}
+                    onPageChange={handlePageChange}
+                    itemsPerPage={pageSize}
+                />
             </div>
 
             {/* Delete Confirmation Modal */}

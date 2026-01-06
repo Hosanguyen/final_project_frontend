@@ -87,7 +87,11 @@ const RecommendedProblems = () => {
 
             <div className="recommended-problems-grid">
                 {recommendations.map((problem) => (
-                    <Link key={problem.id} to={`/problems/${problem.id}`} className="recommended-problem-card">
+                    <Link
+                        key={problem.problem_id}
+                        to={`/contest-problems/${problem.contest_problem_id}`}
+                        className="recommended-problem-card"
+                    >
                         <div className="recommended-problem-card-header">
                             <div className="recommended-problem-icon-wrapper">
                                 {getDifficultyIcon(problem.difficulty)}
@@ -116,10 +120,6 @@ const RecommendedProblems = () => {
                         )}
 
                         <div className="recommended-problem-footer">
-                            <div className="recommended-problem-stat">
-                                <span className="recommended-problem-stat-label">Lượt giải:</span>
-                                <span className="recommended-problem-stat-value">{problem.total_submissions || 0}</span>
-                            </div>
                             <div className="recommended-problem-action">
                                 <span>Thử thách →</span>
                             </div>

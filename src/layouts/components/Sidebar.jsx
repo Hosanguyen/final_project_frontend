@@ -39,40 +39,29 @@ const Sidebar = ({ isOpen }) => {
             title: 'Bài tập lập trình',
             icon: <MdCode />,
             path: '/admin/problems',
-            subMenu: [
-                { title: 'Danh sách bài tập', path: '/admin/problems' },
-                { title: 'Thêm bài tập mới', path: '/admin/problems/create' },
-                { title: 'Test cases', path: '/admin/testcases' },
-            ],
+            subMenu: [{ title: 'Danh sách bài tập', path: '/admin/problems' }],
         },
         {
             title: 'Thi & Quiz',
             icon: <MdQuiz />,
             path: '/admin/quizzes',
-            subMenu: [
-                { title: 'Danh sách Quiz', path: '/admin/quizzes' },
-                { title: 'Tạo Quiz mới', path: '/admin/quizzes/create' },
-            ],
+            subMenu: [{ title: 'Danh sách Quiz', path: '/admin/quizzes' }],
         },
         {
             title: 'Contest',
             icon: <MdEmojiEvents />,
             path: '/admin/contests',
-            subMenu: [
-                { title: 'Danh sách Contest', path: '/admin/contests' },
-                { title: 'Tạo Contest mới', path: '/admin/contests/create' },
-                { title: 'Bảng xếp hạng', path: '/admin/leaderboard' },
-            ],
+            subMenu: [{ title: 'Danh sách Contest', path: '/admin/contests' }],
         },
         {
             title: 'Người dùng',
             icon: <MdPeople />,
             path: '/admin/users',
             subMenu: [
-                { title: 'Danh sách học viên', path: '/admin/users' },
-                { title: 'Quản lý quyền', path: '/admin/roles' },
-                { title: 'Phân quyền', path: '/admin/permissions' },
-                { title: 'Loại phân quyền', path: '/admin/permission-categories' },
+                { title: 'Danh sách người dùng', path: '/admin/users' },
+                { title: 'Quản lý vai trò', path: '/admin/roles' },
+                { title: 'Danh sách quyền', path: '/admin/permissions' },
+                { title: 'Loại nhóm quyền', path: '/admin/permission-categories' },
             ],
         },
         {

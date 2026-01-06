@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch, FaEye, FaCheck, FaTimes, FaBookOpen, FaUsers } from 'react-icons/fa';
 import CourseService from '../../../services/CourseService';
+import Pagination from '../../../components/Pagination';
 import './CourseManagement.css';
 import notification from '../../../utils/notification';
 
@@ -21,14 +22,22 @@ const CourseManagement = () => {
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [pageSize] = useState(10);
 
   useEffect(() => {
     loadData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     loadCourses();
-  }, [filters]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, currentPage]);
 
   const loadData = async () => {
     try {
@@ -51,11 +60,15 @@ const CourseManagement = () => {
     try {
       const params = {
         search: searchTerm,
+        page: currentPage,
+        page_size: pageSize,
         ...filters,
       };
       
-      const coursesData = await CourseService.getCoursesByFilter(params);
-      setCourses(coursesData);
+      const response = await CourseService.getCoursesByFilter(params);
+      setCourses(response.results || []);
+      setTotalItems(response.total || 0);
+      setTotalPages(response.total_pages || 1);
     } catch (err) {
       console.error('Error loading courses:', err);
       notification.error('Không thể tải danh sách khóa học');
@@ -65,11 +78,17 @@ const CourseManagement = () => {
   };
 
   const handleSearch = () => {
+    setCurrentPage(1);
     loadCourses();
   };
 
   const handleFilterChange = (key, value) => {
+    setCurrentPage(1);
     setFilters({ ...filters, [key]: value });
+  };
+  
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   const handleDelete = async () => {
@@ -173,7 +192,7 @@ const CourseManagement = () => {
 
           <div className="course-list-stats">
             <span className="course-list-stat-item">
-              Tổng số: <strong>{courses.length}</strong>
+              Tổng số: <strong>{totalItems}</strong>
             </span>
           </div>
         </div>
@@ -282,6 +301,15 @@ const CourseManagement = () => {
             </tbody>
           </table>
         </div>
+        
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          onPageChange={handlePageChange}
+          itemsPerPage={pageSize}
+        />
       </div>
 
       {/* Delete Confirmation Modal */}

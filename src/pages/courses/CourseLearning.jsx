@@ -18,6 +18,7 @@ import QuizItem from './QuizItem';
 import QuizTaking from './QuizTaking';
 import QuizResult from './QuizResult';
 import QuizHistory from './QuizHistory';
+import VideoPlayer from './VideoPlayer';
 import './CourseLearning.css';
 
 // Backend API URL
@@ -144,36 +145,15 @@ const CourseLearning = () => {
             );
         }
 
-        const { type, title, content, file_url, url } = selectedResource;
+        const { type, title, content, file_url, url, id } = selectedResource;
 
         switch (type) {
             case 'video':
-                const videoUrl = file_url
-                    ? file_url.startsWith('http')
-                        ? file_url
-                        : `${API_BASE_URL}/api/media-proxy/?path=${file_url}`
-                    : url;
+                // Sử dụng VideoPlayer component mới với streaming
                 return (
                     <div className="resource-content">
                         <h2>{title}</h2>
-                        <div className="video-wrapper">
-                            {videoUrl ? (
-                                <iframe
-                                    src={videoUrl}
-                                    title={title}
-                                    frameBorder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                />
-                            ) : file_url ? (
-                                <video controls>
-                                    <source src={file_url} />
-                                    Trình duyệt của bạn không hỗ trợ video.
-                                </video>
-                            ) : (
-                                <p>Video không khả dụng</p>
-                            )}
-                        </div>
+                        <VideoPlayer resourceId={id} title={title} />
                     </div>
                 );
 

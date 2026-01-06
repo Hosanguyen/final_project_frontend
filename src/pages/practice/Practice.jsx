@@ -149,8 +149,8 @@ const Practice = () => {
     if (loading) {
         return (
             <div className="practice-container">
-                <div className="loading-spinner">
-                    <div className="spinner"></div>
+                <div className="practice-loading-container">
+                    <div className="practice-loading-spinner"></div>
                     <p>Đang tải danh sách bài tập...</p>
                 </div>
             </div>

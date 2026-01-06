@@ -94,14 +94,12 @@ const Register = () => {
         setLoading(false);
 
         if (result.success) {
-            notification.success('Đăng ký thành công! Vui lòng đăng nhập.', 'Thành công!');
-            navigate('/login');
+            notification.success('Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.', 'Thành công!');
+            navigate('/verify-email', { state: { email: formData.email } });
         } else {
-            // Hiển thị notification lỗi
             const errorMessage = result.message || 'Đăng ký không thành công';
             notification.error(errorMessage, 'Đăng ký thất bại');
-            
-            // Nếu có lỗi chi tiết, hiển thị trong form
+
             if (result.errors) {
                 setErrors(result.errors);
             }
@@ -113,12 +111,7 @@ const Register = () => {
             <div className="register-box">
                 <div className="register-header">
                     <h1 className="register-title">Đăng Ký</h1>
-                    <button 
-                        type="button" 
-                        className="home-button" 
-                        onClick={() => navigate('/')}
-                        title="Về trang chủ"
-                    >
+                    <button type="button" className="home-button" onClick={() => navigate('/')} title="Về trang chủ">
                         <FaHome />
                     </button>
                 </div>
@@ -202,7 +195,9 @@ const Register = () => {
                         >
                             {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
                         </button>
-                        {errors.confirmPassword && <span className="register-error-message">{errors.confirmPassword}</span>}
+                        {errors.confirmPassword && (
+                            <span className="register-error-message">{errors.confirmPassword}</span>
+                        )}
                     </div>
 
                     <button type="submit" className="register-button" disabled={loading}>
