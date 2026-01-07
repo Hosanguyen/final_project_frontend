@@ -17,6 +17,7 @@ import {
     Filler,
 } from 'chart.js';
 import UserService from '../../../services/UserService';
+import Pagination from '../../../components/Pagination';
 import './UserReports.css';
 
 // Register Chart.js components
@@ -785,37 +786,15 @@ const UserReports = () => {
                     </div>
 
                     {/* Pagination */}
-                    {allUsersData.total_pages > 1 && (
-                        <div className="pagination">
-                            <button
-                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                                disabled={currentPage === 1}
-                                className="pagination-btn"
-                            >
-                                Trước
-                            </button>
-
-                            <div className="pagination-pages">
-                                {[...Array(allUsersData.total_pages)].map((_, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => setCurrentPage(idx + 1)}
-                                        className={`pagination-page ${currentPage === idx + 1 ? 'active' : ''}`}
-                                    >
-                                        {idx + 1}
-                                    </button>
-                                ))}
-                            </div>
-
-                            <button
-                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, allUsersData.total_pages))}
-                                disabled={currentPage === allUsersData.total_pages}
-                                className="pagination-btn"
-                            >
-                                Sau
-                            </button>
-                        </div>
-                    )}
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={allUsersData.total_pages}
+                        totalItems={allUsersData.total_count}
+                        onPageChange={setCurrentPage}
+                        itemsPerPage={usersPerPage}
+                        showItemCount={true}
+                        showFirstLast={true}
+                    />
                 </div>
             </div>
         </div>
