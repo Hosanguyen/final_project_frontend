@@ -19,6 +19,7 @@ import QuizTaking from './QuizTaking';
 import QuizResult from './QuizResult';
 import QuizHistory from './QuizHistory';
 import VideoPlayer from './VideoPlayer';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './CourseLearning.css';
 
 // Backend API URL
@@ -42,6 +43,8 @@ const CourseLearning = () => {
     const [quizMode, setQuizMode] = useState(null); // 'taking', 'result'
     const [currentSubmissionId, setCurrentSubmissionId] = useState(null);
     const [currentLessonId, setCurrentLessonId] = useState(null);
+
+    useDocumentTitle(course ? `Học: ${course.title}` : 'Đang tải khóa học...');
 
     useEffect(() => {
         loadCourseData();

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ContestService from '../../services/ContestService';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './PracticeLeaderboard.css';
 
 const PracticeLeaderboard = () => {
+  useDocumentTitle('Bảng xếp hạng luyện tập');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);

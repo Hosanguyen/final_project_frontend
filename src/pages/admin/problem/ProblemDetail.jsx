@@ -5,6 +5,7 @@ import ProblemService from '../../../services/ProblemService';
 import ContestService from '../../../services/ContestService';
 import ProblemSubmission from './ProblemSubmission';
 import SubmissionHistory from './SubmissionHistory';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './ProblemDetail.css';
 import notification from '../../../utils/notification';
 
@@ -16,6 +17,8 @@ const ProblemDetail = () => {
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [submissionRefreshKey, setSubmissionRefreshKey] = useState(0);
+
+    useDocumentTitle(problem ? `Quản trị - ${problem.title}` : 'Chi tiết bài toán');
 
     useEffect(() => {
         loadProblemDetail();

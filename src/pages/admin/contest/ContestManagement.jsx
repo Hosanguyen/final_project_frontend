@@ -15,11 +15,13 @@ import {
     FaSearch,
     FaTimes,
 } from 'react-icons/fa';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './ContestManagement.css';
 import ContestService from '../../../services/ContestService';
 import Pagination from '../../../components/Pagination';
 
 const ContestManagement = () => {
+    useDocumentTitle('Quản trị - Cuộc thi');
     const navigate = useNavigate();
     const [contests, setContests] = useState([]);
     const [loading, setLoading] = useState(false);

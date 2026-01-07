@@ -14,9 +14,11 @@ import {
 } from 'react-icons/fa';
 import CourseService from '../../services/CourseService';
 import ContestService from '../../services/ContestService';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './Home.css';
 
 const Home = () => {
+    useDocumentTitle('Trang chủ');
     const navigate = useNavigate();
     const [currentSlide, setCurrentSlide] = useState(0);
     const [featuredCourses, setFeaturedCourses] = useState([]);

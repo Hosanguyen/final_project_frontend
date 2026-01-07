@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FaSave, FaTimes } from 'react-icons/fa';
 import PermissionService from '../../../services/PermissionService';
 import PermissionCategoryService from '../../../services/PermissionCategoryService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './PermissionForm.css';
 import notification from '../../../utils/notification';
 
@@ -10,6 +11,8 @@ const PermissionForm = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
+
+    useDocumentTitle(isEditMode ? 'Quản trị - Sửa quyền' : 'Quản trị - Thêm quyền');
 
     const [formData, setFormData] = useState({
         code: '',

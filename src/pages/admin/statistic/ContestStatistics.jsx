@@ -32,6 +32,7 @@ import {
     Code
 } from 'lucide-react';
 import ContestService from '../../../services/ContestService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './ContestStatistics.css';
 
 // Register Chart.js components
@@ -52,6 +53,7 @@ ChartJS.register(
 );
 
 const ContestStatistics2 = () => {
+    useDocumentTitle('Thống kê - Cuộc thi');
     const navigate = useNavigate();
     
     // Lấy tháng hiện tại làm giá trị mặc định
@@ -431,7 +433,7 @@ const ContestStatistics2 = () => {
         return (
             <div className="contest-reports">
                 <div className="contest-reports-container">
-                    <div className="loading-spinner">Đang tải...</div>
+                    <div className="contest-reports-loading">Đang tải...</div>
                 </div>
             </div>
         );

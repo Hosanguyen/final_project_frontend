@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch, FaEye, FaCheck, FaTimes } from 'react-icons/fa';
 import ProblemService from '../../../services/ProblemService';
 import Pagination from '../../../components/Pagination';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './ProblemList.css';
 import notification from '../../../utils/notification';
 
 const ProblemList = () => {
+    useDocumentTitle('Quản trị - Bài toán');
     const navigate = useNavigate();
     const [problems, setProblems] = useState([]);
     const [loading, setLoading] = useState(false);

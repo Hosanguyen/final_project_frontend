@@ -6,8 +6,10 @@ import { FaHome } from 'react-icons/fa';
 import { loginUser } from '../../services/AuthService';
 import { useUser } from '../../contexts/UserContext';
 import notification from '../../utils/notification';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const Login = () => {
+    useDocumentTitle('Đăng nhập');
     const navigate = useNavigate();
     const { login: userLogin } = useUser();
     const [username, setUsername] = useState('');

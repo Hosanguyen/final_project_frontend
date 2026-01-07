@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { FaEdit, FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './LanguageManagement.css';
 import api from '../../../services/api';
 
 const LanguageManager = () => {
+  useDocumentTitle('Quản trị - Ngôn ngữ');
   const [languages, setLanguages] = useState([]);
   const [editId, setEditId] = useState(null);
   const [editData, setEditData] = useState({});

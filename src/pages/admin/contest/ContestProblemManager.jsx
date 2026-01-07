@@ -5,6 +5,7 @@ import './ContestProblemManager.css';
 import ContestService from '../../../services/ContestService';
 import ProblemService from '../../../services/ProblemService';
 import notification from '../../../utils/notification';
+import Pagination from '../../../components/Pagination';
 
 const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) => {
     const [problems, setProblems] = useState([]);
@@ -18,6 +19,8 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
     const [showAddForm, setShowAddForm] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     useEffect(() => {
         loadProblems();
@@ -169,6 +172,16 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
     };
 
     const availableProblems = getAvailableProblems();
+
+    const totalPages = Math.ceil(contestProblems.length / itemsPerPage);
+    const paginatedProblems = contestProblems.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [contestProblems.length]);
 
     return (
         <div className="contest-problem-manager">
@@ -325,19 +338,20 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
                 {contestProblems.length === 0 ? (
                     <div className="empty-problems">Chưa có bài tập nào được thêm vào contest này.</div>
                 ) : (
-                    <table className="problems-table">
-                        <thead>
-                            <tr>
-                                <th>Nhãn</th>
-                                <th>Bài tập</th>
-                                <th>Slug</th>
-                                <th>Điểm</th>
-                                <th>Thứ tự</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {contestProblems.map((cp) => {
+                    <>
+                        <table className="problems-table">
+                            <thead>
+                                <tr>
+                                    <th>Nhãn</th>
+                                    <th>Bài tập</th>
+                                    <th>Slug</th>
+                                    <th>Điểm</th>
+                                    <th>Thứ tự</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {paginatedProblems.map((cp) => {
                                 // Debug log
                                 console.log('Contest Problem:', cp);
 
@@ -395,8 +409,16 @@ const ContestProblemManager = ({ contestId, contestProblems = [], onUpdate }) =>
                                     </tr>
                                 );
                             })}
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            totalItems={contestProblems.length}
+                            onPageChange={setCurrentPage}
+                            itemsPerPage={itemsPerPage}
+                        />
+                    </>
                 )}
             </div>
         </div>

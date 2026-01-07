@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import PaymentService from '../services/PaymentService';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import './PaymentResult.css';
 
 const PaymentResult = () => {
+  useDocumentTitle('Kết quả thanh toán');
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [orderInfo, setOrderInfo] = useState(null);

@@ -17,6 +17,7 @@ import {
     FaClipboardList,
 } from 'react-icons/fa';
 import LessonService from '../../../services/LessonService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './LessonDetailPage.css';
 
 const LessonDetailPage = () => {
@@ -30,6 +31,8 @@ const LessonDetailPage = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedResource, setSelectedResource] = useState(null);
     const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
+    useDocumentTitle(lesson ? `Quản trị - ${lesson.title}` : 'Chi tiết bài học');
 
     useEffect(() => {
         loadLessonData();

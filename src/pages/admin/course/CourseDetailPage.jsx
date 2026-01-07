@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fa';
 import CourseService from '../../../services/CourseService';
 import LessonService from '../../../services/LessonService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './CourseDetailPage.css';
 
 const CourseDetailPage = () => {
@@ -18,6 +19,8 @@ const CourseDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedLesson, setSelectedLesson] = useState(null);
+
+    useDocumentTitle(course ? `Quản trị - ${course.title}` : 'Chi tiết khóa học');
 
     useEffect(() => {
         loadCourseData();

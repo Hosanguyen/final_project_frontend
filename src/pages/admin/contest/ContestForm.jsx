@@ -12,6 +12,7 @@ import {
     FaCheckCircle,
     FaArrowLeft,
 } from 'react-icons/fa';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './ContestForm.css';
 import ContestService from '../../../services/ContestService';
 import ContestProblemManager from './ContestProblemManager';
@@ -21,6 +22,8 @@ const ContestForm = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = Boolean(id);
+
+    useDocumentTitle(isEditMode ? 'Quản trị - Sửa cuộc thi' : 'Quản trị - Thêm cuộc thi');
     const [formData, setFormData] = useState({
         slug: '',
         title: '',

@@ -5,9 +5,11 @@ import CourseService from '../../services/CourseService';
 import CourseCard from './CourseCard';
 import CourseFilters from './CourseFilters';
 import Pagination from '../../components/Pagination';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './Courses.css';
 
 const Courses = () => {
+  useDocumentTitle('Khóa học');
   const [courses, setCourses] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [tags, setTags] = useState([]);

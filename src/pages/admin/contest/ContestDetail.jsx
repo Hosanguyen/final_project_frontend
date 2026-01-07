@@ -15,6 +15,7 @@ import {
     FaSync,
     FaStar,
 } from 'react-icons/fa';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './ContestDetail.css';
 import ContestService from '../../../services/ContestService';
 import RatingService from '../../../services/RatingService';
@@ -29,6 +30,8 @@ const ContestDetail = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [recalcLoading, setRecalcLoading] = useState(false);
     const [ratingLoading, setRatingLoading] = useState(false);
+
+    useDocumentTitle(contest ? `Quản trị - ${contest.title}` : 'Chi tiết cuộc thi');
 
     useEffect(() => {
         loadContest();

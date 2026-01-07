@@ -5,8 +5,10 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { FaHome } from 'react-icons/fa';
 import { registerUser } from '../../services/AuthService';
 import notification from '../../utils/notification';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const Register = () => {
+    useDocumentTitle('Đăng ký');
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',

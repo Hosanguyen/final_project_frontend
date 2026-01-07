@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 import PermissionService from '../../../services/PermissionService';
 import Pagination from '../../../components/Pagination';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './PermissionList.css';
 import notification from '../../../utils/notification';
 
 const PermissionList = () => {
+    useDocumentTitle('Quản trị - Quyền');
     const [permissions, setPermissions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');

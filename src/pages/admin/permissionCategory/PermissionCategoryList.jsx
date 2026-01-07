@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 import PermissionCategoryService from '../../../services/PermissionCategoryService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './PermissionCategoryList.css';
 import notification from '../../../utils/notification';
 
 const PermissionCategoryList = () => {
+    useDocumentTitle('Quản trị - Nhóm quyền');
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');

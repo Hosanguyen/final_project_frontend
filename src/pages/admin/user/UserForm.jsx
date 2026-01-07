@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FaSave, FaTimes } from 'react-icons/fa';
 import UserService from '../../../services/UserService';
 import RoleService from '../../../services/RoleService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './UserForm.css';
 import notification from '../../../utils/notification';
 
@@ -10,6 +11,8 @@ const UserForm = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
+
+    useDocumentTitle(isEditMode ? 'Quản trị - Sửa người dùng' : 'Quản trị - Thêm người dùng');
 
     const [formData, setFormData] = useState({
         username: '',

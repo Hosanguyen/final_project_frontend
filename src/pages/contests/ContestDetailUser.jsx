@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaTrophy, FaClock, FaCalendar, FaListAlt, FaCheckCircle, FaTimesCircle, FaCircle, FaChevronLeft, FaUserCheck, FaUserTimes } from 'react-icons/fa';
 import ContestService from '../../services/ContestService';
 import ContestLeaderboard from './ContestLeaderboard';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './ContestDetailUser.css';
 import notification from '../../utils/notification';
 
@@ -14,6 +15,8 @@ const ContestDetailUser = () => {
     const [error, setError] = useState(null);
     const [registering, setRegistering] = useState(false);
     const [activeTab, setActiveTab] = useState('problems'); // 'problems' or 'leaderboard'
+
+    useDocumentTitle(contest ? contest.title : 'Chi tiết cuộc thi');
 
     useEffect(() => {
         fetchContestDetail();

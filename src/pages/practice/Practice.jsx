@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle, FaClock, FaFire, FaStar } from 'react-icons/fa';
 import ContestService from '../../services/ContestService';
 import RecommendedProblems from '../../components/RecommendedProblems';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './Practice.css';
 
 const Practice = () => {
+    useDocumentTitle('Luyện tập');
     const [problems, setProblems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

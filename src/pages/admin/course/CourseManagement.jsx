@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch, FaEye, FaCheck, FaTimes, FaBookOpen, FaUsers } from 'react-icons/fa';
 import CourseService from '../../../services/CourseService';
 import Pagination from '../../../components/Pagination';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './CourseManagement.css';
 import notification from '../../../utils/notification';
 
 const CourseManagement = () => {
+  useDocumentTitle('Quản trị - Khóa học');
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [languages, setLanguages] = useState([]);

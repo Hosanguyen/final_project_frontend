@@ -4,9 +4,11 @@ import { FaPlus, FaEdit, FaTrash, FaEye, FaSearch } from 'react-icons/fa';
 import QuizService from '../../../services/QuizService';
 import notification from '../../../utils/notification';
 import Pagination from '../../../components/Pagination';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './QuizList.css';
 
 const QuizList = () => {
+    useDocumentTitle('Quản trị - Trắc nghiệm');
     const navigate = useNavigate();
     const [quizzes, setQuizzes] = useState([]);
     const [loading, setLoading] = useState(false);
