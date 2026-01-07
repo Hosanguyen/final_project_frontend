@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
 import RoleService from '../../../services/RoleService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './RoleList.css';
 import notification from '../../../utils/notification';
 
 const RoleList = () => {
+    useDocumentTitle('Quản trị - Vai trò');
     const navigate = useNavigate();
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(false);

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { FaEdit, FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './TagManagement.css';
 import TagService from '../../../services/TagService';
 
 const TagManager = () => {
+  useDocumentTitle('Quản trị - Thẻ');
   const [tags, setTags] = useState([]);
   const [editId, setEditId] = useState(null);
   const [editData, setEditData] = useState({});

@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTrophy, FaMedal, FaChartLine, FaUser } from 'react-icons/fa';
 import RatingService from '../../services/RatingService';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './GlobalRanking.css';
 
 const GlobalRanking = () => {
+    useDocumentTitle('Bảng xếp hạng');
     const [rankings, setRankings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

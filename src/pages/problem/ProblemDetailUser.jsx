@@ -5,6 +5,7 @@ import ProblemService from '../../services/ProblemService';
 import ContestService from '../../services/ContestService';
 import ProblemSubmission from '../admin/problem/ProblemSubmission';
 import SubmissionHistory from '../admin/problem/SubmissionHistory';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './ProblemDetailUser.css';
 import notification from '../../utils/notification';
 
@@ -16,6 +17,8 @@ const ProblemDetailUser = () => {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('description'); // 'description' or 'submissions'
     const [submissionRefreshKey, setSubmissionRefreshKey] = useState(0);
+
+    useDocumentTitle(problem ? problem.title : 'Chi tiết bài toán');
 
     const loadProblemDetail = async () => {
         setLoading(true);

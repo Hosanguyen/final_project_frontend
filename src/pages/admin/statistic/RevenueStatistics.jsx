@@ -27,6 +27,7 @@ import {
     Activity
 } from 'lucide-react';
 import api from '../../../services/api';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './RevenueStatistics.css';
 
 ChartJS.register(
@@ -46,6 +47,7 @@ ChartJS.register(
 );
 
 const RevenueStatistics = () => {
+    useDocumentTitle('Thống kê - Doanh thu');
     const navigate = useNavigate();
     const [stats, setStats] = useState(null);
     const [selectedMonth, setSelectedMonth] = useState('all');

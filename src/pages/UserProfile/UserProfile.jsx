@@ -9,8 +9,10 @@ import CourseService from '../../services/CourseService';
 import SubmissionService from '../../services/SubmissionService';
 import ContestService from '../../services/ContestService';
 import notification from '../../utils/notification';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const UserProfile = () => {
+  useDocumentTitle('Hồ sơ cá nhân');
   const API_URL = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   const [user, setUser] = useState(null);

@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaTrash, FaSearch, FaUserShield, FaCheck, FaTimes } from 'react-icons/fa';
 import UserService from '../../../services/UserService';
 import Pagination from '../../../components/Pagination';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './UserList.css';
 import notification from '../../../utils/notification';
 
 const UserList = () => {
+    useDocumentTitle('Quản trị - Người dùng');
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);

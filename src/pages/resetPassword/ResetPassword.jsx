@@ -5,8 +5,10 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { FaHome } from 'react-icons/fa';
 import { resetPasswordWithOTP, forgotPassword } from '../../services/AuthService';
 import notification from '../../utils/notification';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const ResetPassword = () => {
+    useDocumentTitle('Đặt lại mật khẩu');
     const navigate = useNavigate();
     const location = useLocation();
     const [email, setEmail] = useState(location.state?.email || '');

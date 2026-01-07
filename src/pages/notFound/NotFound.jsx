@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './NotFound.css';
 
 const NotFound = () => {
+    useDocumentTitle('Không tìm thấy trang');
     return (
         <div className="not-found-container">
             <div className="not-found-content">

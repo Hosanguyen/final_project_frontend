@@ -5,9 +5,11 @@ import CourseService from '../../../services/CourseService';
 import LessonService from '../../../services/LessonService';
 import TagService from '../../../services/TagService';
 import ContestService from '../../../services/ContestService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
+  useDocumentTitle('Quản trị - Dashboard');
   const [stats, setStats] = useState({
     totalCourses: 0,
     publishedCourses: 0,

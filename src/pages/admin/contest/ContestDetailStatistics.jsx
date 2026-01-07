@@ -12,6 +12,7 @@ import {
     ArrowLeft,
 } from 'lucide-react';
 import ContestService from '../../../services/ContestService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './ContestDetailStatistics.css';
 
 const ContestDetailStatistics = () => {
@@ -20,6 +21,8 @@ const ContestDetailStatistics = () => {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
+
+    useDocumentTitle(data?.contest?.title ? `Thống kê - ${data.contest.title}` : 'Thống kê cuộc thi');
 
     useEffect(() => {
         loadStatistics();

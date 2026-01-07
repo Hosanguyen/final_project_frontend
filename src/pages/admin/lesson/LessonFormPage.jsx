@@ -17,6 +17,7 @@ import {
 import LessonService from '../../../services/LessonService';
 import CourseService from '../../../services/CourseService';
 import LessonQuizLinker from './LessonQuizLinker';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './LessonFormPage.css';
 
 const LessonFormPage = () => {
@@ -24,6 +25,8 @@ const LessonFormPage = () => {
     const { courseId, id } = useParams();
     const isEdit = Boolean(id);
     const isStandalone = !courseId; // Tạo lesson độc lập, không gắn với course cụ thể
+
+    useDocumentTitle(isEdit ? 'Quản trị - Sửa bài học' : 'Quản trị - Thêm bài học');
 
     const [formData, setFormData] = useState({
         course: courseId || '',

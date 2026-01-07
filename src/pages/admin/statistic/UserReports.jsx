@@ -18,6 +18,7 @@ import {
 } from 'chart.js';
 import UserService from '../../../services/UserService';
 import Pagination from '../../../components/Pagination';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './UserReports.css';
 
 // Register Chart.js components
@@ -38,6 +39,7 @@ ChartJS.register(
 );
 
 const UserReports = () => {
+    useDocumentTitle('Thống kê - Người dùng');
     // Lấy tháng hiện tại làm giá trị mặc định
     const getCurrentMonth = () => {
         const now = new Date();

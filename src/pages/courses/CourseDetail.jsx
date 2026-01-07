@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FaClock, FaArrowLeft, FaBook, FaUser, FaLanguage, FaChartLine, FaCheckCircle, FaPlay } from 'react-icons/fa';
 import CourseService from '../../services/CourseService';
 import CourseEnrollButton from './CourseEnrollButton';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './CourseDetail.css';
 
 const CourseDetail = () => {
@@ -12,6 +13,8 @@ const CourseDetail = () => {
     const [lessons, setLessons] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    useDocumentTitle(course ? course.title : 'Chi tiết khóa học');
 
     useEffect(() => {
         loadCourseData();

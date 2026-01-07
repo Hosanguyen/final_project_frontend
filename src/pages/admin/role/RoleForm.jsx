@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FaSave, FaTimes } from 'react-icons/fa';
 import RoleService from '../../../services/RoleService';
 import PermissionService from '../../../services/PermissionService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './RoleForm.css';
 import notification from '../../../utils/notification';
 
@@ -10,6 +11,8 @@ const RoleForm = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
+
+    useDocumentTitle(isEditMode ? 'Quản trị - Sửa vai trò' : 'Quản trị - Thêm vai trò');
 
     const [formData, setFormData] = useState({
         name: '',

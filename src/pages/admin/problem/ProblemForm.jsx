@@ -4,6 +4,7 @@ import { FaSave, FaTimes, FaPlus, FaTrash, FaFileArchive } from 'react-icons/fa'
 import ProblemService from '../../../services/ProblemService';
 import CourseService from '../../../services/CourseService';
 import CKEditorComponent from '../../../components/CKEditor';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './ProblemForm.css';
 import notification from '../../../utils/notification';
 
@@ -11,6 +12,8 @@ const ProblemForm = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
+
+    useDocumentTitle(isEditMode ? 'Quản trị - Sửa bài toán' : 'Quản trị - Thêm bài toán');
 
     const [formData, setFormData] = useState({
         slug: '',

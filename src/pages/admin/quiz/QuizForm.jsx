@@ -6,12 +6,15 @@ import QuizService from '../../../services/QuizService';
 import LessonService from '../../../services/LessonService';
 import notification from '../../../utils/notification';
 import CKEditorComponent from '../../../components/CKEditor';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './QuizForm.css';
 
 const QuizForm = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
+
+    useDocumentTitle(isEditMode ? 'Quản trị - Sửa trắc nghiệm' : 'Quản trị - Thêm trắc nghiệm');
 
     const [formData, setFormData] = useState({
         title: '',

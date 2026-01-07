@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fa';
 import QuizService from '../../../services/QuizService';
 import notification from '../../../utils/notification';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './QuizDetail.css';
 
 const QuizDetail = () => {
@@ -21,6 +22,8 @@ const QuizDetail = () => {
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [expandedQuestions, setExpandedQuestions] = useState(new Set());
+
+    useDocumentTitle(quiz ? `Quản trị - ${quiz.title}` : 'Chi tiết trắc nghiệm');
 
     useEffect(() => {
         loadQuizDetail();

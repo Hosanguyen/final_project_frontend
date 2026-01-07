@@ -17,6 +17,7 @@ import {
 } from 'chart.js';
 import { BookOpen, Users, TrendingUp, DollarSign, Award, ShoppingCart } from 'lucide-react';
 import CourseService from '../../../services/CourseService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './CourseReports.css';
 
 // Register Chart.js components
@@ -37,6 +38,7 @@ ChartJS.register(
 );
 
 const CourseReports = () => {
+    useDocumentTitle('Thống kê - Khóa học');
     // Lấy tháng hiện tại làm giá trị mặc định
     const getCurrentMonth = () => {
         const now = new Date();

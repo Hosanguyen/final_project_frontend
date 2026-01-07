@@ -28,6 +28,7 @@ import {
     Target
 } from 'lucide-react';
 import api from '../../../services/api';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './ProblemStatistics.css';
 
 ChartJS.register(
@@ -53,6 +54,8 @@ const ProblemStatistics = () => {
     const [selectedContest, setSelectedContest] = useState('all');
     const [contestsList, setContestsList] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    useDocumentTitle(stats?.problem?.title ? `Thống kê - ${stats.problem.title}` : 'Thống kê bài toán');
 
     const submissionsChartRef = useRef(null);
     const statusChartRef = useRef(null);

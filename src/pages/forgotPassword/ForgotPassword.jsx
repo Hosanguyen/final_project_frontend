@@ -4,8 +4,10 @@ import './ForgotPassword.css';
 import { FaHome } from 'react-icons/fa';
 import { forgotPassword } from '../../services/AuthService';
 import notification from '../../utils/notification';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const ForgotPassword = () => {
+    useDocumentTitle('Quên mật khẩu');
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [errors, setErrors] = useState({});

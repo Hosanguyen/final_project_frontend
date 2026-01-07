@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaSearch, FaEdit, FaTrash, FaEye, FaBook } from 'react-icons/fa';
 import LessonService from '../../../services/LessonService';
 import CourseService from '../../../services/CourseService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './LessonManagement.css';
 import notification from '../../../utils/notification';
 
 const LessonManagement = () => {
+    useDocumentTitle('Quản trị - Bài học');
     const navigate = useNavigate();
     const [lessons, setLessons] = useState([]);
     const [courses, setCourses] = useState([]);

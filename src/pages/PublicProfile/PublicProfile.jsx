@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaTrophy, FaCode, FaChartLine, FaCalendar } from 'react-icons/fa';
 import api from '../../services/api';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './PublicProfile.css';
 
 const PublicProfile = () => {
@@ -15,6 +16,8 @@ const PublicProfile = () => {
   const [problemsPage, setProblemsPage] = useState(1);
   const [contestsPage, setContestsPage] = useState(1);
   const SERVER_URL = process.env.REACT_APP_API_URL || '';
+
+  useDocumentTitle(profile ? `${profile.full_name || profile.username}` : 'Hồ sơ người dùng');
 
   useEffect(() => {
     loadProfile();

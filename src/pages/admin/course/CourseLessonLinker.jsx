@@ -4,9 +4,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FaPlus, FaCheck, FaTimes, FaArrowLeft } from 'react-icons/fa';
 import CourseService from '../../../services/CourseService';
 import LessonService from '../../../services/LessonService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import './CourseLessonLinker.css';
 
 const CourseLessonLinker = () => {
+    useDocumentTitle('Quản trị - Liên kết bài học');
     const { courseId } = useParams();
     const navigate = useNavigate();
     
