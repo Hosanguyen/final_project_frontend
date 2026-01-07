@@ -431,7 +431,7 @@ const ContestStatistics2 = () => {
         return (
             <div className="contest-reports">
                 <div className="contest-reports-container">
-                    <div className="loading-spinner">Đang tải...</div>
+                    <div className="contest-reports-loading">Đang tải...</div>
                 </div>
             </div>
         );
