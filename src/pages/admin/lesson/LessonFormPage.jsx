@@ -138,6 +138,7 @@ const LessonFormPage = () => {
             ...newResources[index],
             file: file,
             fileName: file ? file.name : '',
+            isModified: newResources[index].id ? true : newResources[index].isModified,
         };
         setResources(newResources);
     };
@@ -155,12 +156,12 @@ const LessonFormPage = () => {
         }
 
         setErrors(newErrors);
-        
+
         if (Object.keys(newErrors).length > 0) {
             const firstError = Object.values(newErrors)[0];
             notification.error(firstError, 'Lỗi validation');
         }
-        
+
         return Object.keys(newErrors).length === 0;
     };
 
