@@ -162,16 +162,41 @@ const ProblemDetail = () => {
 
                     <div className="problem-detail-info-item">
                         <span className="problem-detail-info-label">Validation:</span>
-                        <span className={`problem-detail-validation-badge ${problem.validation_type === 'custom' ? 'custom' : 'default'}`}>
+                        <span
+                            className={`problem-detail-validation-badge ${
+                                problem.validation_type === 'custom' ? 'custom' : 'default'
+                            }`}
+                        >
                             {problem.validation_type === 'custom' ? 'Custom Validator' : 'Default'}
                         </span>
                     </div>
+
+                    {problem.validation_type === 'custom' && problem.validator_language && (
+                        <div className="problem-detail-info-item">
+                            <span className="problem-detail-info-label">Validator Language:</span>
+                            <code className="problem-detail-code-badge">
+                                {problem.validator_language === 'python'
+                                    ? 'Python'
+                                    : problem.validator_language === 'cpp'
+                                    ? 'C++'
+                                    : problem.validator_language === 'java'
+                                    ? 'Java'
+                                    : problem.validator_language === 'bash'
+                                    ? 'Bash'
+                                    : problem.validator_language === 'node'
+                                    ? 'Node.js'
+                                    : problem.validator_language === 'pascal'
+                                    ? 'Pascal'
+                                    : problem.validator_language}
+                            </code>
+                        </div>
+                    )}
                 </div>
 
                 {/* Custom Validator */}
                 {problem.validation_type === 'custom' && problem.custom_validator && (
                     <div className="problem-detail-info-card">
-                        <h3 className="problem-detail-card-title">Custom Validator</h3>
+                        <h3 className="problem-detail-card-title">Custom Validator Code</h3>
                         <pre className="problem-detail-code-block">{problem.custom_validator}</pre>
                     </div>
                 )}
@@ -306,13 +331,17 @@ const ProblemDetail = () => {
                 {/* Submission Section */}
                 {contestProblem && problem.is_synced_to_domjudge && problem.allowed_languages.length > 0 && (
                     <>
-                        <ProblemSubmission contestProblem={contestProblem} problem={problem} onSubmitSuccess={handleSubmitSuccess} />
-                        <SubmissionHistory 
-                            problemId={problem.id} 
-                            contestId={contestProblem ? contestProblem.contest.id : null} 
+                        <ProblemSubmission
+                            contestProblem={contestProblem}
+                            problem={problem}
+                            onSubmitSuccess={handleSubmitSuccess}
+                        />
+                        <SubmissionHistory
+                            problemId={problem.id}
+                            contestId={contestProblem ? contestProblem.contest.id : null}
                             contestMode={contestProblem?.contest?.contest_mode}
                             isShowResult={contestProblem?.contest?.is_show_result}
-                            key={submissionRefreshKey} 
+                            key={submissionRefreshKey}
                         />
                     </>
                 )}

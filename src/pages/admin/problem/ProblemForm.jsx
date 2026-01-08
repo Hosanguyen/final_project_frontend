@@ -24,6 +24,7 @@ const ProblemForm = () => {
         memory_limit_kb: 262144,
         source: '',
         validation_type: 'default',
+        validator_language: 'python',
         custom_validator: '',
         is_public: true,
         editorial_text: '',
@@ -97,6 +98,7 @@ const ProblemForm = () => {
                 memory_limit_kb: data.memory_limit_kb,
                 source: data.source || '',
                 validation_type: data.validation_type || 'default',
+                validator_language: data.validator_language || 'python',
                 custom_validator: data.custom_validator || '',
                 is_public: data.is_public,
                 editorial_text: data.editorial_text || '',
@@ -212,8 +214,13 @@ const ProblemForm = () => {
         if (formData.output_format) submitFormData.append('output_format', formData.output_format);
         if (formData.source) submitFormData.append('source', formData.source);
         if (formData.validation_type) submitFormData.append('validation_type', formData.validation_type);
-        if (formData.validation_type === 'custom' && formData.custom_validator) {
-            submitFormData.append('custom_validator', formData.custom_validator);
+        if (formData.validation_type === 'custom') {
+            if (formData.validator_language) {
+                submitFormData.append('validator_language', formData.validator_language);
+            }
+            if (formData.custom_validator) {
+                submitFormData.append('custom_validator', formData.custom_validator);
+            }
         }
         if (formData.editorial_text) submitFormData.append('editorial_text', formData.editorial_text);
 
@@ -569,17 +576,52 @@ const ProblemForm = () => {
                         </div>
 
                         {formData.validation_type === 'custom' && (
-                            <div className="problem-form-group">
-                                <label htmlFor="custom_validator">
-                                    Custom Validator Script (Python 3)
-                                </label>
-                                <textarea
-                                    id="custom_validator"
-                                    name="custom_validator"
-                                    value={formData.custom_validator}
-                                    onChange={handleChange}
-                                    rows="15"
-                                    placeholder={`#!/usr/bin/env python3
+                            <>
+                                <div className="problem-form-group">
+                                    <label htmlFor="validator_language">
+                                        Ngôn ngữ Validator <span className="problem-form-required">*</span>
+                                    </label>
+                                    <select
+                                        id="validator_language"
+                                        name="validator_language"
+                                        value={formData.validator_language}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="python">Python</option>
+                                        <option value="cpp">C++</option>
+                                        <option value="java">Java</option>
+                                        <option value="bash">Bash</option>
+                                        <option value="node">Node.js</option>
+                                        <option value="pascal">Pascal</option>
+                                    </select>
+                                    <span className="problem-form-input-hint">
+                                        Chọn ngôn ngữ lập trình cho custom validator
+                                    </span>
+                                </div>
+
+                                <div className="problem-form-group">
+                                    <label htmlFor="custom_validator">
+                                        Custom Validator Script (
+                                        {formData.validator_language === 'python'
+                                            ? 'Python 3'
+                                            : formData.validator_language === 'cpp'
+                                            ? 'C++'
+                                            : formData.validator_language === 'java'
+                                            ? 'Java'
+                                            : formData.validator_language === 'bash'
+                                            ? 'Bash'
+                                            : formData.validator_language === 'node'
+                                            ? 'Node.js'
+                                            : 'Pascal'}
+                                        )
+                                    </label>
+                                    <textarea
+                                        id="custom_validator"
+                                        name="custom_validator"
+                                        value={formData.custom_validator}
+                                        onChange={handleChange}
+                                        rows="15"
+                                        placeholder={`#!/usr/bin/env python3
 import sys
 
 def main():
@@ -606,21 +648,22 @@ def main():
 
 if __name__ == '__main__':
     main()`}
-                                    className="problem-form-code-textarea"
-                                    style={{ fontFamily: 'monospace', fontSize: '13px' }}
-                                />
-                                <span className="problem-form-input-hint">
-                                    Script Python để validate output. Exit code: 42 (AC), 43 (WA). 
-                                    {/* <a 
-                                        href="/CUSTOM_VALIDATOR_GUIDE.md" 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        style={{ marginLeft: '5px', color: '#0066cc' }}
-                                    >
-                                        Xem hướng dẫn chi tiết
-                                    </a> */}
-                                </span>
-                            </div>
+                                        className="problem-form-code-textarea"
+                                        style={{ fontFamily: 'monospace', fontSize: '13px' }}
+                                    />
+                                    <span className="problem-form-input-hint">
+                                        Script để validate output. Exit code: 42 (AC), 43 (WA).
+                                        {/* <a 
+                                            href="/CUSTOM_VALIDATOR_GUIDE.md" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            style={{ marginLeft: '5px', color: '#0066cc' }}
+                                        >
+                                            Xem hướng dẫn chi tiết
+                                        </a> */}
+                                    </span>
+                                </div>
+                            </>
                         )}
                     </div>
 
