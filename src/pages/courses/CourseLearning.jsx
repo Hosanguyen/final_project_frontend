@@ -23,7 +23,7 @@ import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './CourseLearning.css';
 
 // Backend API URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const CourseLearning = () => {
     const { slug } = useParams();

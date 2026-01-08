@@ -48,7 +48,12 @@ const CourseCard = ({ course }) => {
             <span className="price-free">Miễn phí</span>
           )}
         </div>
-        <button className="course-card-btn btn-view">Xem chi tiết</button>
+        <div className="course-footer-right">
+          {course.is_enrolled && (
+            <span className="course-enrolled-tag">Đã đăng ký</span>
+          )}
+          <button className="course-card-btn btn-view">Xem chi tiết</button>
+        </div>
       </div>
     </div>
   );
