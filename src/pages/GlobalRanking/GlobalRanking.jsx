@@ -121,7 +121,7 @@ const GlobalRanking = () => {
                         <h3>Thứ hạng của bạn</h3>
                         <div className="my-rank-content">
                             <div className="my-rank-position">
-                                {getRankIcon(rankings.find(r => r.user_id === myRating.id)?.rank || 0)}
+                                {getRankIcon(myRating.global_rank || 0)}
                             </div>
                             <div className="my-rank-details">
                                 <div className="my-rank-title">
@@ -135,6 +135,11 @@ const GlobalRanking = () => {
                                     >
                                         {myRating.rank.replace(/_/g, ' ')}
                                     </span>
+                                    {myRating.global_rank && (
+                                        <div className="global-rank-display">
+                                            Hạng #{myRating.global_rank} toàn cầu
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="my-rank-rating">
                                     <span style={{ color: myRating.rank_color, fontWeight: 'bold', fontSize: '24px' }}>

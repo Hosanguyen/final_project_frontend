@@ -115,6 +115,13 @@
     padding: 6px 12px;
 }
 
+.global-rank-display {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
 .my-rank-rating {
     display: flex;
     align-items: baseline;

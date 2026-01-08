@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FaSync, FaExclamationTriangle } from 'react-icons/fa';
 import ContestService from '../../services/ContestService';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './PracticeLeaderboard.css';
@@ -9,28 +10,49 @@ const PracticeLeaderboard = () => {
   const [error, setError] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [contest, setContest] = useState(null);
+  const [retrying, setRetrying] = useState(false);
   const SERVER_URL = process.env.REACT_APP_API_URL || '';
-  useEffect(() => {
-    const load = async () => {
-      try {
+  
+  const loadLeaderboard = async (isRetry = false) => {
+    try {
+      if (isRetry) {
+        setRetrying(true);
+      } else {
         setLoading(true);
-        setError(null);
-        // Get practice contest to retrieve id
-        const practice = await ContestService.getPracticeContest();
-        setContest(practice);
-        if (practice?.id) {
-          const data = await ContestService.getLeaderboard(practice.id);
-          setLeaderboard(Array.isArray(data?.leaderboard) ? data.leaderboard : []);
-        } else {
-          setLeaderboard([]);
-        }
-      } catch (e) {
-        setError(typeof e === 'string' ? e : (e?.error || 'Đã xảy ra lỗi'));
-      } finally {
-        setLoading(false);
       }
-    };
-    load();
+      setError(null);
+      
+      // Set timeout for API calls
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout: Request took too long')), 15000); // 15 second timeout
+      });
+      
+      // Get practice contest to retrieve id
+      const practice = await Promise.race([
+        ContestService.getPracticeContest(),
+        timeoutPromise
+      ]);
+      
+      setContest(practice);
+      if (practice?.id) {
+        const data = await Promise.race([
+          ContestService.getLeaderboard(practice.id),
+          timeoutPromise
+        ]);
+        setLeaderboard(Array.isArray(data?.leaderboard) ? data.leaderboard : []);
+      } else {
+        setLeaderboard([]);
+      }
+    } catch (e) {
+      console.error('Error loading practice leaderboard:', e);
+      setError(typeof e === 'string' ? e : (e?.error || e?.message || 'Đã xảy ra lỗi khi tải bảng xếp hạng'));
+    } finally {
+      setLoading(false);
+      setRetrying(false);
+    }
+  };
+  useEffect(() => {
+    loadLeaderboard();
   }, []);
 
   const topThree = leaderboard.slice(0, 3);
@@ -48,8 +70,44 @@ const PracticeLeaderboard = () => {
         )}
       </div>
 
-      {loading && <div className="pl-loading">Đang tải...</div>}
-      {error && <div className="pl-error">{error}</div>}
+      {loading && (
+        <div className="pl-loading">
+          <div className="pl-loading-skeleton">
+            <div className="pl-skeleton-header"></div>
+            <div className="pl-skeleton-podium">
+              <div className="pl-skeleton-card"></div>
+              <div className="pl-skeleton-card"></div>
+              <div className="pl-skeleton-card"></div>
+            </div>
+            <div className="pl-skeleton-table">
+              {[...Array(5)].map((_, idx) => (
+                <div key={idx} className="pl-skeleton-row"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {error && (
+        <div className="pl-error">
+          <FaExclamationTriangle className="pl-error-icon" />
+          <p>{error}</p>
+          <button 
+            onClick={() => loadLeaderboard(true)} 
+            className="pl-retry-btn"
+            disabled={retrying}
+          >
+            {retrying ? (
+              <>
+                <FaSync className="pl-spinning" />
+                Đang thử lại...
+              </>
+            ) : (
+              'Thử lại'
+            )}
+          </button>
+        </div>
+      )}
 
       {!loading && !error && (
         <>

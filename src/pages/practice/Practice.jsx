@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaCheckCircle, FaTimesCircle, FaClock, FaFire, FaStar } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaClock, FaFire, FaStar, FaSearch } from 'react-icons/fa';
 import ContestService from '../../services/ContestService';
 import RecommendedProblems from '../../components/RecommendedProblems';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
@@ -13,6 +13,8 @@ const Practice = () => {
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all'); // all, solved, unsolved
     const [difficultyFilter, setDifficultyFilter] = useState('all'); // all, easy, medium, hard
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [userSubmissions, setUserSubmissions] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(25); // Items per page
@@ -27,16 +29,47 @@ const Practice = () => {
         loadPracticeProblems();
     }, [currentPage]);
 
+    // Reset page when search query changes
+    useEffect(() => {
+        if (searchQuery && currentPage !== 1) {
+            setCurrentPage(1);
+        }
+    }, [searchQuery]);
+
+    // Debounce search query
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 500);
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery]);
+
+    // Reload when debounced search query changes
+    useEffect(() => {
+        if (currentPage === 1) {
+            loadPracticeProblems();
+        } else {
+            setCurrentPage(1);
+        }
+    }, [debouncedSearchQuery]);
+
     const loadPracticeProblems = async () => {
         setLoading(true);
         setError(null);
 
         try {
-            // Get contest details with problems (with pagination)
-            const contestDetail = await ContestService.getPracticeContest({
+            // Get contest details with problems (with pagination and search)
+            const params = {
                 page: currentPage,
                 page_size: pageSize,
-            });
+            };
+            
+            // Add search query if exists
+            if (debouncedSearchQuery.trim()) {
+                params.search = debouncedSearchQuery.trim();
+            }
+            
+            const contestDetail = await ContestService.getPracticeContest(params);
 
             // API trả về field "problems" chứ không phải "contest_problems"
             const problemList = contestDetail?.problems || contestDetail?.contest_problems || [];
@@ -208,6 +241,29 @@ const Practice = () => {
             <RecommendedProblems />
 
             <div className="practice-filters">
+                <div className="filter-group search-group">
+                    <label>Tìm kiếm:</label>
+                    <div className="search-input-container">
+                        <FaSearch className="search-icon" />
+                        <input
+                            type="text"
+                            placeholder="Tìm theo tên bài hoặc slug..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="search-input"
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery('')}
+                                className="clear-search"
+                                title="Xóa tìm kiếm"
+                            >
+                                ×
+                            </button>
+                        )}
+                    </div>
+                </div>
+
                 <div className="filter-group">
                     <label>Trạng thái:</label>
                     <div className="filter-buttons">
