@@ -12,6 +12,7 @@ import {
     MdCode,
     MdLanguage,
     MdLocalOffer,
+    MdShoppingCart,
 } from 'react-icons/md';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import './Sidebar.css';
@@ -63,6 +64,11 @@ const Sidebar = ({ isOpen }) => {
                 { title: 'Danh sách quyền', path: '/admin/permissions' },
                 { title: 'Loại nhóm quyền', path: '/admin/permission-categories' },
             ],
+        },
+        {
+            title: 'Quản lý đơn hàng',
+            icon: <MdShoppingCart />,
+            path: '/admin/orders',
         },
         {
             title: 'Ngôn ngữ lập trình',

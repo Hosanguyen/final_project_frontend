@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaCheckCircle, FaTimesCircle, FaClock, FaFire, FaStar, FaSearch } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaClock, FaFire, FaStar, FaSearch, FaTags } from 'react-icons/fa';
 import ContestService from '../../services/ContestService';
+import TagService from '../../services/TagService';
 import RecommendedProblems from '../../components/RecommendedProblems';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import './Practice.css';
@@ -13,6 +14,8 @@ const Practice = () => {
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all'); // all, solved, unsolved
     const [difficultyFilter, setDifficultyFilter] = useState('all'); // all, easy, medium, hard
+    const [tagFilter, setTagFilter] = useState(''); // tag id or empty for all
+    const [availableTags, setAvailableTags] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [userSubmissions, setUserSubmissions] = useState({});
@@ -24,17 +27,35 @@ const Practice = () => {
         has_next: false,
         has_previous: false,
     });
+    const [userStats, setUserStats] = useState({
+        total_problems: 0,
+        solved: 0,
+        attempted: 0
+    });
 
     useEffect(() => {
         loadPracticeProblems();
-    }, [currentPage]);
+    }, [currentPage, filter, difficultyFilter, tagFilter]);
 
-    // Reset page when search query changes
+    // Load available tags on mount
     useEffect(() => {
-        if (searchQuery && currentPage !== 1) {
+        const loadTags = async () => {
+            try {
+                const tags = await TagService.getTags();
+                setAvailableTags(tags || []);
+            } catch (err) {
+                console.error('Error loading tags:', err);
+            }
+        };
+        loadTags();
+    }, []);
+
+    // Reset page when search query or filters change
+    useEffect(() => {
+        if (currentPage !== 1) {
             setCurrentPage(1);
         }
-    }, [searchQuery]);
+    }, [filter, difficultyFilter, tagFilter]);
 
     // Debounce search query
     useEffect(() => {
@@ -58,7 +79,7 @@ const Practice = () => {
         setError(null);
 
         try {
-            // Get contest details with problems (with pagination and search)
+            // Get contest details with problems (with pagination, search, and filters)
             const params = {
                 page: currentPage,
                 page_size: pageSize,
@@ -69,6 +90,21 @@ const Practice = () => {
                 params.search = debouncedSearchQuery.trim();
             }
             
+            // Add status filter
+            if (filter !== 'all') {
+                params.status = filter;
+            }
+            
+            // Add difficulty filter
+            if (difficultyFilter !== 'all') {
+                params.difficulty = difficultyFilter;
+            }
+            
+            // Add tag filter
+            if (tagFilter) {
+                params.tag = tagFilter;
+            }
+            
             const contestDetail = await ContestService.getPracticeContest(params);
 
             // API trả về field "problems" chứ không phải "contest_problems"
@@ -77,6 +113,11 @@ const Practice = () => {
             // Update pagination info
             if (contestDetail?.pagination) {
                 setPagination(contestDetail.pagination);
+            }
+            
+            // Update user stats from API
+            if (contestDetail?.user_stats) {
+                setUserStats(contestDetail.user_stats);
             }
 
             if (problemList.length > 0) {
@@ -152,33 +193,33 @@ const Practice = () => {
         return labels[difficulty?.toLowerCase()] || 'Trung bình';
     };
 
-    const filteredProblems = problems.filter((cp) => {
-        // Filter by status
-        if (filter === 'solved') {
-            const submission = userSubmissions[cp.problem_id];
-            if (!submission || submission.status !== 'AC') return false;
-        } else if (filter === 'unsolved') {
-            const submission = userSubmissions[cp.problem_id];
-            if (submission && submission.status === 'AC') return false;
-        }
-
-        // Filter by difficulty (assuming problem has difficulty field)
-        if (difficultyFilter !== 'all' && cp.problem_difficulty) {
-            if (cp.problem_difficulty.toLowerCase() !== difficultyFilter) return false;
-        }
-
-        return true;
-    });
+    // Problems are already filtered by API, just use them directly
+    const filteredProblems = problems;
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+    
+    const handleFilterChange = (newFilter) => {
+        setFilter(newFilter);
+        setCurrentPage(1);
+    };
+    
+    const handleDifficultyChange = (newDifficulty) => {
+        setDifficultyFilter(newDifficulty);
+        setCurrentPage(1);
+    };
+    
+    const handleTagChange = (tagId) => {
+        setTagFilter(tagId);
+        setCurrentPage(1);
+    };
 
     const stats = {
-        total: pagination.total_items || problems.length,
-        solved: Object.values(userSubmissions).filter((s) => s.status === 'AC').length,
-        attempted: Object.values(userSubmissions).filter((s) => s.status && s.status !== 'AC').length,
+        total: userStats.total_problems || pagination.total_items || 0,
+        solved: userStats.solved || 0,
+        attempted: userStats.attempted || 0,
     };
 
     if (loading) {
@@ -231,7 +272,7 @@ const Practice = () => {
                 </div>
                 <div className="stat-card practice progress">
                     <div className="stat-number">
-                        {stats.total > 0 ? Math.round((stats.solved / stats.total) * 100) : 0}%
+                        {stats.total > 0 ? ((stats.solved / stats.total) * 100).toFixed(1) : '0.0'}%
                     </div>
                     <div className="stat-label">Tiến độ</div>
                 </div>
@@ -267,13 +308,13 @@ const Practice = () => {
                 <div className="filter-group">
                     <label>Trạng thái:</label>
                     <div className="filter-buttons">
-                        <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>
+                        <button className={filter === 'all' ? 'active' : ''} onClick={() => handleFilterChange('all')}>
                             Tất cả
                         </button>
-                        <button className={filter === 'solved' ? 'active' : ''} onClick={() => setFilter('solved')}>
+                        <button className={filter === 'solved' ? 'active' : ''} onClick={() => handleFilterChange('solved')}>
                             Đã giải
                         </button>
-                        <button className={filter === 'unsolved' ? 'active' : ''} onClick={() => setFilter('unsolved')}>
+                        <button className={filter === 'unsolved' ? 'active' : ''} onClick={() => handleFilterChange('unsolved')}>
                             Chưa giải
                         </button>
                     </div>
@@ -284,29 +325,45 @@ const Practice = () => {
                     <div className="filter-buttons">
                         <button
                             className={difficultyFilter === 'all' ? 'active' : ''}
-                            onClick={() => setDifficultyFilter('all')}
+                            onClick={() => handleDifficultyChange('all')}
                         >
                             Tất cả
                         </button>
                         <button
                             className={difficultyFilter === 'easy' ? 'active' : ''}
-                            onClick={() => setDifficultyFilter('easy')}
+                            onClick={() => handleDifficultyChange('easy')}
                         >
                             Dễ
                         </button>
                         <button
                             className={difficultyFilter === 'medium' ? 'active' : ''}
-                            onClick={() => setDifficultyFilter('medium')}
+                            onClick={() => handleDifficultyChange('medium')}
                         >
                             Trung bình
                         </button>
                         <button
                             className={difficultyFilter === 'hard' ? 'active' : ''}
-                            onClick={() => setDifficultyFilter('hard')}
+                            onClick={() => handleDifficultyChange('hard')}
                         >
                             Khó
                         </button>
                     </div>
+                </div>
+
+                <div className="filter-group tag-filter-group">
+                    <label><FaTags /> Tag:</label>
+                    <select
+                        value={tagFilter}
+                        onChange={(e) => handleTagChange(e.target.value)}
+                        className="tag-select"
+                    >
+                        <option value="">Tất cả tags</option>
+                        {availableTags.map((tag) => (
+                            <option key={tag.id} value={tag.id}>
+                                {tag.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
@@ -323,6 +380,7 @@ const Practice = () => {
                                 <tr>
                                     <th className="col-status">Trạng thái</th>
                                     <th className="col-title">Tên bài</th>
+                                    <th className="col-tags">Tags</th>
                                     <th className="col-difficulty">Độ khó</th>
                                     <th className="col-submissions">Lượt nộp</th>
                                 </tr>
@@ -336,6 +394,25 @@ const Practice = () => {
                                                 {cp.problem_title}
                                             </Link>
                                             <span className="problem-slug">{cp.problem_slug}</span>
+                                        </td>
+                                        <td className="col-tags">
+                                            <div className="tags-container">
+                                                {(cp.problem_tags || []).slice(0, 3).map((tag) => (
+                                                    <span
+                                                        key={tag.id}
+                                                        className="tag-badge"
+                                                        onClick={() => handleTagChange(String(tag.id))}
+                                                        title={`Lọc theo tag: ${tag.name}`}
+                                                    >
+                                                        {tag.name}
+                                                    </span>
+                                                ))}
+                                                {(cp.problem_tags || []).length > 3 && (
+                                                    <span className="tag-badge more" title={cp.problem_tags.map(t => t.name).join(', ')}>
+                                                        +{cp.problem_tags.length - 3}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="col-difficulty">
                                             <span

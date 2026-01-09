@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     Users,
@@ -10,9 +10,11 @@ import {
     TrendingUp,
     AlertCircle,
     ArrowLeft,
+    Search,
 } from 'lucide-react';
 import ContestService from '../../../services/ContestService';
 import useDocumentTitle from '../../../hooks/useDocumentTitle';
+import Pagination from '../../../components/Pagination';
 import './ContestDetailStatistics.css';
 
 const ContestDetailStatistics = () => {
@@ -21,17 +23,36 @@ const ContestDetailStatistics = () => {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
+    
+    // Pagination and search for problems
+    const [problemSearchTerm, setProblemSearchTerm] = useState('');
+    const [problemSearchInput, setProblemSearchInput] = useState('');
+    const [problemCurrentPage, setProblemCurrentPage] = useState(1);
+    const [problemsLoading, setProblemsLoading] = useState(false);
+    const problemsPerPage = 6;
 
     useDocumentTitle(data?.contest?.title ? `Thống kê - ${data.contest.title}` : 'Thống kê cuộc thi');
 
+    // Load initial statistics (without problem pagination params to get full data)
     useEffect(() => {
         loadStatistics();
     }, [id]);
 
+    // Load problems when pagination or search changes
+    useEffect(() => {
+        if (data) {
+            loadProblems();
+        }
+    }, [problemCurrentPage, problemSearchTerm]);
+
     const loadStatistics = async () => {
         try {
             setLoading(true);
-            const response = await ContestService.getContestDetailStatistics(id);
+            const response = await ContestService.getContestDetailStatistics(id, {
+                problem_page: 1,
+                problem_page_size: problemsPerPage,
+                problem_search: ''
+            });
             setData(response);
             setError(null);
         } catch (err) {
@@ -40,6 +61,48 @@ const ContestDetailStatistics = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const loadProblems = async () => {
+        try {
+            setProblemsLoading(true);
+            const response = await ContestService.getContestDetailStatistics(id, {
+                problem_page: problemCurrentPage,
+                problem_page_size: problemsPerPage,
+                problem_search: problemSearchTerm
+            });
+            // Only update problems data
+            setData(prev => ({
+                ...prev,
+                statistics: {
+                    ...prev.statistics,
+                    problems: response.statistics.problems
+                }
+            }));
+        } catch (err) {
+            console.error('Error loading problems:', err);
+        } finally {
+            setProblemsLoading(false);
+        }
+    };
+
+    // Debounce search
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (problemSearchInput !== problemSearchTerm) {
+                setProblemSearchTerm(problemSearchInput);
+                setProblemCurrentPage(1);
+            }
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [problemSearchInput]);
+
+    const handleProblemSearch = (e) => {
+        setProblemSearchInput(e.target.value);
+    };
+
+    const handleProblemPageChange = (page) => {
+        setProblemCurrentPage(page);
     };
 
     const getStatusColor = (status) => {
@@ -86,6 +149,7 @@ const ContestDetailStatistics = () => {
     if (!data) return null;
 
     const { contest, statistics, charts } = data;
+    const problemPagination = statistics?.problems?.pagination || {};
 
     return (
         <div className="contest-detail-stats-container">
@@ -302,42 +366,76 @@ const ContestDetailStatistics = () => {
 
             {/* Problem Statistics */}
             <div className="problems-stats-section">
-                <h2>
-                    <Activity size={20} />
-                    Thống kê theo bài tập
-                </h2>
-                <div className="problems-grid">
-                    {statistics.problems.by_problem.map((problem, index) => (
-                        <div
-                            key={index}
-                            className="problem-card clickable-card"
-                            onClick={() => navigate(`/admin/statistics/problem/${problem.problem_id}?contest_id=${id}`)}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            <div className="problem-header">
-                                <span className="problem-alias">{problem.alias}</span>
-                                <span className="problem-point">{problem.point} điểm</span>
-                            </div>
-                            <h3 className="problem-title">{problem.problem_title}</h3>
-                            <div className="problem-stats">
-                                <div className="problem-stat">
-                                    <FileText size={16} />
-                                    <span>{problem.total_submissions} submissions</span>
-                                </div>
-                                <div className="problem-stat accepted">
-                                    <CheckCircle size={16} />
-                                    <span>{problem.accepted_submissions} AC</span>
-                                </div>
-                            </div>
-                            <div className="problem-acceptance">
-                                <div className="acceptance-bar">
-                                    <div className="acceptance-fill" style={{ width: `${problem.acceptance_rate}%` }} />
-                                </div>
-                                <span className="acceptance-rate">{problem.acceptance_rate}%</span>
-                            </div>
-                        </div>
-                    ))}
+                <div className="section-header">
+                    <h2>
+                        <Activity size={20} />
+                        Thống kê theo bài tập
+                    </h2>
+                    <div className="problem-search-box">
+                        <Search size={18} />
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm bài tập..."
+                            value={problemSearchInput}
+                            onChange={handleProblemSearch}
+                            className="problem-search-input"
+                        />
+                    </div>
                 </div>
+                
+                {problemsLoading ? (
+                    <div className="problems-loading">Đang tải...</div>
+                ) : statistics.problems.by_problem.length === 0 ? (
+                    <div className="no-problems-found">
+                        Không tìm thấy bài tập phù hợp
+                    </div>
+                ) : (
+                    <>
+                        <div className="problems-grid">
+                            {statistics.problems.by_problem.map((problem, index) => (
+                                <div
+                                    key={problem.problem_id}
+                                    className="problem-card clickable-card"
+                                    onClick={() => navigate(`/admin/statistics/problem/${problem.problem_id}?contest_id=${id}`)}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    <div className="problem-header">
+                                        <span className="problem-alias">{problem.alias}</span>
+                                        <span className="problem-point">{problem.point} điểm</span>
+                                    </div>
+                                    <h3 className="problem-title">{problem.problem_title}</h3>
+                                    <div className="problem-stats">
+                                        <div className="problem-stat">
+                                            <FileText size={16} />
+                                            <span>{problem.total_submissions} submissions</span>
+                                        </div>
+                                        <div className="problem-stat accepted">
+                                            <CheckCircle size={16} />
+                                            <span>{problem.accepted_submissions} AC</span>
+                                        </div>
+                                    </div>
+                                    <div className="problem-acceptance">
+                                        <div className="acceptance-bar">
+                                            <div className="acceptance-fill" style={{ width: `${problem.acceptance_rate}%` }} />
+                                        </div>
+                                        <span className="acceptance-rate">{problem.acceptance_rate}%</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        
+                        {problemPagination.total_pages > 1 && (
+                            <Pagination
+                                currentPage={problemPagination.current_page}
+                                totalPages={problemPagination.total_pages}
+                                totalItems={problemPagination.total_items}
+                                onPageChange={handleProblemPageChange}
+                                itemsPerPage={problemsPerPage}
+                                className="problems-pagination"
+                            />
+                        )}
+                    </>
+                )}
             </div>
 
             {/* Top Participants */}

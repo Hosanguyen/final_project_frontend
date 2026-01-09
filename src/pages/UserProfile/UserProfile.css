@@ -1119,3 +1119,58 @@
   color: #2c3e50;
   padding: 0 15px;
 }
+
+/* Orders Tab Styles */
+.profile-order-code {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #f0f9ff;
+  color: #0369a1;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.profile-course-cell {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.profile-course-cell:hover {
+  color: #667eea;
+}
+
+.profile-order-amount {
+  font-weight: 600;
+  color: #059669;
+}
+
+.profile-order-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.profile-order-status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.profile-order-status-completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.profile-order-status-failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.profile-order-status-cancelled {
+  background: #f3f4f6;
+  color: #6b7280;
+}

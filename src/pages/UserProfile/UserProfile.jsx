@@ -8,6 +8,7 @@ import { updateUserProfile } from '../../services/UserService';
 import CourseService from '../../services/CourseService';
 import SubmissionService from '../../services/SubmissionService';
 import ContestService from '../../services/ContestService';
+import PaymentService from '../../services/PaymentService';
 import notification from '../../utils/notification';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 
@@ -53,6 +54,10 @@ const UserProfile = () => {
   const [contestsPage, setContestsPage] = useState(1);
   const [contestsTotalPages, setContestsTotalPages] = useState(1);
 
+  // Orders state
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+
   // Cropper states
   const [cropMode, setCropMode] = useState(false);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -88,6 +93,8 @@ const UserProfile = () => {
       loadSubmissions(1);
     } else if (activeTab === 'contests' && userContests.length === 0) {
       loadUserContests(1);
+    } else if (activeTab === 'orders' && orders.length === 0) {
+      loadOrders();
     }
   }, [activeTab]);
 
@@ -181,6 +188,19 @@ const UserProfile = () => {
       setUserContests([]);
     } finally {
       setLoadingContests(false);
+    }
+  };
+
+  const loadOrders = async () => {
+    try {
+      setLoadingOrders(true);
+      const response = await PaymentService.getOrderHistory();
+      setOrders(Array.isArray(response) ? response : (response.orders || []));
+    } catch (error) {
+      console.error('Error loading orders:', error);
+      setOrders([]);
+    } finally {
+      setLoadingOrders(false);
     }
   };
 
@@ -457,10 +477,10 @@ const UserProfile = () => {
 
             <div className="overview-actions">
               <button className="edit-btn" onClick={() => setIsEditing(true)}>
-                ✏️ Chỉnh sửa thông tin
+                Chỉnh sửa thông tin
               </button>
               <button className="change-password-btn" onClick={() => setShowChangePassword(true)}>
-                🔒 Đổi mật khẩu
+                Đổi mật khẩu
               </button>
             </div>
           </div>
@@ -543,6 +563,71 @@ const UserProfile = () => {
                             Vào học
                           </button>
                         </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        );
+      case 'orders':
+        return (
+          <div className="profile-tab-content">
+            {loadingOrders ? (
+              <div className="profile-loading-message">Đang tải đơn hàng...</div>
+            ) : orders.length === 0 ? (
+              <div className="profile-empty-message">
+                <p>Bạn chưa có đơn hàng nào</p>
+                <button 
+                  className="profile-browse-btn"
+                  onClick={() => navigate('/courses')}
+                >
+                  Khám phá khóa học
+                </button>
+              </div>
+            ) : (
+              <div className="profile-table-container">
+                <table className="profile-table">
+                  <thead>
+                    <tr>
+                      <th>STT</th>
+                      <th>Mã đơn hàng</th>
+                      <th>Khóa học</th>
+                      <th>Số tiền</th>
+                      <th>Trạng thái</th>
+                      <th>Ngày tạo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orders.map((order, index) => (
+                      <tr key={order.id}>
+                        <td>{index + 1}</td>
+                        <td>
+                          <code className="profile-order-code">{order.order_code}</code>
+                        </td>
+                        <td 
+                          className="profile-course-cell"
+                          onClick={() => order.course_slug && navigate(`/courses/${order.course_slug}`)}
+                          style={{ cursor: order.course_slug ? 'pointer' : 'default' }}
+                        >
+                          {order.course_title}
+                        </td>
+                        <td className="profile-order-amount">
+                          {new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                          }).format(order.amount)}
+                        </td>
+                        <td>
+                          <span className={`profile-order-status profile-order-status-${order.status}`}>
+                            {order.status === 'pending' ? 'Chờ xử lý' :
+                             order.status === 'completed' ? 'Hoàn thành' :
+                             order.status === 'failed' ? 'Thất bại' :
+                             order.status === 'cancelled' ? 'Đã hủy' : order.status}
+                          </span>
+                        </td>
+                        <td>{new Date(order.created_at).toLocaleString('vi-VN')}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1061,12 +1146,12 @@ const UserProfile = () => {
               </div>
 
               <div className="user-profile-edit-modal-actions">
-                <button onClick={handleSave} className="save-btn">💾 Lưu thay đổi</button>
+                <button onClick={handleSave} className="save-btn">Lưu thay đổi</button>
                 <button onClick={() => {
                   setFormData(user);
                   setAvatarPreview(user.avatar_url ? `${API_URL}${user.avatar_url}` : null);
                   setIsEditing(false);
-                }} className="cancel-btn">❌ Hủy</button>
+                }} className="cancel-btn">Hủy</button>
               </div>
             </div>
           </div>
@@ -1110,7 +1195,7 @@ const UserProfile = () => {
 
       {/* Tabs */}
       <div className="profile-tabs">
-        {['overview', 'courses', 'problems', 'submissions', 'contests'].map((tab) => (
+        {['overview', 'courses', 'orders', 'problems', 'submissions', 'contests'].map((tab) => (
           <button
             key={tab}
             className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
@@ -1118,6 +1203,7 @@ const UserProfile = () => {
           >
             {tab === 'overview' ? 'Tổng quan' : 
              tab === 'courses' ? 'Khóa học' :
+             tab === 'orders' ? 'Đơn hàng' :
              tab === 'problems' ? 'Bài tập' :
              tab === 'submissions' ? 'Lịch sử nộp' :
              'Contest'}
