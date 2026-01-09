@@ -421,6 +421,84 @@
     margin-bottom: 30px;
 }
 
+.contest-detail-stats-container .problems-stats-section .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.contest-detail-stats-container .problems-stats-section .section-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.contest-detail-stats-container .problem-search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    min-width: 250px;
+    transition: all 0.2s;
+}
+
+.contest-detail-stats-container .problem-search-box:focus-within {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.contest-detail-stats-container .problem-search-box svg {
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+
+.contest-detail-stats-container .problem-search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: #1e293b;
+    width: 100%;
+}
+
+.contest-detail-stats-container .problem-search-input::placeholder {
+    color: #94a3b8;
+}
+
+.contest-detail-stats-container .no-problems-found {
+    text-align: center;
+    padding: 40px 20px;
+    background: white;
+    border-radius: 12px;
+    color: #64748b;
+    font-size: 15px;
+}
+
+.contest-detail-stats-container .problems-loading {
+    text-align: center;
+    padding: 40px 20px;
+    background: white;
+    border-radius: 12px;
+    color: #64748b;
+    font-size: 15px;
+}
+
+.contest-detail-stats-container .problems-pagination {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+}
+
 .contest-detail-stats-container .problems-stats-section h2 {
     display: flex;
     align-items: center;
