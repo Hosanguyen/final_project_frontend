@@ -57,6 +57,7 @@ import CourseReports from '../pages/admin/statistic/CourseReports';
 import ContestStatistics from '../pages/admin/statistic/ContestStatistics';
 import ProblemStatistics from '../pages/admin/statistic/ProblemStatistics';
 import RevenueStatistics from '../pages/admin/statistic/RevenueStatistics';
+import OrderManagement from '../pages/admin/order/OrderManagement';
 
 const AppRoutes = () => {
     return (
@@ -212,6 +213,16 @@ const AppRoutes = () => {
                         element={
                             <PrivateRoute>
                                 <UserForm />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    {/* Order Management */}
+                    <Route
+                        path="/admin/orders"
+                        element={
+                            <PrivateRoute>
+                                <OrderManagement />
                             </PrivateRoute>
                         }
                     />
