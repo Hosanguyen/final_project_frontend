@@ -30,7 +30,7 @@ const LessonDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedResource, setSelectedResource] = useState(null);
-    const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+    const API_BASE_URL = process.env.REACT_APP_API_URL;
 
     useDocumentTitle(lesson ? `Quản trị - ${lesson.title}` : 'Chi tiết bài học');
 

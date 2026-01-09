@@ -1,9 +1,21 @@
 ﻿import React, { useState, useEffect } from 'react';
 import notification from '../../../utils/notification';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-    FaBook, FaEdit, FaTrash, FaPlus, FaList, FaEye, FaCheckCircle, FaTimesCircle,
-    FaArrowLeft, FaBookOpen, FaUsers, FaTags, FaCode, FaTimes
+import {
+    FaBook,
+    FaEdit,
+    FaTrash,
+    FaPlus,
+    FaList,
+    FaEye,
+    FaCheckCircle,
+    FaTimesCircle,
+    FaArrowLeft,
+    FaBookOpen,
+    FaUsers,
+    FaTags,
+    FaCode,
+    FaTimes,
 } from 'react-icons/fa';
 import CourseService from '../../../services/CourseService';
 import LessonService from '../../../services/LessonService';
@@ -13,7 +25,7 @@ import './CourseDetailPage.css';
 const CourseDetailPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    
+
     const [course, setCourse] = useState(null);
     const [lessons, setLessons] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -31,9 +43,9 @@ const CourseDetailPage = () => {
         try {
             const [courseData, lessonsData] = await Promise.all([
                 CourseService.getCourse(id),
-                LessonService.getLessonsByCourse(id)
+                LessonService.getLessonsByCourse(id),
             ]);
-            
+
             setCourse(courseData);
             setLessons(lessonsData);
         } catch (error) {
@@ -55,7 +67,7 @@ const CourseDetailPage = () => {
             successMsg.textContent = 'Xóa bài học thành công!';
             document.body.appendChild(successMsg);
             setTimeout(() => successMsg.remove(), 3000);
-            
+
             loadCourseData();
             setShowDeleteModal(false);
             setSelectedLesson(null);
@@ -68,9 +80,9 @@ const CourseDetailPage = () => {
     const handleUnlinkLesson = async (lessonId) => {
         const result = await notification.confirm(
             'Bạn có chắc muốn gỡ bài học này khỏi khóa học? (Bài học vẫn tồn tại nhưng không còn thuộc khóa học này)',
-            'Xác nhận gỡ bài học'
+            'Xác nhận gỡ bài học',
         );
-        
+
         if (!result.isConfirmed) {
             return;
         }
@@ -78,7 +90,7 @@ const CourseDetailPage = () => {
         try {
             await LessonService.patchLesson(lessonId, { course: null });
             loadCourseData();
-            
+
             const successMsg = document.createElement('div');
             successMsg.className = 'course-detail-success-toast';
             successMsg.textContent = 'Đã gỡ bài học khỏi khóa học!';
@@ -128,17 +140,11 @@ const CourseDetailPage = () => {
         <div className="course-detail-page">
             {/* Header */}
             <div className="course-detail-header">
-                <button 
-                    className="course-detail-btn-back"
-                    onClick={() => navigate('/admin/courses')}
-                >
+                <button className="course-detail-btn-back" onClick={() => navigate('/admin/courses')}>
                     <FaArrowLeft /> Quay lại
                 </button>
                 <div className="course-detail-header-actions">
-                    <button 
-                        className="course-detail-btn-edit"
-                        onClick={() => navigate(`/admin/courses/edit/${id}`)}
-                    >
+                    <button className="course-detail-btn-edit" onClick={() => navigate(`/admin/courses/edit/${id}`)}>
                         <FaEdit /> Chỉnh sửa
                     </button>
                 </div>
@@ -154,9 +160,13 @@ const CourseDetailPage = () => {
                 {/* Banner Display */}
                 {course.banner_url && (
                     <div className="course-detail-banner">
-                        <img 
-                            src={course.banner_url.startsWith('http') ? course.banner_url : `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}${course.banner_url}`} 
-                            alt={course.title} 
+                        <img
+                            src={
+                                course.banner_url.startsWith('http')
+                                    ? course.banner_url
+                                    : `${process.env.REACT_APP_API_URL}${course.banner_url}`
+                            }
+                            alt={course.title}
                         />
                     </div>
                 )}
@@ -166,7 +176,7 @@ const CourseDetailPage = () => {
                         <label>Slug:</label>
                         <code>{course.slug}</code>
                     </div>
-                    
+
                     <div className="course-detail-info-item">
                         <label>Cấp độ:</label>
                         <span className={`course-detail-badge ${getLevelBadge(course.level).class}`}>
@@ -177,9 +187,9 @@ const CourseDetailPage = () => {
                     <div className="course-detail-info-item">
                         <label>Giá:</label>
                         <span className="course-detail-price">
-                            {new Intl.NumberFormat('vi-VN', { 
-                                style: 'currency', 
-                                currency: 'VND' 
+                            {new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND',
                             }).format(course.price)}
                         </span>
                     </div>
@@ -213,9 +223,11 @@ const CourseDetailPage = () => {
 
                     {course.languages && course.languages.length > 0 && (
                         <div className="course-detail-info-item full-width">
-                            <label><FaCode /> Ngôn ngữ lập trình:</label>
+                            <label>
+                                <FaCode /> Ngôn ngữ lập trình:
+                            </label>
                             <div className="course-detail-tags">
-                                {course.languages.map(lang => (
+                                {course.languages.map((lang) => (
                                     <span key={lang.id} className="course-detail-tag">
                                         {lang.name}
                                     </span>
@@ -226,9 +238,11 @@ const CourseDetailPage = () => {
 
                     {course.tags && course.tags.length > 0 && (
                         <div className="course-detail-info-item full-width">
-                            <label><FaTags /> Tags:</label>
+                            <label>
+                                <FaTags /> Tags:
+                            </label>
                             <div className="course-detail-tags">
-                                {course.tags.map(tag => (
+                                {course.tags.map((tag) => (
                                     <span key={tag.id} className="course-detail-tag">
                                         {tag.name}
                                     </span>
@@ -260,8 +274,10 @@ const CourseDetailPage = () => {
             {/* Lessons Section */}
             <div className="course-detail-card">
                 <div className="course-detail-lessons-header">
-                    <h2><FaList /> Danh sách bài học</h2>
-                    <button 
+                    <h2>
+                        <FaList /> Danh sách bài học
+                    </h2>
+                    <button
                         className="course-detail-btn-add-lesson"
                         onClick={() => navigate(`/admin/courses/${id}/add-lessons`)}
                     >
@@ -273,7 +289,7 @@ const CourseDetailPage = () => {
                     <div className="course-detail-empty">
                         <FaBookOpen className="empty-icon" />
                         <p>Chưa có bài học nào</p>
-                        <button 
+                        <button
                             className="course-detail-btn-add-lesson"
                             onClick={() => navigate(`/admin/courses/${id}/add-lessons`)}
                         >
@@ -285,10 +301,10 @@ const CourseDetailPage = () => {
                         <table>
                             <thead>
                                 <tr>
-                                    <th style={{width: '60px'}}>STT</th>
+                                    <th style={{ width: '60px' }}>STT</th>
                                     <th>Tiêu đề</th>
-                                    <th style={{width: '120px'}}>Resources</th>
-                                    <th style={{width: '150px'}}>Thao tác</th>
+                                    <th style={{ width: '120px' }}>Resources</th>
+                                    <th style={{ width: '150px' }}>Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -307,9 +323,7 @@ const CourseDetailPage = () => {
                                             )}
                                         </td>
                                         <td className="text-center">
-                                            <span className="resource-count">
-                                                {lesson.resources_count || 0}
-                                            </span>
+                                            <span className="resource-count">{lesson.resources_count || 0}</span>
                                         </td>
                                         <td>
                                             <div className="course-detail-action-buttons">
@@ -322,7 +336,9 @@ const CourseDetailPage = () => {
                                                 </button>
                                                 <button
                                                     className="course-detail-btn-action btn-edit"
-                                                    onClick={() => navigate(`/admin/courses/${id}/lessons/edit/${lesson.id}`)}
+                                                    onClick={() =>
+                                                        navigate(`/admin/courses/${id}/lessons/edit/${lesson.id}`)
+                                                    }
                                                     title="Chỉnh sửa"
                                                 >
                                                     <FaEdit />
@@ -367,16 +383,10 @@ const CourseDetailPage = () => {
                             </p>
                         </div>
                         <div className="course-detail-modal-footer">
-                            <button 
-                                className="course-detail-btn-cancel"
-                                onClick={() => setShowDeleteModal(false)}
-                            >
+                            <button className="course-detail-btn-cancel" onClick={() => setShowDeleteModal(false)}>
                                 Hủy
                             </button>
-                            <button 
-                                className="course-detail-btn-confirm-delete"
-                                onClick={handleDeleteLesson}
-                            >
+                            <button className="course-detail-btn-confirm-delete" onClick={handleDeleteLesson}>
                                 Xóa
                             </button>
                         </div>

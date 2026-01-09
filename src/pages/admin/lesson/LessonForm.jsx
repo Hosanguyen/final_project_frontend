@@ -15,6 +15,7 @@ const LessonForm = ({ lesson, courses, onSubmit, onClose }) => {
   const [resources, setResources] = useState([]);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const url = process.env.REACT_APP_API_URL;
 
   const resourceTypes = [
     { value: 'video', label: 'Video' },
@@ -323,7 +324,7 @@ const LessonForm = ({ lesson, courses, onSubmit, onClose }) => {
                               {resource.filename || resource.file_url.split('/').pop()}
                             </p>
                             <a
-                              href={`http://localhost:8000${resource.file_url}`}
+                              href={`${url}/${resource.file_url}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="file-link"

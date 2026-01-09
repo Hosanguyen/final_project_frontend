@@ -23,7 +23,7 @@ const CourseFormPage = () => {
         is_published: false,
         language_ids: [],
         tag_ids: [],
-        banner: null
+        banner: null,
     });
 
     const [languages, setLanguages] = useState([]);
@@ -33,7 +33,7 @@ const CourseFormPage = () => {
     const [bannerFile, setBannerFile] = useState(null);
     const [bannerPreview, setBannerPreview] = useState(null);
     const fileInputRef = useRef(null);
-    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+    const API_URL = process.env.REACT_APP_API_URL;
 
     useEffect(() => {
         loadData();
@@ -43,9 +43,9 @@ const CourseFormPage = () => {
         try {
             const [languagesData, tagsData] = await Promise.all([
                 CourseService.getLanguages(),
-                CourseService.getTags()
+                CourseService.getTags(),
             ]);
-            
+
             setLanguages(languagesData);
             setTags(tagsData);
 
@@ -59,16 +59,16 @@ const CourseFormPage = () => {
                     level: courseData.level || 'beginner',
                     price: courseData.price || 0,
                     is_published: courseData.is_published || false,
-                    language_ids: courseData.languages ? courseData.languages.map(lang => lang.id) : [],
-                    tag_ids: courseData.tags ? courseData.tags.map(tag => tag.id) : [],
-                    banner: courseData.banner || null
+                    language_ids: courseData.languages ? courseData.languages.map((lang) => lang.id) : [],
+                    tag_ids: courseData.tags ? courseData.tags.map((tag) => tag.id) : [],
+                    banner: courseData.banner || null,
                 });
-                
+
                 // Set existing banner preview if available
                 if (courseData.banner_url) {
                     // Handle both relative and absolute URLs
-                    const bannerUrl = courseData.banner_url.startsWith('http') 
-                        ? courseData.banner_url 
+                    const bannerUrl = courseData.banner_url.startsWith('http')
+                        ? courseData.banner_url
                         : `${API_URL}${courseData.banner_url}`;
                     setBannerPreview(bannerUrl);
                 }
@@ -93,44 +93,44 @@ const CourseFormPage = () => {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        
-        setFormData(prev => ({
+
+        setFormData((prev) => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: type === 'checkbox' ? checked : value,
         }));
 
         // Auto-generate slug from title
         if (name === 'title' && !isEdit) {
-            setFormData(prev => ({
+            setFormData((prev) => ({
                 ...prev,
-                slug: generateSlug(value)
+                slug: generateSlug(value),
             }));
         }
 
         // Clear error
         if (errors[name]) {
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [name]: ''
+                [name]: '',
             }));
         }
     };
 
     const handleLanguageToggle = (languageId) => {
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
             language_ids: prev.language_ids.includes(languageId)
-                ? prev.language_ids.filter(id => id !== languageId)
-                : [...prev.language_ids, languageId]
+                ? prev.language_ids.filter((id) => id !== languageId)
+                : [...prev.language_ids, languageId],
         }));
     };
 
     const handleTagToggle = (tagId) => {
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
             tag_ids: prev.tag_ids.includes(tagId)
-                ? prev.tag_ids.filter(id => id !== tagId)
-                : [...prev.tag_ids, tagId]
+                ? prev.tag_ids.filter((id) => id !== tagId)
+                : [...prev.tag_ids, tagId],
         }));
     };
 
@@ -142,15 +142,15 @@ const CourseFormPage = () => {
                 notification.error('Vui lòng chọn file ảnh', 'Lỗi file');
                 return;
             }
-            
+
             // Validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 notification.error('Kích thước file không được vượt quá 5MB', 'Lỗi file');
                 return;
             }
-            
+
             setBannerFile(file);
-            
+
             // Create preview URL
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -163,7 +163,7 @@ const CourseFormPage = () => {
     const handleRemoveBanner = () => {
         setBannerFile(null);
         setBannerPreview(null);
-        setFormData(prev => ({ ...prev, banner: null }));
+        setFormData((prev) => ({ ...prev, banner: null }));
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -185,12 +185,12 @@ const CourseFormPage = () => {
         }
 
         setErrors(newErrors);
-        
+
         if (Object.keys(newErrors).length > 0) {
             const firstError = Object.values(newErrors)[0];
             notification.error(firstError, 'Lỗi validation');
         }
-        
+
         return Object.keys(newErrors).length === 0;
     };
 
@@ -205,29 +205,29 @@ const CourseFormPage = () => {
         try {
             // Create FormData if there's a banner file to upload
             let dataToSubmit;
-            
+
             if (bannerFile) {
                 const formDataToSend = new FormData();
-                
+
                 // Add all form fields
-                Object.keys(formData).forEach(key => {
+                Object.keys(formData).forEach((key) => {
                     if (key === 'language_ids' || key === 'tag_ids') {
-                        formData[key].forEach(id => {
+                        formData[key].forEach((id) => {
                             formDataToSend.append(key, id);
                         });
                     } else if (key !== 'banner') {
                         formDataToSend.append(key, formData[key]);
                     }
                 });
-                
+
                 // Add banner file
                 formDataToSend.append('banner_file', bannerFile);
-                
+
                 dataToSubmit = formDataToSend;
             } else {
                 dataToSubmit = formData;
             }
-            
+
             if (isEdit) {
                 await CourseService.updateCourse(id, dataToSubmit);
                 notification.success('Cập nhật khóa học thành công!');
@@ -255,10 +255,7 @@ const CourseFormPage = () => {
                     <FaBook className="course-form-page-header-icon" />
                     <h1>{isEdit ? 'Chỉnh sửa khóa học' : 'Tạo khóa học mới'}</h1>
                 </div>
-                <button 
-                    className="course-form-page-btn-back" 
-                    onClick={() => navigate('/admin/courses')}
-                >
+                <button className="course-form-page-btn-back" onClick={() => navigate('/admin/courses')}>
                     <FaTimes /> Hủy
                 </button>
             </div>
@@ -266,7 +263,7 @@ const CourseFormPage = () => {
             <form onSubmit={handleSubmit} className="course-form-page-form">
                 <div className="course-form-page-card">
                     <h2>Thông tin cơ bản</h2>
-                    
+
                     {/* Banner Upload Section */}
                     <div className="course-form-page-form-group">
                         <label>Banner khóa học</label>
@@ -274,17 +271,13 @@ const CourseFormPage = () => {
                             {bannerPreview ? (
                                 <div className="banner-preview">
                                     <img src={bannerPreview} alt="Banner preview" />
-                                    <button
-                                        type="button"
-                                        className="remove-banner-btn"
-                                        onClick={handleRemoveBanner}
-                                    >
+                                    <button type="button" className="remove-banner-btn" onClick={handleRemoveBanner}>
                                         <FaTrash /> Xóa banner
                                     </button>
                                 </div>
                             ) : (
-                                <div 
-                                    className="banner-upload-placeholder" 
+                                <div
+                                    className="banner-upload-placeholder"
                                     onClick={() => fileInputRef.current?.click()}
                                 >
                                     <FaImage className="upload-icon" />
@@ -302,7 +295,7 @@ const CourseFormPage = () => {
                             />
                         </div>
                     </div>
-                    
+
                     <div className="course-form-page-form-group">
                         <label>
                             Tiêu đề <span className="course-form-page-required">*</span>
@@ -367,11 +360,7 @@ const CourseFormPage = () => {
                     <div className="course-form-page-form-row">
                         <div className="course-form-page-form-group">
                             <label>Cấp độ</label>
-                            <select
-                                name="level"
-                                value={formData.level}
-                                onChange={handleChange}
-                            >
+                            <select name="level" value={formData.level} onChange={handleChange}>
                                 <option value="beginner">Cơ bản</option>
                                 <option value="intermediate">Trung bình</option>
                                 <option value="advanced">Nâng cao</option>
@@ -413,7 +402,7 @@ const CourseFormPage = () => {
                 <div className="course-form-page-card">
                     <h2>Ngôn ngữ lập trình</h2>
                     <div className="course-form-page-checkbox-grid">
-                        {languages.map(language => (
+                        {languages.map((language) => (
                             <label key={language.id} className="course-form-page-checkbox-item">
                                 <input
                                     type="checkbox"
@@ -429,7 +418,7 @@ const CourseFormPage = () => {
                 <div className="course-form-page-card">
                     <h2>Tags</h2>
                     <div className="course-form-page-checkbox-grid">
-                        {tags.map(tag => (
+                        {tags.map((tag) => (
                             <label key={tag.id} className="course-form-page-checkbox-item">
                                 <input
                                     type="checkbox"
@@ -443,18 +432,14 @@ const CourseFormPage = () => {
                 </div>
 
                 <div className="course-form-page-actions">
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         className="course-form-page-btn-cancel"
                         onClick={() => navigate('/admin/courses')}
                     >
                         <FaTimes /> Hủy
                     </button>
-                    <button 
-                        type="submit" 
-                        className="course-form-page-btn-submit"
-                        disabled={loading}
-                    >
+                    <button type="submit" className="course-form-page-btn-submit" disabled={loading}>
                         <FaSave /> {loading ? 'Đang lưu...' : 'Lưu khóa học'}
                     </button>
                 </div>
